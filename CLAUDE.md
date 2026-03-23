@@ -31,3 +31,4 @@ https://docs.google.com/document/d/1Q0TNM5St2dotb4rQ-jHA80EhqKKmeKVk-g0ASn_Bp8g
 ## Channels
 - `#seller-systems-support` (C05FDARJBA4)
 - `#gtm-seller-systems-cpr` (C09E79ZK3PS)
+- `#stratus-support` (C0AEUHR9UC8)
