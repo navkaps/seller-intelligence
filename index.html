@@ -33,172 +33,184 @@
       min-height: 100vh; font-size: 13px; line-height: 1.5;
     }
     a { color: var(--purple); text-decoration: none; }
-    a:hover { text-decoration: underline; opacity: 0.85; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Layout ── */
+    .wrap { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
 
     /* ── Header ── */
     .header {
       background: var(--surface); border-bottom: 1px solid var(--border);
-      padding: 18px 40px; display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
     }
-    .header-left { display: flex; align-items: center; gap: 16px; }
+    .header-left { display: flex; align-items: center; gap: 14px; }
     .stripe-logo {
-      width: 30px; height: 30px; background: var(--purple); border-radius: 6px;
+      width: 28px; height: 28px; background: var(--purple); border-radius: 5px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 15px; font-weight: 800; color: white; letter-spacing: -1px;
+      font-size: 14px; font-weight: 800; color: white;
     }
     .header-title h1 { font-size: 15px; font-weight: 600; color: var(--text-1); }
-    .header-title p  { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+    .header-title p  { font-size: 11px; color: var(--text-3); margin-top: 1px; }
     .header-right { display: flex; align-items: center; gap: 8px; }
     .run-badge {
       background: var(--purple-dim); border: 1px solid rgba(99,91,255,0.3);
       padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; color: var(--purple);
     }
-    .channel-link {
-      font-size: 11px; background: var(--border); border: 1px solid var(--border);
+    .ch-link {
+      font-size: 11px; background: var(--surface-2); border: 1px solid var(--border);
       padding: 4px 10px; border-radius: 4px;
     }
-    .channel-link a { color: var(--text-2); }
+    .ch-link a { color: var(--text-2); }
 
-    /* ── 48H HOT STRIP ── */
-    .hot-strip {
-      background: #0A2540; padding: 14px 40px;
-      border-bottom: 2px solid rgba(223,27,65,0.6);
-    }
-    .hot-header {
-      display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
-    }
-    .hot-pill {
-      background: var(--red); color: white; font-size: 10px; font-weight: 700;
-      letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 20px;
-    }
-    .hot-meta { font-size: 11px; color: rgba(255,255,255,0.5); }
-    .hot-meta strong { color: rgba(255,255,255,0.85); }
-    .hot-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-    .hot-card {
-      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 6px; padding: 12px 14px;
-    }
-    .hot-card-label { font-size: 10px; color: rgba(255,255,255,0.45); margin-bottom: 5px; font-weight: 500; }
-    .hot-card-issue { font-size: 12px; color: rgba(255,255,255,0.9); font-weight: 600; line-height: 1.35; margin-bottom: 6px; }
-    .hot-card-detail { font-size: 10.5px; color: rgba(255,255,255,0.5); line-height: 1.4; }
-    .hot-card-link { display: inline-block; margin-top: 6px; font-size: 10px; color: rgba(99,91,255,0.9); background: rgba(99,91,255,0.15); border: 1px solid rgba(99,91,255,0.3); padding: 2px 7px; border-radius: 3px; text-decoration: none; }
-    .sev-r { border-top: 2px solid var(--red); }
-    .sev-o { border-top: 2px solid var(--orange); }
-    .sev-y { border-top: 2px solid var(--yellow); }
+    /* ── Section spacing ── */
+    .section { padding: 20px 40px 0; }
+    .section.last { padding-bottom: 36px; }
 
     /* ── BLUF ── */
-    .bluf-wrap { padding: 18px 40px 0; }
     .bluf {
       background: var(--surface); border: 1px solid var(--border);
-      border-left: 3px solid var(--red); border-radius: 0 6px 6px 0; padding: 14px 20px;
+      border-left: 3px solid var(--red); border-radius: 0 6px 6px 0; padding: 16px 20px;
     }
-    .bluf-label { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--red); margin-bottom: 6px; }
-    .bluf p { font-size: 12.5px; line-height: 1.7; color: var(--text-2); }
+    .bluf-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; color: var(--red); margin-bottom: 6px;
+    }
+    .bluf p { font-size: 12.5px; line-height: 1.75; color: var(--text-2); }
     .bluf strong { color: var(--text-1); }
 
     /* ── KPIs ── */
     .kpi-row {
       display: grid; grid-template-columns: repeat(6, 1fr);
-      gap: 1px; margin: 16px 40px 0;
-      background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
     }
     .kpi { background: var(--surface); padding: 14px 16px; }
-    .kpi-label { font-size: 10px; font-weight: 600; letter-spacing: 0.7px; text-transform: uppercase; color: var(--text-3); margin-bottom: 7px; }
+    .kpi-label { font-size: 10px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: var(--text-3); margin-bottom: 7px; }
     .kpi-value { font-size: 24px; font-weight: 700; color: var(--text-1); line-height: 1; }
     .kpi-sub { font-size: 11px; margin-top: 4px; }
-    .up     { color: var(--red); }
-    .down   { color: var(--green); }
-    .warn   { color: var(--yellow); }
-    .purple { color: var(--purple); }
+    .up   { color: var(--red); }
+    .down { color: var(--green); }
+    .warn { color: var(--yellow); }
 
-    /* ── Grid ── */
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 40px 0; }
-    .full { grid-column: 1 / -1; }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px 20px; }
-    .card-title { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-3); margin-bottom: 14px; }
-
-    /* ── Comparative bar ── */
-    .cmp-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border-2); }
-    .cmp-row:last-child { border-bottom: none; }
-    .cmp-label { width: 150px; font-size: 11.5px; font-weight: 500; color: var(--text-1); flex-shrink: 0; }
-    .cmp-bars { flex: 1; display: flex; flex-direction: column; gap: 3px; }
-    .cmp-bar-row { display: flex; align-items: center; gap: 6px; }
-    .cmp-bar-label { font-size: 9px; color: var(--text-3); width: 22px; text-align: right; flex-shrink: 0; }
-    .cmp-bar-wrap { flex: 1; background: var(--border-2); border-radius: 2px; height: 8px; overflow: hidden; }
-    .cmp-bar-fill { height: 100%; border-radius: 2px; }
-    .bar-w1 { background: rgba(99,91,255,0.45); }
-    .bar-w2 { background: rgba(223,27,65,0.55); }
-    .bar-48h { background: rgba(196,77,0,0.7); }
-    .cmp-num { font-size: 10px; font-weight: 700; color: var(--text-2); width: 18px; }
-    .cmp-delta {
-      font-size: 10px; font-weight: 700; min-width: 56px; text-align: right;
-      padding: 2px 6px; border-radius: 3px;
+    /* ── 48h Pulse ── */
+    .pulse-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+    .pulse-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 14px 16px;
     }
-    .delta-up   { color: var(--red);    background: var(--red-dim); }
-    .delta-flat { color: var(--text-3); }
-    .delta-down { color: var(--green);  background: var(--green-dim); }
+    .pulse-card-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; color: var(--text-3); margin-bottom: 6px;
+    }
+    .pulse-card-issue { font-size: 12px; color: var(--text-1); font-weight: 600; line-height: 1.4; margin-bottom: 6px; }
+    .pulse-card-detail { font-size: 11px; color: var(--text-2); line-height: 1.5; }
+    .pulse-card-link {
+      display: inline-block; margin-top: 8px; font-size: 10px; color: var(--purple);
+      background: var(--purple-dim); border: 1px solid rgba(99,91,255,0.25);
+      padding: 2px 8px; border-radius: 3px; text-decoration: none; font-weight: 500;
+    }
+    .pulse-r { border-top: 2px solid var(--red); }
+    .pulse-o { border-top: 2px solid var(--orange); }
+    .pulse-y { border-top: 2px solid var(--yellow); }
+    .pulse-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .pulse-pill {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+      color: var(--red); background: var(--red-dim); border: 1px solid rgba(223,27,65,0.25);
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .pulse-meta { font-size: 11px; color: var(--text-3); }
+    .pulse-meta strong { color: var(--text-1); }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 20px 22px;
+    }
+    .card-title {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
+      text-transform: uppercase; color: var(--text-3); margin-bottom: 16px;
+    }
+
+    /* ── Comparative chart section ── */
+    .chart-wrap { display: grid; grid-template-columns: 1fr 320px; gap: 16px; }
+    .legend-list { display: flex; flex-direction: column; justify-content: center; gap: 14px; }
+    .legend-item { display: flex; align-items: flex-start; gap: 10px; }
+    .legend-dot { width: 10px; height: 10px; min-width: 10px; border-radius: 2px; margin-top: 2px; }
+    .ld-w1  { background: rgba(99,91,255,0.6); }
+    .ld-w2  { background: rgba(223,27,65,0.6); }
+    .ld-48h { background: rgba(196,77,0,0.7); border-radius: 50%; }
+    .legend-text { font-size: 11px; color: var(--text-2); line-height: 1.5; }
+    .legend-text strong { color: var(--text-1); display: block; font-size: 12px; }
 
     /* ── Issue table ── */
     .tbl { width: 100%; border-collapse: collapse; }
     .tbl th {
       font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
-      color: var(--text-3); text-align: left; padding: 0 8px 10px 0; border-bottom: 1px solid var(--border);
+      color: var(--text-3); text-align: left; padding: 0 10px 10px 0;
+      border-bottom: 1px solid var(--border);
     }
-    .tbl th.r { text-align: center; }
+    .tbl th.c { text-align: center; }
     .tbl td {
-      padding: 8px 8px 8px 0; font-size: 12px; color: var(--text-2);
+      padding: 9px 10px 9px 0; font-size: 12px; color: var(--text-2);
       border-bottom: 1px solid var(--border-2); vertical-align: middle;
     }
     .tbl tr:last-child td { border-bottom: none; }
     .tbl td.label { color: var(--text-1); font-weight: 500; }
-    .tbl td.center { text-align: center; }
-    .tbl td.rc { text-align: left; color: var(--text-3); font-size: 11px; }
+    .tbl td.c { text-align: center; }
+    .tbl td.note { color: var(--text-3); font-size: 11px; }
 
     .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; white-space: nowrap; }
-    .b-critical { background: var(--red-dim);    color: var(--red);    border: 1px solid rgba(223,27,65,0.25); }
-    .b-high     { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(255,112,67,0.25); }
-    .b-medium   { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(232,166,0,0.25); }
-    .b-low      { background: var(--green-dim);  color: var(--green);  border: 1px solid rgba(51,214,166,0.25); }
+    .b-crit { background: var(--red-dim);    color: var(--red);    border: 1px solid rgba(223,27,65,0.25); }
+    .b-high { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(196,77,0,0.25); }
+    .b-med  { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(194,122,0,0.25); }
+    .b-low  { background: var(--green-dim);  color: var(--green);  border: 1px solid rgba(14,138,95,0.25); }
 
     .t-up   { color: var(--red);    font-weight: 700; }
-    .t-new  { color: var(--yellow); font-weight: 700; }
+    .t-new  { color: var(--orange); font-weight: 700; }
     .t-flat { color: var(--text-3); }
     .t-down { color: var(--green);  font-weight: 700; }
 
-    .slack-link {
-      display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: var(--purple);
-      background: var(--purple-dim); border: 1px solid rgba(99,91,255,0.25);
-      padding: 2px 7px; border-radius: 3px; white-space: nowrap; text-decoration: none; font-weight: 500;
+    .sl {
+      display: inline-flex; align-items: center; gap: 3px; font-size: 10px;
+      color: var(--purple); background: var(--purple-dim);
+      border: 1px solid rgba(99,91,255,0.25); padding: 2px 7px;
+      border-radius: 3px; text-decoration: none; font-weight: 500; white-space: nowrap;
     }
-    .slack-link:hover { background: rgba(99,91,255,0.2); text-decoration: none; }
+    .sl:hover { background: rgba(99,91,255,0.15); text-decoration: none; }
+
+    /* ── Two-col bottom ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
     /* ── Actions ── */
-    .action { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border-2); align-items: flex-start; }
+    .action { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border-2); align-items: flex-start; }
     .action:last-child { border-bottom: none; }
     .action-n {
-      width: 20px; height: 20px; min-width: 20px; background: var(--purple-dim); border-radius: 4px;
-      display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--purple);
+      width: 20px; height: 20px; min-width: 20px; background: var(--purple-dim);
+      border-radius: 4px; display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: var(--purple);
     }
-    .action-body { font-size: 12px; color: var(--text-2); }
+    .action-body { font-size: 12px; color: var(--text-2); line-height: 1.5; }
     .action-body strong { color: var(--text-1); }
     .action-owner { font-size: 10px; color: var(--text-3); margin-top: 2px; }
 
     /* ── Watchlist ── */
-    .watch-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border-2); }
-    .watch-item:last-child { border-bottom: none; }
+    .watch { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border-2); align-items: flex-start; }
+    .watch:last-child { border-bottom: none; }
     .dot { width: 6px; height: 6px; min-width: 6px; border-radius: 50%; margin-top: 5px; }
     .dot-r { background: var(--red); }
     .dot-o { background: var(--orange); }
     .dot-y { background: var(--yellow); }
     .watch-text { font-size: 12px; color: var(--text-2); line-height: 1.5; }
 
-    .footer { margin: 14px 40px 30px; font-size: 11px; color: var(--text-3); padding-top: 12px; border-top: 1px solid var(--border); }
-    canvas { max-height: 220px; }
+    /* ── Footer ── */
+    .footer { padding: 14px 40px 32px; font-size: 11px; color: var(--text-3); border-top: 1px solid var(--border); margin-top: 20px; }
+
+    canvas { max-height: 260px; }
   </style>
 </head>
 <body>
 
-<!-- ── Header ── -->
+<!-- 1. HEADER -->
 <div class="header">
   <div class="header-left">
     <div class="stripe-logo">S</div>
@@ -208,131 +220,152 @@
     </div>
   </div>
   <div class="header-right">
-    <div class="channel-link"><a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank">#seller-systems-support ↗</a></div>
-    <div class="channel-link"><a href="https://stripe.slack.com/archives/C09E79ZK3PS" target="_blank">#gtm-seller-systems-cpr ↗</a></div>
-    <div class="run-badge">Run: March 23, 2026</div>
+    <div class="ch-link"><a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank">#seller-systems-support ↗</a></div>
+    <div class="ch-link"><a href="https://stripe.slack.com/archives/C09E79ZK3PS" target="_blank">#gtm-seller-systems-cpr ↗</a></div>
+    <div class="run-badge">March 23, 2026</div>
   </div>
 </div>
 
-<!-- ── 48H HOT STRIP ── -->
-<div class="hot-strip">
-  <div class="hot-header">
-    <div class="hot-pill">Live — Last 48h</div>
-    <div class="hot-meta"><strong>33 messages</strong> in last 48h · ~16.5/day vs 11.3/day weekly avg · <strong>+46% above run rate</strong> · EOQ pressure building</div>
-  </div>
-  <div class="hot-cards">
-
-    <div class="hot-card sev-r">
-      <div class="hot-card-label">Critical · Spreading</div>
-      <div class="hot-card-issue">Below-floor flags now hitting 3DS &amp; Auth Boost at sticker ($0 base)</div>
-      <div class="hot-card-detail">huan: 3DS and AuthBoost sticker=0 flags any input as below floor. ethella: 3DS flagged non-sticker at sticker. keithhenry: 54bps cards flagged. New products, same regression.</div>
-      <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1774257726238399" target="_blank" class="hot-card-link"># huan thread</a>
-    </div>
-
-    <div class="hot-card sev-r">
-      <div class="hot-card-label">Critical · EOQ Blocker</div>
-      <div class="hot-card-issue">DC Save &amp; Submit errors blocking EOQ deals needing signatures today</div>
-      <div class="hot-card-detail">jansaloni: submit blocked despite all fields complete. ethella: can't save to opp. vincemitolo: contract must go out today, blocked for a week. kristingathge: DC ≠ SFDC after re-approval.</div>
-      <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1774260238513069" target="_blank" class="hot-card-link"># jansaloni thread</a>
-    </div>
-
-    <div class="hot-card sev-o">
-      <div class="hot-card-label">High · New Gap</div>
-      <div class="hot-card-issue">Dispute Prevention not configured in DC for ONR — no support path exists</div>
-      <div class="hot-card-detail">maddmeier: team cannot confirm/deny calculations made outside DC or tools created by Product Pricing. No DC integration confirmed. Structural gap for Dispute Prevention deals.</div>
-      <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1774271112299879" target="_blank" class="hot-card-link"># maddmeier thread</a>
-    </div>
-
-    <div class="hot-card sev-o">
-      <div class="hot-card-label">High · EOQ Surge</div>
-      <div class="hot-card-issue">Product gaps blocking 5 deals: Capital, Financial Accounts, Norway SaaS, Japan PayPay</div>
-      <div class="hot-card-detail">melaniewong: Capital not selectable. taylormcgavisk: Financial Accounts not in DC. alvaroyg: Norway DC missing SaaS Billing + Sigma. huan: PayPay not available for Japan APM.</div>
-      <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank" class="hot-card-link"># channel</a>
-    </div>
-
-    <div class="hot-card sev-y">
-      <div class="hot-card-label">Medium · Time-Sensitive</div>
-      <div class="hot-card-issue">DPS calculation agent down + time-sensitive JIRA blocking AI reporting &amp; Compensation</div>
-      <div class="hot-card-detail">sherpa: DPS calculation agent not functioning. jmprovencher: GTMS-42722 blocking AI reporting and compensation — flagged as time-sensitive.</div>
-      <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1774272301703709" target="_blank" class="hot-card-link"># jmprovencher</a>
-    </div>
-
-  </div>
-</div>
-
-<!-- ── BLUF ── -->
-<div class="bluf-wrap">
+<!-- 2. BLUF -->
+<div class="section">
   <div class="bluf">
     <div class="bluf-label">BLUF — March 23, 2026</div>
     <p>
-      <strong>The below-floor regression is spreading</strong> — now confirmed across 9 products this week (non-Amex, Amex domestic, Adaptive Acceptance, Connect SMR, Billing SaaS, Instant Payouts, TTP, 3DS, AuthBoost) and is the fastest-growing issue in both the weekly data (+167% WoW) and the last 48 hours.
-      <strong>DC save/submit failures are blocking EOQ closes today</strong> — vincemitolo, kristingathge, and jansaloni all have deals that needed to go to signature this week and can't.
-      A structural gap has emerged: <strong>Dispute Prevention has no DC integration for ONR calculation</strong>, surfaced by maddmeier today — this is likely impacting more deals quietly.
-      <strong>Three actions before EOQ closes this week:</strong> (1) emergency floor config rollback or audit across all products, (2) fix or manually unblock the 3–4 deals blocked on DC save today, (3) confirm Dispute Prevention DC roadmap with engineering.
+      <strong>The below-floor regression is spreading</strong> — now confirmed across 9 products this week (non-Amex, Amex domestic, Adaptive Acceptance, Connect SMR, Billing SaaS, Instant Payouts, TTP, 3DS, AuthBoost) and is the fastest-growing issue both weekly (+167% WoW) and in the last 48 hours.
+      <strong>DC save and submit failures are blocking EOQ closes today</strong> — vincemitolo, kristingathge, and jansaloni have deals that need to go to signature this week and can't get through.
+      A new structural gap emerged today: <strong>Dispute Prevention has no DC integration for ONR calculation</strong>, and is likely impacting more deals silently.
+      <strong>Three things before EOQ:</strong> (1) floor config emergency audit across all products, (2) manually unblock the deals stuck on DC save today, (3) fix the premium support auto-attach bug now in its second week unfixed.
     </p>
   </div>
 </div>
 
-<!-- ── KPIs ── -->
-<div class="kpi-row">
-  <div class="kpi">
-    <div class="kpi-label">Last 48h Messages</div>
-    <div class="kpi-value">33</div>
-    <div class="kpi-sub up">↑ +46% above run rate</div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-label">Wk 2 vs Wk 1</div>
-    <div class="kpi-value">+22%</div>
-    <div class="kpi-sub up">↑ 65 → 79 tickets</div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-label">Below-Floor Spike</div>
-    <div class="kpi-value">+167%</div>
-    <div class="kpi-sub up">↑ 3 → 8 · now 9 products</div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-label">DC Save Failures</div>
-    <div class="kpi-value">+71%</div>
-    <div class="kpi-sub up">↑ 14 → 24 · blocking EOQ</div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-label">Obj 3 Completion</div>
-    <div class="kpi-value">69.4%</div>
-    <div class="kpi-sub warn">~3pp below target</div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-label">New Issues (48h)</div>
-    <div class="kpi-value">4</div>
-    <div class="kpi-sub up">3DS·DP·FinAccts·DPS Agent</div>
+<!-- 3. KPIs -->
+<div class="section">
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-label">Last 48h Messages</div>
+      <div class="kpi-value">33</div>
+      <div class="kpi-sub up">↑ +46% above run rate</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Wk 2 Total</div>
+      <div class="kpi-value">79</div>
+      <div class="kpi-sub up">↑ +22% vs Wk 1 (65)</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Below-Floor Spike</div>
+      <div class="kpi-value">+167%</div>
+      <div class="kpi-sub up">↑ 3→8 · now 9 products</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">DC Save Failures</div>
+      <div class="kpi-value">+71%</div>
+      <div class="kpi-sub up">↑ 14→24 · blocking EOQ</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Obj 3 Completion</div>
+      <div class="kpi-value">69.4%</div>
+      <div class="kpi-sub warn">~3pp below target</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">New Issues (48h)</div>
+      <div class="kpi-value">4</div>
+      <div class="kpi-sub up">3DS · DP gap · FinAccts · DPS</div>
+    </div>
   </div>
 </div>
 
-<!-- ── Charts + Comparatives ── -->
-<div class="grid">
-
-  <!-- Comparative bar chart -->
-  <div class="card">
-    <div class="card-title">Comparatives — Last 48h · Wk 1 · Wk 2</div>
-    <div id="cmpBars"></div>
+<!-- 4. LAST 48H PULSE -->
+<div class="section">
+  <div class="pulse-header">
+    <div class="pulse-pill">Live — Last 48h</div>
+    <div class="pulse-meta"><strong>33 messages</strong> · ~16.5/day vs 11.3/day weekly avg · <strong>+46% above run rate</strong> · EOQ pressure building</div>
   </div>
+  <div class="pulse-grid">
 
-  <!-- WoW Chart -->
-  <div class="card">
-    <div class="card-title">Volume Trend — Last 48h · Wk 1 · Wk 2</div>
-    <canvas id="wowChart"></canvas>
+    <div class="pulse-card pulse-r">
+      <div class="pulse-card-label">Critical · Spreading</div>
+      <div class="pulse-card-issue">Below-floor now hitting 3DS &amp; AuthBoost at sticker</div>
+      <div class="pulse-card-detail">huan: 3DS + AuthBoost sticker=$0 flags any input as below floor. ethella: 3DS flagged non-sticker despite sticker pricing. keithhenry: 54bps cards flagged. New products, same regression.</div>
+      <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1774257726238399" target="_blank" class="pulse-card-link"># huan thread</a>
+    </div>
+
+    <div class="pulse-card pulse-r">
+      <div class="pulse-card-label">Critical · EOQ Blocker</div>
+      <div class="pulse-card-issue">DC save &amp; submit errors blocking deals that need to close today</div>
+      <div class="pulse-card-detail">jansaloni: submit blocked despite all fields complete. ethella: can't save to opp. vincemitolo: contract needed today, blocked a week. kristingathge: DC ≠ SFDC after re-approval.</div>
+      <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1774260238513069" target="_blank" class="pulse-card-link"># jansaloni thread</a>
+    </div>
+
+    <div class="pulse-card pulse-o">
+      <div class="pulse-card-label">High · New Today</div>
+      <div class="pulse-card-issue">Dispute Prevention has no DC integration for ONR</div>
+      <div class="pulse-card-detail">maddmeier: team cannot confirm calculations made outside DC. No DC path exists for Dispute Prevention ONR. Structural gap — likely impacting more deals silently.</div>
+      <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1774271112299879" target="_blank" class="pulse-card-link"># maddmeier thread</a>
+    </div>
+
+    <div class="pulse-card pulse-o">
+      <div class="pulse-card-label">High · EOQ Surge</div>
+      <div class="pulse-card-issue">5 product gaps blocking active deals this week</div>
+      <div class="pulse-card-detail">Capital not selectable (melaniewong). Financial Accounts not in DC (taylormcgavisk). Norway missing SaaS Billing + Sigma (alvaroyg). Japan missing PayPay APM (huan).</div>
+      <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank" class="pulse-card-link"># channel</a>
+    </div>
+
+    <div class="pulse-card pulse-y">
+      <div class="pulse-card-label">Medium · Time-Sensitive</div>
+      <div class="pulse-card-issue">DPS agent down · JIRA blocking AI reporting &amp; Compensation</div>
+      <div class="pulse-card-detail">sherpa: DPS calculation agent not functioning. jmprovencher: GTMS-42722 blocking AI reporting and compensation — flagged time-sensitive.</div>
+      <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1774272301703709" target="_blank" class="pulse-card-link"># jmprovencher</a>
+    </div>
+
   </div>
+</div>
 
-  <!-- Issue table -->
-  <div class="card full">
-    <div class="card-title">Full Issue Breakdown — Last 48h · Wk 1 · Wk 2 · Severity · Trend</div>
+<!-- 5. W1 vs W2 COMPARATIVES -->
+<div class="section">
+  <div class="card">
+    <div class="card-title">Week-over-Week — Last 48h · Wk 1 (Mar 9–15) · Wk 2 (Mar 16–22)</div>
+    <div class="chart-wrap">
+      <canvas id="wowChart"></canvas>
+      <div class="legend-list">
+        <div class="legend-item">
+          <div class="legend-dot ld-48h"></div>
+          <div class="legend-text">
+            <strong>Last 48h (normalized)</strong>
+            33 messages · +46% above daily avg · EOQ surge underway. 48h values scaled ×3.5 to compare against weekly totals.
+          </div>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot ld-w1"></div>
+          <div class="legend-text">
+            <strong>Week 1 — Mar 9–15</strong>
+            65 total messages. DC errors and Contract/IronClad issues dominant. Premium support auto-attach bug first appeared (behrang, Mar 11).
+          </div>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot ld-w2"></div>
+          <div class="legend-text">
+            <strong>Week 2 — Mar 16–22</strong>
+            79 total (+22%). Below-floor flags tripled. DC save failures up 71%. Product/geo gaps doubled. Gong and access issues declining.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. ISSUE TABLE -->
+<div class="section">
+  <div class="card">
+    <div class="card-title">Issue Breakdown — Last 48h · Wk 1 · Wk 2 · Trend · Severity</div>
     <table class="tbl">
       <thead>
         <tr>
-          <th style="width:22%">Category</th>
-          <th class="r">48h</th>
-          <th class="r">Wk 1</th>
-          <th class="r">Wk 2</th>
-          <th class="r">WoW Δ</th>
+          <th style="width:23%">Category</th>
+          <th class="c">48h</th>
+          <th class="c">Wk 1</th>
+          <th class="c">Wk 2</th>
+          <th class="c">WoW Δ</th>
           <th>Severity</th>
           <th>Status</th>
           <th>Slack</th>
@@ -341,143 +374,147 @@
       <tbody>
         <tr>
           <td class="label">DC Save / "Error: undefined"</td>
-          <td class="center">5</td><td class="center">14</td><td class="center">24</td>
-          <td class="center t-up">↑↑ +71%</td>
-          <td><span class="badge b-critical">Critical</span></td>
+          <td class="c">5</td><td class="c">14</td><td class="c">24</td>
+          <td class="c t-up">↑↑ +71%</td>
+          <td><span class="badge b-crit">Critical</span></td>
           <td>Active · EOQ blocker</td>
-          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"><span>#</span> Channel</a></td>
+          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
         </tr>
         <tr>
           <td class="label">Below-Floor False Flags</td>
-          <td class="center">4</td><td class="center">3</td><td class="center">8</td>
-          <td class="center t-up">↑↑↑ +167%</td>
-          <td><span class="badge b-critical">Critical</span></td>
+          <td class="c">4</td><td class="c">3</td><td class="c">8</td>
+          <td class="c t-up">↑↑↑ +167%</td>
+          <td><span class="badge b-crit">Critical</span></td>
           <td>Spreading · 9 products</td>
-          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4/p1774257726238399" target="_blank"><span>#</span> huan thread</a></td>
+          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4/p1774257726238399" target="_blank"># huan</a></td>
         </tr>
         <tr>
           <td class="label">Premium Support Auto-Attach</td>
-          <td class="center">—</td><td class="center">4</td><td class="center">3</td>
-          <td class="center t-new">↔ Wk 2 unfixed</td>
-          <td><span class="badge b-critical">Critical</span></td>
-          <td>Unfixed since Mar 11</td>
-          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4/p1773398464819719" target="_blank"><span>#</span> behrang Mar 11</a></td>
+          <td class="c">—</td><td class="c">4</td><td class="c">3</td>
+          <td class="c t-new">↔ Persisting</td>
+          <td><span class="badge b-crit">Critical</span></td>
+          <td>Unfixed · week 2</td>
+          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4/p1773398464819719" target="_blank"># behrang</a></td>
         </tr>
         <tr>
           <td class="label">Product / Geo Gaps</td>
-          <td class="center">5</td><td class="center">5</td><td class="center">10</td>
-          <td class="center t-up">↑↑ +100%</td>
+          <td class="c">5</td><td class="c">5</td><td class="c">10</td>
+          <td class="c t-up">↑↑ +100%</td>
           <td><span class="badge b-high">High</span></td>
-          <td>EOQ surge · 48h spike</td>
-          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"><span>#</span> Channel</a></td>
+          <td>EOQ surge</td>
+          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
         </tr>
         <tr>
           <td class="label">SFDC / Opp Management</td>
-          <td class="center">4</td><td class="center">10</td><td class="center">16</td>
-          <td class="center t-up">↑ +60%</td>
+          <td class="c">4</td><td class="c">10</td><td class="c">16</td>
+          <td class="c t-up">↑ +60%</td>
           <td><span class="badge b-high">High</span></td>
           <td>Active · EOQ pressure</td>
-          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"><span>#</span> Channel</a></td>
+          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
         </tr>
         <tr>
           <td class="label">Contract / IronClad / DocuSign</td>
-          <td class="center">3</td><td class="center">10</td><td class="center">7</td>
-          <td class="center t-down">↓ -30%</td>
+          <td class="c">3</td><td class="c">10</td><td class="c">7</td>
+          <td class="c t-down">↓ -30%</td>
           <td><span class="badge b-high">High</span></td>
-          <td>Improving but 48h uptick</td>
-          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4/p1773408072560729" target="_blank"><span>#</span> radhika thread</a></td>
-        </tr>
-        <tr>
-          <td class="label">Dispute Prevention (NEW)</td>
-          <td class="center">1</td><td class="center">—</td><td class="center">—</td>
-          <td class="center t-new">↑ New</td>
-          <td><span class="badge b-high">High</span></td>
-          <td>Structural gap · no DC support</td>
-          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4/p1774271112299879" target="_blank"><span>#</span> maddmeier</a></td>
-        </tr>
-        <tr>
-          <td class="label">Access / Provisioning</td>
-          <td class="center">1</td><td class="center">8</td><td class="center">5</td>
-          <td class="center t-down">↓ -38%</td>
-          <td><span class="badge b-medium">Medium</span></td>
           <td>Improving</td>
-          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"><span>#</span> Channel</a></td>
+          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4/p1773408072560729" target="_blank"># radhika</a></td>
+        </tr>
+        <tr>
+          <td class="label">Dispute Prevention <span style="font-size:10px;color:var(--orange);font-weight:600;">NEW</span></td>
+          <td class="c">1</td><td class="c">—</td><td class="c">—</td>
+          <td class="c t-new">↑ New</td>
+          <td><span class="badge b-high">High</span></td>
+          <td>No DC support path</td>
+          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4/p1774271112299879" target="_blank"># maddmeier</a></td>
         </tr>
         <tr>
           <td class="label">Link IBP / Adaptive Pricing</td>
-          <td class="center">1</td><td class="center">3</td><td class="center">2</td>
-          <td class="center t-down">↓ -33%</td>
+          <td class="c">1</td><td class="c">3</td><td class="c">2</td>
+          <td class="c t-down">↓ -33%</td>
           <td><span class="badge b-high">High</span></td>
           <td>Partial · abandons persist</td>
-          <td><a class="slack-link" href="https://stripe.slack.com/archives/C09E79ZK3PS/p1773165002973119" target="_blank"><span>#</span> CPR thread</a></td>
+          <td><a class="sl" href="https://stripe.slack.com/archives/C09E79ZK3PS/p1773165002973119" target="_blank"># CPR</a></td>
+        </tr>
+        <tr>
+          <td class="label">Access / Provisioning</td>
+          <td class="c">1</td><td class="c">8</td><td class="c">5</td>
+          <td class="c t-down">↓ -38%</td>
+          <td><span class="badge b-med">Medium</span></td>
+          <td>Improving</td>
+          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
         </tr>
         <tr>
           <td class="label">Gong Access / Sync</td>
-          <td class="center">1</td><td class="center">8</td><td class="center">4</td>
-          <td class="center t-down">↓ -50%</td>
+          <td class="c">1</td><td class="c">8</td><td class="c">4</td>
+          <td class="c t-down">↓ -50%</td>
           <td><span class="badge b-low">Low</span></td>
           <td>Declining</td>
-          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"><span>#</span> Channel</a></td>
+          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
         </tr>
       </tbody>
     </table>
   </div>
-
-  <!-- Immediate actions -->
-  <div class="card">
-    <div class="card-title">Immediate Actions</div>
-    <div class="action">
-      <div class="action-n">1</div>
-      <div>
-        <div class="action-body"><strong>Emergency floor config audit</strong> — 9 products now flagging false positives. 3DS + AuthBoost at sticker=$0 surfaced in last 48h. Find regression before EOQ deal surge. Likely a shared floor threshold change.</div>
-        <div class="action-owner">Owner: DC Engineering / Pricing Config — TODAY</div>
-      </div>
-    </div>
-    <div class="action">
-      <div class="action-n">2</div>
-      <div>
-        <div class="action-body"><strong>Manually unblock EOQ deals</strong> — vincemitolo (contract today), jansaloni (submit blocked), kristingathge (DC ≠ SFDC), ethella (can't save). These need human intervention now. · <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1774257872170439" target="_blank" class="slack-link"># vincemitolo</a></div>
-        <div class="action-owner">Owner: DC Support / Deal Pricing — TODAY</div>
-      </div>
-    </div>
-    <div class="action">
-      <div class="action-n">3</div>
-      <div>
-        <div class="action-body"><strong>Fix premium support auto-attach, audit affected opps</strong> — week 2 unfixed. Contracts with wrong tier may have been executed. · <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1773398464819719" target="_blank" class="slack-link"># behrang Mar 11</a></div>
-        <div class="action-owner">Owner: DC Engineering + Deal Pricing</div>
-      </div>
-    </div>
-    <div class="action">
-      <div class="action-n">4</div>
-      <div>
-        <div class="action-body"><strong>Confirm Dispute Prevention DC roadmap</strong> — no path exists for ONR calculation in DC today. maddmeier's team is blocked. Structural gap for all Dispute Prevention deals. · <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1774271112299879" target="_blank" class="slack-link"># maddmeier</a></div>
-        <div class="action-owner">Owner: DC Product / Engineering</div>
-      </div>
-    </div>
-    <div class="action">
-      <div class="action-n">5</div>
-      <div>
-        <div class="action-body"><strong>Product/Geo gaps for EOQ week</strong> — Capital, Financial Accounts, Norway SaaS Billing/Sigma, Japan PayPay all blocking active deals. Triage + proactive guidance before Mar 28.</div>
-        <div class="action-owner">Owner: DC Product / GTM Eng</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Watchlist -->
-  <div class="card">
-    <div class="card-title">Watchlist — Next Run</div>
-    <div class="watch-item"><div class="dot dot-r"></div><div class="watch-text"><strong>Floor config regression</strong> — now 9 products. Root cause found and reverted? Watch for further spread into new products during EOQ week.</div></div>
-    <div class="watch-item"><div class="dot dot-r"></div><div class="watch-text"><strong>Premium support auto-attach</strong> — entering week 3 unfixed. Affected opps since Mar 8 audited before close?</div></div>
-    <div class="watch-item"><div class="dot dot-r"></div><div class="watch-text"><strong>EOQ volume (Mar 24–28)</strong> — currently running +46% above daily average. DC save errors and floor flags will amplify. Monitor daily.</div></div>
-    <div class="watch-item"><div class="dot dot-o"></div><div class="watch-text"><strong>Dispute Prevention DC gap</strong> — new issue surfaced today. No DC integration for ONR. How many active deals are affected?</div></div>
-    <div class="watch-item"><div class="dot dot-o"></div><div class="watch-text"><a href="https://stripe.slack.com/archives/C09E79ZK3PS/p1773165002973119" target="_blank">Adaptive pricing × DC abandons</a> — CPR went quiet W2. Issue resolved or unreported?</div></div>
-    <div class="watch-item"><div class="dot dot-y"></div><div class="watch-text"><strong>Link IBP ONR calc change</strong> — sonalinetke report. Intentional product change or regression? Confirm with DC product team.</div></div>
-    <div class="watch-item"><div class="dot dot-y"></div><div class="watch-text">#gtm-experience-ask channel not accessible — verify correct name.</div></div>
-  </div>
-
 </div>
 
-<!-- ── Footer ── -->
+<!-- 7. ACTIONS + WATCHLIST -->
+<div class="section last">
+  <div class="two-col">
+
+    <div class="card">
+      <div class="card-title">Immediate Actions</div>
+      <div class="action">
+        <div class="action-n">1</div>
+        <div>
+          <div class="action-body"><strong>Floor config emergency audit</strong> — 9 products with false positives. 3DS + AuthBoost at sticker=$0 surfaced in last 48h. Find the regression before EOQ deal surge this week.</div>
+          <div class="action-owner">DC Engineering / Pricing Config — Today</div>
+        </div>
+      </div>
+      <div class="action">
+        <div class="action-n">2</div>
+        <div>
+          <div class="action-body"><strong>Manually unblock EOQ deals</strong> — vincemitolo, jansaloni, kristingathge, ethella all need human intervention now. Contracts due today. · <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1774257872170439" target="_blank" class="sl"># vincemitolo</a></div>
+          <div class="action-owner">DC Support / Deal Pricing — Today</div>
+        </div>
+      </div>
+      <div class="action">
+        <div class="action-n">3</div>
+        <div>
+          <div class="action-body"><strong>Fix premium support auto-attach, audit opps since Mar 8</strong> — second week unfixed. Contracts with wrong support tier may have been executed. · <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1773398464819719" target="_blank" class="sl"># behrang</a></div>
+          <div class="action-owner">DC Engineering + Deal Pricing</div>
+        </div>
+      </div>
+      <div class="action">
+        <div class="action-n">4</div>
+        <div>
+          <div class="action-body"><strong>Confirm Dispute Prevention DC roadmap</strong> — no ONR calculation path in DC today. maddmeier team blocked. Structural gap for all DP deals. · <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1774271112299879" target="_blank" class="sl"># maddmeier</a></div>
+          <div class="action-owner">DC Product / Engineering</div>
+        </div>
+      </div>
+      <div class="action">
+        <div class="action-n">5</div>
+        <div>
+          <div class="action-body"><strong>Product/geo triage for EOQ</strong> — Capital, Financial Accounts, Norway SaaS Billing + Sigma, Japan PayPay all blocking active deals. Guidance or fix before Mar 28.</div>
+          <div class="action-owner">DC Product / GTM Eng</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Watchlist — Next Run</div>
+      <div class="watch"><div class="dot dot-r"></div><div class="watch-text"><strong>Floor config regression</strong> — 9 products affected. Root cause found and reverted? Watch for further spread during EOQ week.</div></div>
+      <div class="watch"><div class="dot dot-r"></div><div class="watch-text"><strong>Premium support auto-attach</strong> — entering week 3 unfixed. Affected opps since Mar 8 audited and corrected?</div></div>
+      <div class="watch"><div class="dot dot-r"></div><div class="watch-text"><strong>EOQ volume Mar 24–28</strong> — currently +46% above daily run rate. DC save errors and floor flags will amplify. Monitor daily.</div></div>
+      <div class="watch"><div class="dot dot-o"></div><div class="watch-text"><strong>Dispute Prevention gap</strong> — new issue today. How many active deals are impacted? Roadmap confirmed?</div></div>
+      <div class="watch"><div class="dot dot-o"></div><div class="watch-text"><a href="https://stripe.slack.com/archives/C09E79ZK3PS/p1773165002973119" target="_blank">Adaptive pricing × DC abandons</a> — CPR channel went quiet in W2. Issue resolved or just unreported?</div></div>
+      <div class="watch"><div class="dot dot-y"></div><div class="watch-text"><strong>Link IBP ONR calc change</strong> — sonalinetke flagged a behavioral change. Intentional product update or regression?</div></div>
+      <div class="watch"><div class="dot dot-y"></div><div class="watch-text">#gtm-experience-ask — channel not accessible. Verify correct name for next run.</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Footer -->
 <div class="footer">
   ~144 messages analyzed (Mar 9–22) + 33 messages last 48h ·
   <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank">#seller-systems-support</a> ·
@@ -486,92 +523,38 @@
 </div>
 
 <script>
-  const grid = '#E3E8EE';
-  const tick = '#8898AA';
+  const grid = '#E3E8EE', tick = '#8898AA';
   const font = { family: "-apple-system, 'Inter', sans-serif", size: 11 };
   const tip  = { backgroundColor:'#FFFFFF', borderColor:'#E3E8EE', borderWidth:1, titleColor:'#0A2540', bodyColor:'#425466', padding:10 };
 
-  // ── Comparative bars (inline HTML) ──
-  const data = [
-    { label:'DC Save Errors',    w1:14, w2:24, h48:5,  max:28 },
-    { label:'Below-Floor Flags', w1:3,  w2:8,  h48:4,  max:12 },
-    { label:'Product/Geo Gaps',  w1:5,  w2:10, h48:5,  max:12 },
-    { label:'SFDC/Opp Mgmt',     w1:10, w2:16, h48:4,  max:20 },
-    { label:'Contract/IronClad', w1:10, w2:7,  h48:3,  max:14 },
-    { label:'Access/Prov',       w1:8,  w2:5,  h48:1,  max:10 },
-    { label:'Gong Issues',       w1:8,  w2:4,  h48:1,  max:10 },
-    { label:'Link IBP/Adaptive', w1:3,  w2:2,  h48:1,  max:5  },
-  ];
-
-  const container = document.getElementById('cmpBars');
-  // Legend — ordered 48h, W1, W2
-  const legend = document.createElement('div');
-  legend.style.cssText = 'display:flex;gap:16px;margin-bottom:12px;font-size:10px;color:#8898AA;';
-  legend.innerHTML = `
-    <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:8px;background:rgba(196,77,0,0.7);border-radius:2px;display:inline-block;"></span> Last 48h</span>
-    <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:8px;background:rgba(99,91,255,0.45);border-radius:2px;display:inline-block;"></span> Wk 1</span>
-    <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:8px;background:rgba(223,27,65,0.55);border-radius:2px;display:inline-block;"></span> Wk 2</span>
-  `;
-  container.appendChild(legend);
-
-  data.forEach(d => {
-    const delta = d.w2 - d.w1;
-    const pct   = d.w1 > 0 ? Math.round((delta / d.w1) * 100) : 0;
-    const cls   = delta > 0 ? 'delta-up' : delta < 0 ? 'delta-down' : 'delta-flat';
-    const sym   = delta > 0 ? `↑ +${pct}%` : delta < 0 ? `↓ ${pct}%` : '→ flat';
-
-    const row = document.createElement('div');
-    row.className = 'cmp-row';
-    row.innerHTML = `
-      <div class="cmp-label">${d.label}</div>
-      <div class="cmp-bars">
-        <div class="cmp-bar-row">
-          <div class="cmp-bar-label">48h</div>
-          <div class="cmp-bar-wrap"><div class="cmp-bar-fill bar-48h" style="width:${Math.round(d.h48/d.max*100)}%"></div></div>
-          <div class="cmp-num">${d.h48}</div>
-        </div>
-        <div class="cmp-bar-row">
-          <div class="cmp-bar-label">W1</div>
-          <div class="cmp-bar-wrap"><div class="cmp-bar-fill bar-w1" style="width:${Math.round(d.w1/d.max*100)}%"></div></div>
-          <div class="cmp-num">${d.w1}</div>
-        </div>
-        <div class="cmp-bar-row">
-          <div class="cmp-bar-label">W2</div>
-          <div class="cmp-bar-wrap"><div class="cmp-bar-fill bar-w2" style="width:${Math.round(d.w2/d.max*100)}%"></div></div>
-          <div class="cmp-num">${d.w2}</div>
-        </div>
-      </div>
-      <div class="cmp-delta ${cls}">${sym}</div>
-    `;
-    container.appendChild(row);
-  });
-
-  // ── WoW Chart — ordered: 48h, W1, W2 ──
   new Chart(document.getElementById('wowChart'), {
     type: 'bar',
     data: {
-      labels: ['DC Save','Below-Floor','Product/Geo','SFDC/Opp','Contract','Access','Gong','Link IBP'],
+      labels: ['DC Save','Below-Floor','Product/Geo','SFDC/Opp','Contract','Prem. Support','Access','Gong','Link IBP'],
       datasets: [
-        { label: 'Last 48h (×3.5 normalized)', data: [17.5,14,17.5,14,10.5,3.5,3.5,3.5],
-          backgroundColor:'rgba(196,77,0,0.35)', borderColor:'rgba(196,77,0,0.8)', borderWidth:1, borderRadius:3 },
-        { label: 'Week 1 (Mar 9–15)', data: [14,3,5,10,10,8,8,3],
-          backgroundColor:'rgba(99,91,255,0.25)', borderColor:'rgba(99,91,255,0.6)', borderWidth:1, borderRadius:3 },
-        { label: 'Week 2 (Mar 16–22)', data: [24,8,10,16,7,5,4,2],
-          backgroundColor:'rgba(223,27,65,0.25)', borderColor:'rgba(223,27,65,0.6)', borderWidth:1, borderRadius:3 }
+        { label: 'Last 48h (×3.5)',
+          data: [17.5, 14, 17.5, 14, 10.5, 0, 3.5, 3.5, 3.5],
+          backgroundColor: 'rgba(196,77,0,0.25)', borderColor: 'rgba(196,77,0,0.7)',
+          borderWidth: 1, borderRadius: 3 },
+        { label: 'Week 1 (Mar 9–15)',
+          data: [14, 3, 5, 10, 10, 4, 8, 8, 3],
+          backgroundColor: 'rgba(99,91,255,0.2)', borderColor: 'rgba(99,91,255,0.6)',
+          borderWidth: 1, borderRadius: 3 },
+        { label: 'Week 2 (Mar 16–22)',
+          data: [24, 8, 10, 16, 7, 3, 5, 4, 2],
+          backgroundColor: 'rgba(223,27,65,0.2)', borderColor: 'rgba(223,27,65,0.6)',
+          borderWidth: 1, borderRadius: 3 }
       ]
     },
     options: {
-      responsive:true, maintainAspectRatio:true,
+      responsive: true, maintainAspectRatio: true,
       plugins: {
-        legend:{ labels:{ color:tick, font, boxWidth:10, padding:12 }},
-        tooltip:{ ...tip, callbacks:{
-          afterTitle: () => [''],
-          footer: (items) => ['48h value multiplied ×3.5 to normalize to weekly scale']
-        }}
+        legend: { labels: { color: tick, font, boxWidth: 10, padding: 14 } },
+        tooltip: tip
       },
       scales: {
-        x: { ticks:{ color:tick, font, maxRotation:30 }, grid:{ color:grid }},
-        y: { ticks:{ color:tick, font }, grid:{ color:grid }, beginAtZero:true }
+        x: { ticks: { color: tick, font, maxRotation: 30 }, grid: { color: grid } },
+        y: { ticks: { color: tick, font }, grid: { color: grid }, beginAtZero: true }
       }
     }
   });
