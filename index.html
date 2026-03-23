@@ -4,27 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Seller Systems Support Intelligence</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="chart.umd.min.js"></script>
   <style>
     :root {
-      --bg:         #F6F9FC;
-      --surface:    #FFFFFF;
-      --surface-2:  #F6F9FC;
-      --border:     #E3E8EE;
-      --border-2:   #F0F4F8;
-      --purple:     #635BFF;
-      --purple-dim: rgba(99,91,255,0.08);
-      --green:      #0E8A5F;
-      --green-dim:  rgba(14,138,95,0.08);
-      --yellow:     #C27A00;
-      --yellow-dim: rgba(194,122,0,0.08);
-      --red:        #DF1B41;
-      --red-dim:    rgba(223,27,65,0.08);
-      --orange:     #C44D00;
-      --orange-dim: rgba(196,77,0,0.08);
-      --text-1:     #0A2540;
-      --text-2:     #425466;
-      --text-3:     #8898AA;
+      --bg:           #F6F9FC;
+      --surface:      #FFFFFF;
+      --surface-2:    #F6F9FC;
+      --border:       #E3E8EE;
+      --border-2:     #F0F4F8;
+      --purple:       #635BFF;
+      --purple-dim:   rgba(99,91,255,0.08);
+      --purple-dark:  #4F46E5;
+      --green:        #30B980;
+      --green-dim:    rgba(48,185,128,0.08);
+      --yellow:       #C27A00;
+      --yellow-dim:   rgba(194,122,0,0.08);
+      --red:          #DF1B41;
+      --red-dim:      rgba(223,27,65,0.08);
+      --orange:       #FF7B00;
+      --orange-dim:   rgba(255,123,0,0.08);
+      --text-1:       #0A2540;
+      --text-2:       #425466;
+      --text-3:       #8898AA;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { overflow-x: auto; }
@@ -52,7 +53,7 @@
     }
     .header-left { display: flex; align-items: center; gap: 14px; }
     .stripe-logo {
-      width: 28px; height: 28px; background: var(--purple); border-radius: 5px;
+      width: 28px; height: 28px; background: var(--purple-dark); border-radius: 5px;
       display: flex; align-items: center; justify-content: center;
       font-size: 14px; font-weight: 800; color: white;
     }
@@ -76,11 +77,11 @@
     /* ── BLUF ── */
     .bluf {
       background: var(--surface); border: 1px solid var(--border);
-      border-left: 3px solid var(--red); border-radius: 0 6px 6px 0; padding: 16px 20px;
+      border-left: 3px solid var(--purple); border-radius: 0 6px 6px 0; padding: 16px 20px;
     }
     .bluf-label {
       font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
-      text-transform: uppercase; color: var(--red); margin-bottom: 6px;
+      text-transform: uppercase; color: var(--purple); margin-bottom: 6px;
     }
     .bluf p { font-size: 12.5px; line-height: 1.75; color: var(--text-2); }
     .bluf strong { color: var(--text-1); }
@@ -144,9 +145,9 @@
     .legend-list { display: flex; flex-direction: column; justify-content: center; gap: 14px; }
     .legend-item { display: flex; align-items: flex-start; gap: 10px; }
     .legend-dot { width: 10px; height: 10px; min-width: 10px; border-radius: 2px; margin-top: 2px; }
-    .ld-w1  { background: rgba(99,91,255,0.6); }
-    .ld-w2  { background: rgba(223,27,65,0.6); }
-    .ld-48h { background: rgba(196,77,0,0.7); border-radius: 50%; }
+    .ld-w1  { background: rgba(48,185,128,0.8); }
+    .ld-w2  { background: rgba(99,91,255,0.8); }
+    .ld-48h { background: rgba(255,123,0,0.85); border-radius: 50%; }
     .legend-text { font-size: 11px; color: var(--text-2); line-height: 1.5; }
     .legend-text strong { color: var(--text-1); display: block; font-size: 12px; }
 
@@ -155,9 +156,10 @@
     .tbl { width: 100%; border-collapse: collapse; min-width: 760px; }
     .tbl th {
       font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
-      color: var(--text-3); text-align: left; padding: 0 10px 10px 0;
-      border-bottom: 1px solid var(--border);
+      color: rgba(255,255,255,0.85); text-align: left; padding: 8px 10px 8px 0;
+      background: var(--purple-dark); border-bottom: none;
     }
+    .tbl th:first-child { padding-left: 10px; }
     .tbl th.c { text-align: center; }
     .tbl td {
       padding: 9px 10px 9px 0; font-size: 12px; color: var(--text-2);
@@ -215,7 +217,7 @@
     .footer { padding: 14px 0 32px; font-size: 11px; color: var(--text-3); border-top: 1px solid var(--border); margin-top: 20px; }
     .footer-inner { max-width: 1360px; margin: 0 auto; padding: 0 28px; }
 
-    canvas { max-height: 260px; }
+    canvas { max-height: 360px; }
   </style>
 </head>
 <body>
@@ -341,37 +343,29 @@
  </div>
 </div>
 
-<!-- 5. W1 vs W2 COMPARATIVES -->
+<!-- 5. COMPARATIVES -->
 <div class="section">
  <div class="page">
-  <div class="card">
-    <div class="card-title">Week-over-Week — Last 48h · Current Week (Mar 16–22) · Last Week (Mar 9–15)</div>
-    <div class="chart-wrap">
-      <canvas id="wowChart"></canvas>
-      <div class="legend-list">
-        <div class="legend-item">
-          <div class="legend-dot ld-48h"></div>
-          <div class="legend-text">
-            <strong>Last 48h (normalized)</strong>
-            42 messages · +86% above daily avg · EOQ surge accelerating. 48h values scaled ×3.5 to compare against weekly totals.
-          </div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot ld-w2"></div>
-          <div class="legend-text">
-            <strong>Current Week (CW) — Mar 16–22</strong>
-            79 total (+22% vs LW). Below-floor flags tripled. DC save failures up 71%. Product/geo gaps doubled. Gong and access issues declining.
-          </div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot ld-w1"></div>
-          <div class="legend-text">
-            <strong>Last Week (LW) — Mar 9–15</strong>
-            65 total messages. DC errors and Contract/IronClad issues dominant. Premium support auto-attach bug first appeared (behrang, Mar 11).
-          </div>
-        </div>
+  <div style="display:grid; grid-template-columns: 3fr 2fr; gap:16px; min-width:0;">
+
+    <div class="card" style="min-width:0;">
+      <div class="card-title">Volume by Category — Week over Week</div>
+      <div style="position:relative; height:300px;">
+        <canvas id="wowChart"></canvas>
       </div>
     </div>
+
+    <div class="card" style="min-width:0; border-top: 2px solid var(--orange);">
+      <div class="card-title">Last 48h — Live Pulse</div>
+      <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:12px;">
+        <span style="font-size:22px; font-weight:700; color:var(--text-1);">42</span>
+        <span style="font-size:11px; color:var(--orange); font-weight:600;">+86% above daily avg</span>
+      </div>
+      <div style="position:relative; height:248px;">
+        <canvas id="pulseChart"></canvas>
+      </div>
+    </div>
+
   </div>
  </div>
 </div>
@@ -487,15 +481,15 @@
           <td colspan="8" style="padding: 10px 0 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-3); border-bottom: 1px solid var(--border); border-top: 2px solid var(--border);">Stratus — #stratus-support</td>
         </tr>
         <tr>
-          <td class="label">Stratus Product / Geo Gaps</td>
+          <td class="label">Product / Coverage Gaps</td>
           <td class="c">1</td><td class="c">4</td><td class="c">5</td>
-          <td class="c t-flat">↓ -20%</td>
+          <td class="c t-down">↓ -20%</td>
           <td><span class="badge b-high">High</span></td>
           <td>Ongoing · FC missing</td>
           <td><a class="sl" href="https://stripe.slack.com/archives/C0AEUHR9UC8" target="_blank"># stratus</a></td>
         </tr>
         <tr>
-          <td class="label">Stratus Access / Provisioning</td>
+          <td class="label">Access / Provisioning</td>
           <td class="c">—</td><td class="c">3</td><td class="c">5</td>
           <td class="c t-down">↓ -40%</td>
           <td><span class="badge b-med">Medium</span></td>
@@ -503,7 +497,7 @@
           <td><a class="sl" href="https://stripe.slack.com/archives/C0AEUHR9UC8" target="_blank"># stratus</a></td>
         </tr>
         <tr>
-          <td class="label">Stratus Save / Calc Bugs</td>
+          <td class="label">Save / Calc Bugs</td>
           <td class="c">—</td><td class="c">1</td><td class="c">3</td>
           <td class="c t-down">↓ -67%</td>
           <td><span class="badge b-med">Medium</span></td>
@@ -516,7 +510,7 @@
  </div>
 </div>
 
-<!-- 7. ACTIONS + WATCHLIST -->
+<!-- 8. ACTIONS + WATCHLIST -->
 <div class="section last">
  <div class="page">
   <div class="two-col">
@@ -573,6 +567,59 @@
     </div>
 
   </div>
+
+  <!-- Stratus Spotlight -->
+  <div class="card" style="margin-top:16px; border-left: 3px solid var(--purple-dark);">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+      <div style="background:var(--purple-dark); color:white; font-size:10px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; padding:3px 10px; border-radius:3px;">Stratus Spotlight</div>
+      <div style="font-size:11px; color:var(--text-3);">New product · 20 msgs this period · <a href="https://stripe.slack.com/archives/C0AEUHR9UC8" target="_blank">#stratus-support</a></div>
+    </div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+
+      <div>
+        <div style="font-size:10px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; color:var(--text-3); margin-bottom:8px;">Signal — CW vs LW</div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+            <span style="color:var(--text-1); font-weight:500;">Product / Coverage Gaps</span>
+            <span style="color:var(--green); font-weight:700;">4 → 5 &nbsp;<span style="font-weight:400; color:var(--text-3);">CW→LW</span></span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+            <span style="color:var(--text-1); font-weight:500;">Access / Provisioning</span>
+            <span style="color:var(--green); font-weight:700;">3 → 5 &nbsp;<span style="font-weight:400; color:var(--text-3);">CW→LW</span></span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+            <span style="color:var(--text-1); font-weight:500;">Save / Calc Bugs</span>
+            <span style="color:var(--green); font-weight:700;">1 → 3 &nbsp;<span style="font-weight:400; color:var(--text-3);">CW→LW</span></span>
+          </div>
+          <div style="margin-top:6px; padding-top:8px; border-top:1px solid var(--border-2); font-size:11px; color:var(--text-2); line-height:1.6;">
+            Volume improving WoW — adoption is early but <strong style="color:var(--text-1);">product coverage gaps are the primary blocker</strong> slowing reps from using Stratus for active deals.
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:10px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; color:var(--text-3); margin-bottom:8px;">Coverage Gaps — 7 Products Missing</div>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          <span style="font-size:11px; background:var(--red-dim); color:var(--red); border:1px solid rgba(220,38,38,0.2); padding:2px 9px; border-radius:20px; font-weight:600;">Financial Connections</span>
+          <span style="font-size:11px; background:var(--red-dim); color:var(--red); border:1px solid rgba(220,38,38,0.2); padding:2px 9px; border-radius:20px; font-weight:600;">Connect SMR</span>
+          <span style="font-size:11px; background:var(--red-dim); color:var(--red); border:1px solid rgba(220,38,38,0.2); padding:2px 9px; border-radius:20px; font-weight:600;">Terminal</span>
+          <span style="font-size:11px; background:var(--orange-dim); color:var(--orange); border:1px solid rgba(234,93,42,0.2); padding:2px 9px; border-radius:20px; font-weight:600;">Direct Payments</span>
+          <span style="font-size:11px; background:var(--orange-dim); color:var(--orange); border:1px solid rgba(234,93,42,0.2); padding:2px 9px; border-radius:20px; font-weight:600;">Girocard</span>
+          <span style="font-size:11px; background:var(--orange-dim); color:var(--orange); border:1px solid rgba(234,93,42,0.2); padding:2px 9px; border-radius:20px; font-weight:600;">Klarna HK</span>
+          <span style="font-size:11px; background:var(--yellow-dim); color:var(--yellow); border:1px solid rgba(217,119,6,0.2); padding:2px 9px; border-radius:20px; font-weight:600;">DC Feature Parity</span>
+        </div>
+        <div style="margin-top:10px; font-size:11px; color:var(--text-3); line-height:1.6;">
+          <strong style="color:var(--text-2);">Red</strong> = recurring both weeks &nbsp;·&nbsp; <strong style="color:var(--text-2);">Orange</strong> = single week &nbsp;·&nbsp; <strong style="color:var(--text-2);">Yellow</strong> = parity gap
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="margin-top: 12px; font-size: 11px; color: var(--text-3);">
+    Questions or improvements? <a href="https://stripe.slack.com/team/navin" target="_blank" style="color: var(--text-3);">@navin</a>
+  </div>
+
  </div>
 </div>
 
@@ -592,34 +639,61 @@
   const font = { family: "-apple-system, 'Inter', sans-serif", size: 11 };
   const tip  = { backgroundColor:'#FFFFFF', borderColor:'#E3E8EE', borderWidth:1, titleColor:'#0A2540', bodyColor:'#425466', padding:10 };
 
+  const f13 = { family: "-apple-system,'Inter',sans-serif", size: 12 };
+
+  // WoW — CW vs LW, pastel purple + teal
   new Chart(document.getElementById('wowChart'), {
     type: 'bar',
     data: {
-      labels: ['DC Save','Below-Floor','Product/Geo','SFDC/Opp','Contract','Prem. Support','Access','Gong','Link IBP'],
+      labels: ['Gong','Access','Link IBP','Contract','Prem. Support','SFDC / Opp','DC Save','Product / Geo','Below-Floor'],
       datasets: [
-        { label: 'Last 48h (×3.5)',
-          data: [28, 10.5, 21, 17.5, 3.5, 0, 7, 3.5, 3.5],
-          backgroundColor: 'rgba(196,77,0,0.25)', borderColor: 'rgba(196,77,0,0.7)',
-          borderWidth: 1, borderRadius: 3 },
         { label: 'Current Week (Mar 16–22)',
-          data: [24, 8, 10, 16, 7, 3, 5, 4, 2],
-          backgroundColor: 'rgba(223,27,65,0.2)', borderColor: 'rgba(223,27,65,0.6)',
-          borderWidth: 1, borderRadius: 3 },
+          data: [4, 5, 2, 7, 3, 16, 24, 10, 8],
+          backgroundColor: 'rgba(99,91,255,0.3)', borderColor: 'transparent',
+          borderWidth: 0, borderRadius: 4 },
         { label: 'Last Week (Mar 9–15)',
-          data: [14, 3, 5, 10, 10, 4, 8, 8, 3],
-          backgroundColor: 'rgba(99,91,255,0.2)', borderColor: 'rgba(99,91,255,0.6)',
-          borderWidth: 1, borderRadius: 3 }
+          data: [8, 8, 3, 10, 4, 10, 14, 5, 3],
+          backgroundColor: 'rgba(0,163,196,0.35)', borderColor: 'transparent',
+          borderWidth: 0, borderRadius: 4 }
       ]
     },
     options: {
-      responsive: true, maintainAspectRatio: true,
+      responsive: true, maintainAspectRatio: false,
+      barPercentage: 0.65, categoryPercentage: 0.75,
       plugins: {
-        legend: { labels: { color: tick, font, boxWidth: 10, padding: 14 } },
+        legend: { labels: { color: '#0A2540', font: { ...f13, weight: '500' }, boxWidth: 12, padding: 18 } },
         tooltip: tip
       },
       scales: {
-        x: { ticks: { color: tick, font, maxRotation: 30 }, grid: { color: grid } },
-        y: { ticks: { color: tick, font }, grid: { color: grid }, beginAtZero: true }
+        x: { ticks: { color: tick, font: f13, padding: 4 }, grid: { color: grid } },
+        y: { ticks: { color: tick, font: f13, padding: 4 }, grid: { color: grid }, beginAtZero: true }
+      }
+    }
+  });
+
+  // 48h pulse — raw counts, orange
+  new Chart(document.getElementById('pulseChart'), {
+    type: 'bar',
+    data: {
+      labels: ['DC Save','Product/Geo','SFDC/Opp','Below-Floor','Access','Tier Calc','Contract','Gong','Link IBP'],
+      datasets: [
+        { label: 'Last 48h',
+          data: [8, 6, 5, 4, 2, 2, 1, 1, 1],
+          backgroundColor: 'rgba(255,123,0,0.3)', borderColor: 'transparent',
+          borderWidth: 0, borderRadius: 4 }
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      barPercentage: 0.6, categoryPercentage: 0.8,
+      plugins: {
+        legend: { display: false },
+        tooltip: tip
+      },
+      scales: {
+        x: { ticks: { color: tick, font: f13 }, grid: { color: grid }, beginAtZero: true },
+        y: { ticks: { color: tick, font: f13 }, grid: { color: 'transparent' } }
       }
     }
   });
