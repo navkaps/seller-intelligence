@@ -312,26 +312,26 @@
 
   <!-- Comparative bar chart -->
   <div class="card">
-    <div class="card-title">Week-over-Week Comparatives — Wk 1 · Wk 2 · Last 48h</div>
+    <div class="card-title">Comparatives — Last 48h · Wk 1 · Wk 2</div>
     <div id="cmpBars"></div>
   </div>
 
   <!-- WoW Chart -->
   <div class="card">
-    <div class="card-title">Volume Trend — Wk 1 vs Wk 2 vs 48h Run Rate</div>
+    <div class="card-title">Volume Trend — Last 48h · Wk 1 · Wk 2</div>
     <canvas id="wowChart"></canvas>
   </div>
 
   <!-- Issue table -->
   <div class="card full">
-    <div class="card-title">Full Issue Breakdown — Wk 1 · Wk 2 · 48h · Severity · Trend</div>
+    <div class="card-title">Full Issue Breakdown — Last 48h · Wk 1 · Wk 2 · Severity · Trend</div>
     <table class="tbl">
       <thead>
         <tr>
           <th style="width:22%">Category</th>
+          <th class="r">48h</th>
           <th class="r">Wk 1</th>
           <th class="r">Wk 2</th>
-          <th class="r">48h</th>
           <th class="r">WoW Δ</th>
           <th>Severity</th>
           <th>Status</th>
@@ -341,7 +341,7 @@
       <tbody>
         <tr>
           <td class="label">DC Save / "Error: undefined"</td>
-          <td class="center">14</td><td class="center">24</td><td class="center">5</td>
+          <td class="center">5</td><td class="center">14</td><td class="center">24</td>
           <td class="center t-up">↑↑ +71%</td>
           <td><span class="badge b-critical">Critical</span></td>
           <td>Active · EOQ blocker</td>
@@ -349,7 +349,7 @@
         </tr>
         <tr>
           <td class="label">Below-Floor False Flags</td>
-          <td class="center">3</td><td class="center">8</td><td class="center">4</td>
+          <td class="center">4</td><td class="center">3</td><td class="center">8</td>
           <td class="center t-up">↑↑↑ +167%</td>
           <td><span class="badge b-critical">Critical</span></td>
           <td>Spreading · 9 products</td>
@@ -357,7 +357,7 @@
         </tr>
         <tr>
           <td class="label">Premium Support Auto-Attach</td>
-          <td class="center">4</td><td class="center">3</td><td class="center">—</td>
+          <td class="center">—</td><td class="center">4</td><td class="center">3</td>
           <td class="center t-new">↔ Wk 2 unfixed</td>
           <td><span class="badge b-critical">Critical</span></td>
           <td>Unfixed since Mar 11</td>
@@ -365,7 +365,7 @@
         </tr>
         <tr>
           <td class="label">Product / Geo Gaps</td>
-          <td class="center">5</td><td class="center">10</td><td class="center">5</td>
+          <td class="center">5</td><td class="center">5</td><td class="center">10</td>
           <td class="center t-up">↑↑ +100%</td>
           <td><span class="badge b-high">High</span></td>
           <td>EOQ surge · 48h spike</td>
@@ -373,7 +373,7 @@
         </tr>
         <tr>
           <td class="label">SFDC / Opp Management</td>
-          <td class="center">10</td><td class="center">16</td><td class="center">4</td>
+          <td class="center">4</td><td class="center">10</td><td class="center">16</td>
           <td class="center t-up">↑ +60%</td>
           <td><span class="badge b-high">High</span></td>
           <td>Active · EOQ pressure</td>
@@ -381,7 +381,7 @@
         </tr>
         <tr>
           <td class="label">Contract / IronClad / DocuSign</td>
-          <td class="center">10</td><td class="center">7</td><td class="center">3</td>
+          <td class="center">3</td><td class="center">10</td><td class="center">7</td>
           <td class="center t-down">↓ -30%</td>
           <td><span class="badge b-high">High</span></td>
           <td>Improving but 48h uptick</td>
@@ -389,7 +389,7 @@
         </tr>
         <tr>
           <td class="label">Dispute Prevention (NEW)</td>
-          <td class="center">—</td><td class="center">—</td><td class="center">1</td>
+          <td class="center">1</td><td class="center">—</td><td class="center">—</td>
           <td class="center t-new">↑ New</td>
           <td><span class="badge b-high">High</span></td>
           <td>Structural gap · no DC support</td>
@@ -397,7 +397,7 @@
         </tr>
         <tr>
           <td class="label">Access / Provisioning</td>
-          <td class="center">8</td><td class="center">5</td><td class="center">1</td>
+          <td class="center">1</td><td class="center">8</td><td class="center">5</td>
           <td class="center t-down">↓ -38%</td>
           <td><span class="badge b-medium">Medium</span></td>
           <td>Improving</td>
@@ -405,7 +405,7 @@
         </tr>
         <tr>
           <td class="label">Link IBP / Adaptive Pricing</td>
-          <td class="center">3</td><td class="center">2</td><td class="center">1</td>
+          <td class="center">1</td><td class="center">3</td><td class="center">2</td>
           <td class="center t-down">↓ -33%</td>
           <td><span class="badge b-high">High</span></td>
           <td>Partial · abandons persist</td>
@@ -413,7 +413,7 @@
         </tr>
         <tr>
           <td class="label">Gong Access / Sync</td>
-          <td class="center">8</td><td class="center">4</td><td class="center">1</td>
+          <td class="center">1</td><td class="center">8</td><td class="center">4</td>
           <td class="center t-down">↓ -50%</td>
           <td><span class="badge b-low">Low</span></td>
           <td>Declining</td>
@@ -504,13 +504,13 @@
   ];
 
   const container = document.getElementById('cmpBars');
-  // Legend
+  // Legend — ordered 48h, W1, W2
   const legend = document.createElement('div');
   legend.style.cssText = 'display:flex;gap:16px;margin-bottom:12px;font-size:10px;color:#8898AA;';
   legend.innerHTML = `
+    <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:8px;background:rgba(196,77,0,0.7);border-radius:2px;display:inline-block;"></span> Last 48h</span>
     <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:8px;background:rgba(99,91,255,0.45);border-radius:2px;display:inline-block;"></span> Wk 1</span>
     <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:8px;background:rgba(223,27,65,0.55);border-radius:2px;display:inline-block;"></span> Wk 2</span>
-    <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:8px;background:rgba(196,77,0,0.7);border-radius:2px;display:inline-block;"></span> Last 48h</span>
   `;
   container.appendChild(legend);
 
@@ -526,6 +526,11 @@
       <div class="cmp-label">${d.label}</div>
       <div class="cmp-bars">
         <div class="cmp-bar-row">
+          <div class="cmp-bar-label">48h</div>
+          <div class="cmp-bar-wrap"><div class="cmp-bar-fill bar-48h" style="width:${Math.round(d.h48/d.max*100)}%"></div></div>
+          <div class="cmp-num">${d.h48}</div>
+        </div>
+        <div class="cmp-bar-row">
           <div class="cmp-bar-label">W1</div>
           <div class="cmp-bar-wrap"><div class="cmp-bar-fill bar-w1" style="width:${Math.round(d.w1/d.max*100)}%"></div></div>
           <div class="cmp-num">${d.w1}</div>
@@ -535,31 +540,24 @@
           <div class="cmp-bar-wrap"><div class="cmp-bar-fill bar-w2" style="width:${Math.round(d.w2/d.max*100)}%"></div></div>
           <div class="cmp-num">${d.w2}</div>
         </div>
-        <div class="cmp-bar-row">
-          <div class="cmp-bar-label">48h</div>
-          <div class="cmp-bar-wrap"><div class="cmp-bar-fill bar-48h" style="width:${Math.round(d.h48/d.max*100)}%"></div></div>
-          <div class="cmp-num">${d.h48}</div>
-        </div>
       </div>
       <div class="cmp-delta ${cls}">${sym}</div>
     `;
     container.appendChild(row);
   });
 
-  // ── WoW Chart ──
+  // ── WoW Chart — ordered: 48h, W1, W2 ──
   new Chart(document.getElementById('wowChart'), {
     type: 'bar',
     data: {
       labels: ['DC Save','Below-Floor','Product/Geo','SFDC/Opp','Contract','Access','Gong','Link IBP'],
       datasets: [
-        { label: 'Week 1', data: [14,3,5,10,10,8,8,3],
-          backgroundColor:'rgba(99,91,255,0.3)', borderColor:'rgba(99,91,255,0.7)', borderWidth:1, borderRadius:3 },
-        { label: 'Week 2', data: [24,8,10,16,7,5,4,2],
-          backgroundColor:'rgba(223,27,65,0.3)', borderColor:'rgba(223,27,65,0.7)', borderWidth:1, borderRadius:3 },
-        { label: 'Last 48h (×3.5 to normalize)', data: [17.5,14,17.5,14,10.5,3.5,3.5,3.5],
-          type: 'line', borderColor:'rgba(196,77,0,0.8)', backgroundColor:'transparent',
-          borderWidth:2, pointBackgroundColor:'rgba(196,77,0,0.8)', pointRadius:4,
-          borderDash:[4,3], fill:false, tension:0.3 }
+        { label: 'Last 48h (×3.5 normalized)', data: [17.5,14,17.5,14,10.5,3.5,3.5,3.5],
+          backgroundColor:'rgba(196,77,0,0.35)', borderColor:'rgba(196,77,0,0.8)', borderWidth:1, borderRadius:3 },
+        { label: 'Week 1 (Mar 9–15)', data: [14,3,5,10,10,8,8,3],
+          backgroundColor:'rgba(99,91,255,0.25)', borderColor:'rgba(99,91,255,0.6)', borderWidth:1, borderRadius:3 },
+        { label: 'Week 2 (Mar 16–22)', data: [24,8,10,16,7,5,4,2],
+          backgroundColor:'rgba(223,27,65,0.25)', borderColor:'rgba(223,27,65,0.6)', borderWidth:1, borderRadius:3 }
       ]
     },
     options: {
@@ -567,10 +565,8 @@
       plugins: {
         legend:{ labels:{ color:tick, font, boxWidth:10, padding:12 }},
         tooltip:{ ...tip, callbacks:{
-          afterBody: (items) => {
-            if (items[2]) return ['(48h value ×3.5 to normalize to weekly)'];
-            return [];
-          }
+          afterTitle: () => [''],
+          footer: (items) => ['48h value multiplied ×3.5 to normalize to weekly scale']
         }}
       },
       scales: {
