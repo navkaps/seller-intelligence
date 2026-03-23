@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seller Systems Support Intelligence</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    /* ── Stripe design tokens ── */
+    :root {
+      --bg:         #F6F9FC;
+      --surface:    #FFFFFF;
+      --surface-2:  #F6F9FC;
+      --border:     #E3E8EE;
+      --border-2:   #F0F4F8;
+      --purple:     #635BFF;
+      --purple-dim: rgba(99,91,255,0.08);
+      --cyan:       #0078D4;
+      --cyan-dim:   rgba(0,120,212,0.08);
+      --green:      #0E8A5F;
+      --green-dim:  rgba(14,138,95,0.08);
+      --yellow:     #C27A00;
+      --yellow-dim: rgba(194,122,0,0.08);
+      --red:        #DF1B41;
+      --red-dim:    rgba(223,27,65,0.08);
+      --orange:     #C44D00;
+      --orange-dim: rgba(196,77,0,0.08);
+      --text-1:     #0A2540;
+      --text-2:     #425466;
+      --text-3:     #8898AA;
+      --gold:       #c9a96e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text-2);
+      min-height: 100vh;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    a { color: var(--purple); text-decoration: none; }
+    a:hover { text-decoration: underline; opacity: 0.85; }
+
+    /* ── Header ── */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .stripe-logo {
+      width: 32px; height: 32px;
+      background: var(--purple);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 800; color: white; letter-spacing: -1px;
+    }
+    .header-title h1 { font-size: 16px; font-weight: 600; color: var(--text-1); letter-spacing: -0.2px; }
+    .header-title p  { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .run-badge {
+      background: var(--purple-dim);
+      border: 1px solid rgba(99,91,255,0.3);
+      padding: 5px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: 600; color: var(--purple);
+    }
+    .channel-link {
+      font-size: 11px; color: var(--text-3);
+      background: var(--border);
+      border: 1px solid var(--border);
+      padding: 5px 10px; border-radius: 4px;
+    }
+    .channel-link a { color: var(--text-2); }
+
+    /* ── BLUF ── */
+    .bluf-wrap { padding: 20px 40px 0; }
+    .bluf {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--yellow);
+      border-radius: 0 6px 6px 0;
+      padding: 16px 20px;
+    }
+    .bluf-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; color: var(--yellow); margin-bottom: 7px;
+    }
+    .bluf p { font-size: 12.5px; line-height: 1.7; color: var(--text-2); }
+    .bluf strong { color: var(--text-1); }
+
+    /* ── KPIs ── */
+    .kpi-row {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 1px; margin: 20px 40px 0;
+      background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+    }
+    .kpi { background: var(--surface); padding: 16px 18px; }
+    .kpi-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.7px;
+      text-transform: uppercase; color: var(--text-3); margin-bottom: 8px;
+    }
+    .kpi-value { font-size: 26px; font-weight: 700; color: var(--text-1); line-height: 1; }
+    .kpi-sub { font-size: 11px; margin-top: 5px; }
+    .up     { color: var(--red); }
+    .down   { color: var(--green); }
+    .warn   { color: var(--yellow); }
+    .purple { color: var(--purple); }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; margin: 16px 40px 0;
+    }
+    .full { grid-column: 1 / -1; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px; padding: 20px 22px;
+    }
+    .card-title {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
+      text-transform: uppercase; color: var(--text-3); margin-bottom: 16px;
+    }
+
+    /* ── Issue table ── */
+    .tbl { width: 100%; border-collapse: collapse; }
+    .tbl th {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
+      text-transform: uppercase; color: var(--text-3);
+      text-align: left; padding: 0 8px 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .tbl th.r { text-align: center; }
+    .tbl td {
+      padding: 9px 8px 9px 0; font-size: 12px;
+      color: var(--text-2); border-bottom: 1px solid var(--border-2);
+      vertical-align: middle;
+    }
+    .tbl tr:last-child td { border-bottom: none; }
+    .tbl td.label { color: var(--text-1); font-weight: 500; }
+    .tbl td.center { text-align: center; }
+    .tbl td.rc { text-align: left; color: var(--text-3); font-size: 11px; }
+
+    .badge {
+      display: inline-block; padding: 2px 8px; border-radius: 20px;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.2px; white-space: nowrap;
+    }
+    .b-critical { background: var(--red-dim);    color: var(--red);    border: 1px solid rgba(223,27,65,0.25); }
+    .b-high     { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(255,112,67,0.25); }
+    .b-medium   { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(232,166,0,0.25); }
+    .b-low      { background: var(--green-dim);  color: var(--green);  border: 1px solid rgba(51,214,166,0.25); }
+
+    .t-up   { color: var(--red);    font-weight: 700; }
+    .t-new  { color: var(--yellow); font-weight: 700; }
+    .t-flat { color: var(--text-3); }
+    .t-down { color: var(--green);  font-weight: 700; }
+
+    /* ── Slack pill link ── */
+    .slack-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; color: var(--purple);
+      background: var(--purple-dim); border: 1px solid rgba(99,91,255,0.25);
+      padding: 2px 7px; border-radius: 3px; white-space: nowrap;
+      text-decoration: none; font-weight: 500;
+    }
+    .slack-link:hover { background: rgba(99,91,255,0.25); text-decoration: none; }
+    .slack-icon { font-size: 9px; }
+
+    /* ── Actions ── */
+    .action { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border-2); align-items: flex-start; }
+    .action:last-child { border-bottom: none; }
+    .action-n {
+      width: 20px; height: 20px; min-width: 20px;
+      background: var(--purple-dim); border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: var(--purple);
+    }
+    .action-body { font-size: 12px; color: var(--text-2); }
+    .action-body strong { color: var(--text-1); }
+    .action-owner { font-size: 10px; color: var(--text-3); margin-top: 3px; }
+
+    /* ── Watchlist ── */
+    .watch-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border-2); }
+    .watch-item:last-child { border-bottom: none; }
+    .dot { width: 6px; height: 6px; min-width: 6px; border-radius: 50%; margin-top: 5px; }
+    .dot-r { background: var(--red); }
+    .dot-o { background: var(--orange); }
+    .dot-y { background: var(--yellow); }
+    .watch-text { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+
+    /* ── Footer ── */
+    .footer {
+      margin: 16px 40px 36px;
+      font-size: 11px; color: var(--text-3);
+      padding-top: 14px; border-top: 1px solid var(--border);
+    }
+
+    canvas { max-height: 240px; }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<div class="header">
+  <div class="header-left">
+    <div class="stripe-logo">S</div>
+    <div class="header-title">
+      <h1>Seller Systems Support Intelligence</h1>
+      <p>Support analysis · Mar 8–22, 2026 · Week 1 vs Week 2</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="channel-link">
+      <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank">#seller-systems-support ↗</a>
+    </div>
+    <div class="channel-link">
+      <a href="https://stripe.slack.com/archives/C09E79ZK3PS" target="_blank">#gtm-seller-systems-cpr ↗</a>
+    </div>
+    <div class="run-badge">Run: March 22, 2026</div>
+  </div>
+</div>
+
+<!-- ── BLUF ── -->
+<div class="bluf-wrap">
+  <div class="bluf">
+    <div class="bluf-label">BLUF</div>
+    <p>
+      <strong>Deal Composer has multiple active bugs blocking EOQ closes</strong> — save failures, false below-floor flags, and a confirmed ONR defect on Link IBP all need engineering triage this week.
+      Most urgently: <strong>Enterprise and Premium support is auto-attaching without seller intent</strong>, creating live contract accuracy risk on deals heading to signature right now.
+      <strong>Adaptive Pricing abandons have doubled since December</strong> (107 → 208) and are the primary reason Objective 3 is running ~3pp below target — invisible in case data, only surfacing in CPR metrics.
+      Three actions before end of week: (1) audit all opps from the last 3 weeks for unintended support tiers,
+      (2) <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1773408072560729" target="_blank">create a JIRA for the Link IBP ONR bug confirmed by engineering</a>,
+      (3) run a floor price config audit.
+    </p>
+  </div>
+</div>
+
+<!-- ── KPIs ── -->
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="kpi-label">Total Messages (Wk 2)</div>
+    <div class="kpi-value">~100</div>
+    <div class="kpi-sub up">↑ +25% vs Wk 1</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Active Bug Categories</div>
+    <div class="kpi-value">4</div>
+    <div class="kpi-sub warn">DC Save · Floor · ONR · Support Tier</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">DC Abandons (Feb)</div>
+    <div class="kpi-value">208</div>
+    <div class="kpi-sub up">↑ +94% vs Dec (107)</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Obj 3 Completion</div>
+    <div class="kpi-value">69.4%</div>
+    <div class="kpi-sub warn">~3pp below target · +1.3% WoW</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Preventable Volume</div>
+    <div class="kpi-value">~35%</div>
+    <div class="kpi-sub down">With routing + bug fixes</div>
+  </div>
+</div>
+
+<!-- ── Charts ── -->
+<div class="grid">
+
+  <div class="card">
+    <div class="card-title">Volume by Category — Week over Week</div>
+    <canvas id="wowChart"></canvas>
+  </div>
+
+  <div class="card">
+    <div class="card-title">DC Abandonment Trend (Monthly)</div>
+    <canvas id="abandonChart"></canvas>
+  </div>
+
+  <!-- ── Issue table ── -->
+  <div class="card full">
+    <div class="card-title">Issue Breakdown — Severity · Trend · Slack Thread</div>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th style="width:22%">Category</th>
+          <th class="r">Wk 1</th>
+          <th class="r">Wk 2</th>
+          <th class="r">Trend</th>
+          <th>Severity</th>
+          <th>Status</th>
+          <th>Root Cause</th>
+          <th>Slack</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="label">DC Save / "Error: undefined"</td>
+          <td class="center">6</td><td class="center">12</td>
+          <td class="center t-up">↑↑ +100%</td>
+          <td><span class="badge b-critical">Critical</span></td>
+          <td>Active bug</td>
+          <td class="rc">Multiple trigger paths</td>
+          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"><span class="slack-icon">#</span> Channel</a></td>
+        </tr>
+        <tr>
+          <td class="label">Below-Floor False Flags</td>
+          <td class="center">7</td><td class="center">9</td>
+          <td class="center t-up">↑ +29%</td>
+          <td><span class="badge b-critical">Critical</span></td>
+          <td>Active bug</td>
+          <td class="rc">Floor config issue</td>
+          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"><span class="slack-icon">#</span> Channel</a></td>
+        </tr>
+        <tr>
+          <td class="label">Adaptive Pricing / DC Abandons</td>
+          <td class="center">—</td><td class="center">—</td>
+          <td class="center t-up">↑↑ Structural</td>
+          <td><span class="badge b-critical">Critical</span></td>
+          <td>No fix confirmed</td>
+          <td class="rc">Integration gap</td>
+          <td><a class="slack-link" href="https://stripe.slack.com/archives/C09E79ZK3PS/p1773165002973119" target="_blank"><span class="slack-icon">#</span> CPR thread</a></td>
+        </tr>
+        <tr>
+          <td class="label">Support Tier Attachment Bugs</td>
+          <td class="center">3</td><td class="center">4</td>
+          <td class="center t-new">↑ Emerging</td>
+          <td><span class="badge b-critical">Critical</span></td>
+          <td>Contract risk</td>
+          <td class="rc">Recent regression</td>
+          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4/p1773398464819719" target="_blank"><span class="slack-icon">#</span> behrang thread</a></td>
+        </tr>
+        <tr>
+          <td class="label">ONR / Calculation Errors</td>
+          <td class="center">5</td><td class="center">5</td>
+          <td class="center t-flat">→ Flat</td>
+          <td><span class="badge b-high">High</span></td>
+          <td>Confirmed defect</td>
+          <td class="rc">Link IBP confirmed broken</td>
+          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4/p1773408072560729" target="_blank"><span class="slack-icon">#</span> radhika thread</a></td>
+        </tr>
+        <tr>
+          <td class="label">Ironclad / DocuSign Issues</td>
+          <td class="center">5</td><td class="center">6</td>
+          <td class="center t-up">↑ +20%</td>
+          <td><span class="badge b-high">High</span></td>
+          <td>Persistent</td>
+          <td class="rc">Provisioning + training gaps</td>
+          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"><span class="slack-icon">#</span> Channel</a></td>
+        </tr>
+        <tr>
+          <td class="label">Missing Products / Geo Gaps</td>
+          <td class="center">5</td><td class="center">5</td>
+          <td class="center t-flat">→ Flat</td>
+          <td><span class="badge b-medium">Medium</span></td>
+          <td>Persistent</td>
+          <td class="rc">No DC readiness gate</td>
+          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"><span class="slack-icon">#</span> Channel</a></td>
+        </tr>
+        <tr>
+          <td class="label">Approval Workflow Issues</td>
+          <td class="center">4</td><td class="center">5</td>
+          <td class="center t-up">↑ +25%</td>
+          <td><span class="badge b-medium">Medium</span></td>
+          <td>Active</td>
+          <td class="rc">Logic + data quality</td>
+          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"><span class="slack-icon">#</span> Channel</a></td>
+        </tr>
+        <tr>
+          <td class="label">SFDC Permissions / Access</td>
+          <td class="center">4</td><td class="center">4</td>
+          <td class="center t-flat">→ Flat</td>
+          <td><span class="badge b-medium">Medium</span></td>
+          <td>Ongoing</td>
+          <td class="rc">Provisioning gaps</td>
+          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"><span class="slack-icon">#</span> Channel</a></td>
+        </tr>
+        <tr>
+          <td class="label">Gong Access / Setup / Sync</td>
+          <td class="center">7</td><td class="center">5</td>
+          <td class="center t-down">↓ -29%</td>
+          <td><span class="badge b-low">Low</span></td>
+          <td>Out of scope</td>
+          <td class="rc">Channel rename spillover</td>
+          <td><a class="slack-link" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"><span class="slack-icon">#</span> Channel</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Immediate actions ── -->
+  <div class="card">
+    <div class="card-title">Immediate Actions</div>
+    <div class="action">
+      <div class="action-n">1</div>
+      <div>
+        <div class="action-body"><strong>Audit support tier auto-attachment</strong> — pull all opps last 3 weeks, correct before EOQ close · <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1773398464819719" target="_blank" class="slack-link"><span class="slack-icon">#</span> behrang report</a></div>
+        <div class="action-owner">Owner: DC Eng + Deal Pricing</div>
+      </div>
+    </div>
+    <div class="action">
+      <div class="action-n">2</div>
+      <div>
+        <div class="action-body"><strong>JIRA for Link IBP ONR bug</strong> — confirmed broken by engineering, no ticket exists · <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1773408072560729" target="_blank" class="slack-link"><span class="slack-icon">#</span> radhika thread</a></div>
+        <div class="action-owner">Owner: DC Engineering</div>
+      </div>
+    </div>
+    <div class="action">
+      <div class="action-n">3</div>
+      <div>
+        <div class="action-body"><strong>Floor price config audit</strong> — 5+ product types with false flags, find shared root cause</div>
+        <div class="action-owner">Owner: DC Eng / Pricing Config</div>
+      </div>
+    </div>
+    <div class="action">
+      <div class="action-n">4</div>
+      <div>
+        <div class="action-body"><strong>Fix clone → LPM deletion</strong> — reproduce and fix, unblock chrismortimer</div>
+        <div class="action-owner">Owner: DC Engineering</div>
+      </div>
+    </div>
+    <div class="action">
+      <div class="action-n">5</div>
+      <div>
+        <div class="action-body"><strong>Investigate "Error: undefined" trigger paths</strong> — pull server logs for mathias's deal IDs across both weeks</div>
+        <div class="action-owner">Owner: DC Engineering</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Watchlist ── -->
+  <div class="card">
+    <div class="card-title">Watchlist for Next Run</div>
+    <div class="watch-item"><div class="dot dot-r"></div><div class="watch-text">Support tier auto-attachment — root cause confirmed? Contracts audited before EOQ?</div></div>
+    <div class="watch-item"><div class="dot dot-r"></div><div class="watch-text">Link IBP ONR — <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1773408072560729" target="_blank">JIRA created?</a> Fix deployed?</div></div>
+    <div class="watch-item"><div class="dot dot-r"></div><div class="watch-text">Below-floor false flags — scope still widening to new products? Config audited?</div></div>
+    <div class="watch-item"><div class="dot dot-o"></div><div class="watch-text"><a href="https://stripe.slack.com/archives/C09E79ZK3PS/p1773165002973119" target="_blank">Adaptive Pricing × DC abandons</a> — AMER STUP GROW trend continuing into April?</div></div>
+    <div class="watch-item"><div class="dot dot-o"></div><div class="watch-text">EOQ spike — monitor Mar 23–28 for new failure modes under load</div></div>
+    <div class="watch-item"><div class="dot dot-y"></div><div class="watch-text">LeanData apex concurrency — isolated or recurring under EOQ load?</div></div>
+    <div class="watch-item"><div class="dot dot-y"></div><div class="watch-text">#gtm-experience-ask — channel not found, verify correct name for next run</div></div>
+  </div>
+
+</div>
+
+<!-- ── Footer ── -->
+<div class="footer">
+  ~180 messages analyzed · <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank">#seller-systems-support</a> (Mar 8–22) ·
+  <a href="https://stripe.slack.com/archives/C09E79ZK3PS" target="_blank">#gtm-seller-systems-cpr</a> (Mar 1–22) ·
+  #gtm-experience-ask not accessible · Inferences explicitly labeled in full report
+</div>
+
+<script>
+  const grid  = '#E3E8EE';
+  const tick  = '#8898AA';
+  const font  = { family: "-apple-system, 'Inter', sans-serif", size: 11 };
+  const tip   = { backgroundColor:'#FFFFFF', borderColor:'#E3E8EE', borderWidth:1, titleColor:'#0A2540', bodyColor:'#425466', padding:10 };
+
+  // WoW Bar Chart
+  new Chart(document.getElementById('wowChart'), {
+    type: 'bar',
+    data: {
+      labels: ['DC Save Errors','Below-Floor','Support Tier Bugs','Ironclad/DocuSign','Opp Lifecycle','Missing Products','ONR Errors','Approvals','SFDC Access','Gong'],
+      datasets: [
+        { label: 'Week 1', data: [6,7,3,5,5,5,5,4,4,7],
+          backgroundColor: 'rgba(99,91,255,0.25)', borderColor: 'rgba(99,91,255,0.6)', borderWidth:1, borderRadius:3 },
+        { label: 'Week 2', data: [12,9,4,6,6,5,5,5,4,5],
+          backgroundColor: 'rgba(0,212,255,0.3)', borderColor: 'rgba(0,212,255,0.7)', borderWidth:1, borderRadius:3 }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:true,
+      plugins: { legend:{ labels:{ color:tick, font, boxWidth:10, padding:14 }}, tooltip:tip },
+      scales: {
+        x: { ticks:{ color:tick, font, maxRotation:35 }, grid:{ color:grid }},
+        y: { ticks:{ color:tick, font }, grid:{ color:grid }, beginAtZero:true }
+      }
+    }
+  });
+
+  // Abandonment Line Chart
+  new Chart(document.getElementById('abandonChart'), {
+    type: 'line',
+    data: {
+      labels: ['Aug','Sep','Oct','Nov','Dec','Jan','Feb'],
+      datasets: [
+        { label: 'DC Abandons', data:[80,85,90,100,107,160,208],
+          borderColor:'#DF1B41', backgroundColor:'rgba(223,27,65,0.08)',
+          borderWidth:2, pointBackgroundColor:'#DF1B41', pointRadius:4, fill:true, tension:0.35 },
+        { label: 'Dec baseline', data:[null,null,null,null,107,107,107],
+          borderColor:'rgba(79,86,107,0.5)', borderDash:[5,5], borderWidth:1, pointRadius:0, fill:false }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:true,
+      plugins: { legend:{ labels:{ color:tick, font, boxWidth:10, padding:14 }}, tooltip:tip },
+      scales: {
+        x: { ticks:{ color:tick, font }, grid:{ color:grid }},
+        y: { ticks:{ color:tick, font }, grid:{ color:grid }, min:60 }
+      }
+    }
+  });
+</script>
+</body>
+</html>
