@@ -20,10 +20,11 @@ Then say: **"run the seller systems support report"**
 4. Produces:
    - Updated `index.html` (this dashboard)
    - New dated section appended to the Google Doc
-5. Commits and pushes to GitHub
+5. Commits and pushes to Stripe internal GitHub (Pages auto-publishes)
 
 ## Output files
 - `index.html` — the dashboard (opens in browser)
+- Live at: https://pages.stripe.me/navin/seller-intelligence/
 
 ## Google Doc
 https://docs.google.com/document/d/1Q0TNM5St2dotb4rQ-jHA80EhqKKmeKVk-g0ASn_Bp8g
@@ -32,3 +33,7 @@ https://docs.google.com/document/d/1Q0TNM5St2dotb4rQ-jHA80EhqKKmeKVk-g0ASn_Bp8g
 - `#seller-systems-support` (C05FDARJBA4)
 - `#gtm-seller-systems-cpr` (C09E79ZK3PS)
 - `#stratus-support` (C0AEUHR9UC8)
+
+## Repos
+- Stripe internal (primary): https://git.corp.stripe.com/navin/seller-intelligence
+- GitHub.com (mirror): https://github.com/navkaps/seller-intelligence
