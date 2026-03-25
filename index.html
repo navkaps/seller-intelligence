@@ -23,6 +23,8 @@
       --red-dim:      rgba(223,27,65,0.08);
       --orange:       #FF7B00;
       --orange-dim:   rgba(255,123,0,0.08);
+      --teal:         #0096A5;
+      --teal-dim:     rgba(0,150,165,0.08);
       --text-1:       #0A2540;
       --text-2:       #425466;
       --text-3:       #8898AA;
@@ -69,6 +71,23 @@
       padding: 4px 10px; border-radius: 4px;
     }
     .ch-link a { color: var(--text-2); }
+
+    /* ── Section nav ── */
+    .nav-bar {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 0;
+    }
+    .nav-inner {
+      max-width: 1360px; margin: 0 auto; padding: 0 28px;
+      display: flex; gap: 0; overflow-x: auto;
+    }
+    .nav-tab {
+      font-size: 11px; font-weight: 600; color: var(--text-3);
+      padding: 10px 14px; border-bottom: 2px solid transparent;
+      white-space: nowrap; cursor: pointer; text-decoration: none;
+    }
+    .nav-tab:hover { color: var(--text-1); text-decoration: none; }
+    .nav-tab.active { color: var(--purple); border-bottom-color: var(--purple); }
 
     /* ── Section spacing ── */
     .section { padding: 16px 0 0; }
@@ -213,6 +232,76 @@
     .dot-y { background: var(--yellow); }
     .watch-text { font-size: 12px; color: var(--text-2); line-height: 1.5; }
 
+    /* ── Deep Dive sections ── */
+    .deep-dive-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 18px;
+      padding-bottom: 14px; border-bottom: 1px solid var(--border-2);
+    }
+    .deep-dive-pill {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 20px; white-space: nowrap;
+    }
+    .dp-stratus { background: var(--purple-dim); color: var(--purple-dark); border: 1px solid rgba(79,70,229,0.3); }
+    .dp-approvals { background: var(--teal-dim); color: var(--teal); border: 1px solid rgba(0,150,165,0.3); }
+    .deep-dive-meta { font-size: 12px; color: var(--text-3); line-height: 1.5; }
+    .deep-dive-meta strong { color: var(--text-1); }
+    .deep-dive-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .deep-dive-col-title {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase;
+      color: var(--text-3); margin-bottom: 10px;
+    }
+    .dd-item { display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border-2); align-items: flex-start; }
+    .dd-item:last-child { border-bottom: none; }
+    .dd-count {
+      min-width: 22px; height: 22px; background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 4px; display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: var(--text-2);
+    }
+    .dd-label { font-size: 12px; color: var(--text-1); font-weight: 500; line-height: 1.4; }
+    .dd-detail { font-size: 11px; color: var(--text-3); line-height: 1.5; margin-top: 1px; }
+    .dd-quote {
+      font-size: 10.5px; color: var(--text-3); font-style: italic;
+      background: var(--surface-2); border-left: 2px solid var(--border);
+      padding: 4px 8px; margin-top: 4px; border-radius: 0 3px 3px 0;
+    }
+    .sentiment-pill {
+      display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 10px;
+      border-radius: 20px; letter-spacing: 0.5px;
+    }
+    .s-positive { background: var(--green-dim); color: var(--green); border: 1px solid rgba(48,185,128,0.3); }
+    .s-mixed    { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(194,122,0,0.3); }
+    .s-negative { background: var(--red-dim); color: var(--red); border: 1px solid rgba(223,27,65,0.3); }
+    .wow-badge {
+      display: inline-flex; align-items: center; gap: 6px; font-size: 11px;
+      font-weight: 600; padding: 4px 12px; border-radius: 6px; margin-bottom: 14px;
+    }
+    .wow-down { background: var(--green-dim); color: var(--green); border: 1px solid rgba(48,185,128,0.3); }
+    .wow-flat  { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(194,122,0,0.3); }
+    .wow-up   { background: var(--red-dim); color: var(--red); border: 1px solid rgba(223,27,65,0.25); }
+    .product-tag {
+      display: inline-block; font-size: 10.5px; padding: 2px 9px;
+      border-radius: 20px; font-weight: 600; margin: 2px;
+    }
+    .tag-r { background: var(--red-dim); color: var(--red); border: 1px solid rgba(220,38,38,0.2); }
+    .tag-o { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(234,93,42,0.2); }
+    .tag-y { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(217,119,6,0.2); }
+    .priority-list { list-style: none; }
+    .priority-list li { display: flex; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--border-2); font-size: 12px; color: var(--text-2); line-height: 1.5; }
+    .priority-list li:last-child { border-bottom: none; }
+    .priority-list .pn {
+      min-width: 18px; height: 18px; background: var(--purple-dim);
+      border-radius: 3px; display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: var(--purple); margin-top: 1px;
+    }
+    .priority-list .pn-teal {
+      min-width: 18px; height: 18px; background: var(--teal-dim);
+      border-radius: 3px; display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: var(--teal); margin-top: 1px;
+    }
+    .section-divider {
+      border: none; border-top: 2px solid var(--border); margin: 20px 0 0;
+    }
+
     /* ── Footer ── */
     .footer { padding: 14px 0 32px; font-size: 11px; color: var(--text-3); border-top: 1px solid var(--border); margin-top: 20px; }
     .footer-inner { max-width: 1360px; margin: 0 auto; padding: 0 28px; }
@@ -241,17 +330,27 @@
   </div>
 </div>
 
+<!-- NAV TABS -->
+<div class="nav-bar">
+  <div class="nav-inner">
+    <a class="nav-tab active" href="#overview">Overview</a>
+    <a class="nav-tab" href="#issues">Issue Breakdown</a>
+    <a class="nav-tab" href="#stratus">Stratus Deep Dive</a>
+    <a class="nav-tab" href="#approvals">Approvals Deep Dive</a>
+    <a class="nav-tab" href="#actions">Actions &amp; Watchlist</a>
+  </div>
+</div>
+
 <!-- 2. BLUF -->
-<div class="section">
+<div class="section" id="overview">
  <div class="page">
   <div class="bluf">
     <div class="bluf-label">BLUF — March 24, 2026</div>
     <p>
-      <strong>A confirmed SPA contract defect is the highest-priority item this week</strong> — kcatalano identified 3 executed agreements with contradictory rates generated by DC, a contract integrity bug that requires immediate audit of all deals closed since the regression began.
-      <strong>Support auto-attachment spiked +133% WoW</strong> (3 → 7 incidents), with alexschilling's deal inflating from $1.5K to $155K due to Enterprise Support being force-attached — the bug is now entering its third consecutive week unfixed.
-      <strong>Link IBP is pricing below floor</strong> and was escalated as P0 by radhika to shamila/azmin; no fix ETA is visible in channel.
-      <strong>Adaptive pricing DC abandons persist in EMEA/AMER STUP GROW</strong> (per CPR) as EOQ approaches Mar 28 — isaacanteby notes we are still seeing elevated abandon levels with a headwind against Obj 3 (currently 69.4%).
-      <strong>Stratus adoption is growing but product coverage is not keeping pace</strong> — Terminal and Financial Connections remain unavailable, a save-to-opp reset bug blocked at least one active deal, and access requests are outpacing provisioning.
+      <strong>Product/geo gaps in DC surged +120% WoW (5→11 messages)</strong> — Financial Accounts, Capital, Malaysia Connect, Japan PayPay, SaaS Billing/Sigma for Norway, and Managed Payments are all unavailable in DC, causing AEs to go unpriced or revert to manual workarounds at EOQ.
+      <strong>Approval workflow remains the most persistent pain point at 11 cases flat WoW</strong> — the dominant pattern is correct pricing triggering wrong approval levels (false L2/L3/L4), with dori's auto-approval failure after deal pricing manual override being the sharpest example.
+      <strong>Link IBP has active calculation bugs in multiple markets</strong> (salomon: ONR not triggering in HK; duni: $2.7M ONR on a deal that shouldn't be near that; dfortune: Link shows N/A in passthrough mode) — these are continuations of the P0 issue raised last week with no confirmed fix in channel.
+      <strong>Stratus issue volume dropped 73% WoW (15→4)</strong>, signaling the initial-cohort chaos is settling — but Terminal, Financial Connections, and Direct Payments remain missing, blocking the next wave of AE adoption.
     </p>
   </div>
  </div>
@@ -263,33 +362,33 @@
   <div class="kpi-row">
     <div class="kpi">
       <div class="kpi-label">W2 Total (Mar 17–23)</div>
-      <div class="kpi-value">65</div>
-      <div class="kpi-sub up">↑ +8% vs W1 (60)</div>
+      <div class="kpi-value">72</div>
+      <div class="kpi-sub warn">→ -1% vs W1 (73) · flat</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Biggest Spike</div>
-      <div class="kpi-value">+133%</div>
-      <div class="kpi-sub up">↑ Support Auto-Attach 3→7</div>
+      <div class="kpi-value">+120%</div>
+      <div class="kpi-sub up">↑ Product/Geo Gaps 5→11</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">Contract Defect Bug</div>
+      <div class="kpi-label">Approval Blocks</div>
+      <div class="kpi-value">11</div>
+      <div class="kpi-sub warn">→ Flat · 3rd consecutive week</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Link IBP Bugs</div>
       <div class="kpi-value">3</div>
-      <div class="kpi-sub up">SPAs with contradictory rates</div>
+      <div class="kpi-sub up">↑ +50% · HK, passthrough, calc</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">DC Save Failures</div>
-      <div class="kpi-value">+25%</div>
-      <div class="kpi-sub up">↑ 8→10 · EOQ pressure rising</div>
+      <div class="kpi-label">Stratus W2 Issues</div>
+      <div class="kpi-value">4</div>
+      <div class="kpi-sub down">↓ -73% vs W1 (15) · stabilizing</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Obj 3 Completion</div>
       <div class="kpi-value">69.4%</div>
-      <div class="kpi-sub warn">+1.3% WoW · still below target</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Active P0</div>
-      <div class="kpi-value">1</div>
-      <div class="kpi-sub up">Link IBP below-floor · no fix ETA</div>
+      <div class="kpi-sub warn">+1.3% WoW · adaptive pricing headwind</div>
     </div>
   </div>
  </div>
@@ -300,43 +399,43 @@
  <div class="page">
   <div class="pulse-header">
     <div class="pulse-pill">Top Issues This Week</div>
-    <div class="pulse-meta"><strong>65 messages W2</strong> · +8% WoW · EOQ (Mar 28) approaching · 3 new/escalated bugs · adaptive pricing headwind persists</div>
+    <div class="pulse-meta"><strong>72 messages W2</strong> · -1% WoW (flat) · EOQ Mar 28 approaching · Product/Geo Gaps spike · Approval loops persist</div>
   </div>
   <div class="pulse-grid">
 
     <div class="pulse-card pulse-r">
-      <div class="pulse-card-label">Critical · Contract Defect</div>
-      <div class="pulse-card-issue">SPA bug: 3 executed contracts have contradictory rates</div>
-      <div class="pulse-card-detail">kcatalano identified 3 live opportunities where DC generated SPAs containing two conflicting rate entries for the same product. Contracts may have been signed. Root cause unknown — regression or config bug.</div>
-      <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1773848910943929" target="_blank" class="pulse-card-link"># kcatalano thread</a>
+      <div class="pulse-card-label">Critical · P0 Ongoing</div>
+      <div class="pulse-card-issue">Link IBP: ONR calc broken in multiple markets</div>
+      <div class="pulse-card-detail">salomon: ONR not triggering for HK. duni: $2.7M ONR showing on a deal that shouldn't be near that. dfortune: Link appears as N/A in passthrough mode. All three are new this week — no fix confirmation in channel.</div>
+      <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank" class="pulse-card-link"># seller-systems-support</a>
     </div>
 
     <div class="pulse-card pulse-r">
-      <div class="pulse-card-label">Critical · Week 3 Unfixed</div>
-      <div class="pulse-card-issue">Support auto-attach spike: 7 incidents, $1.5K deals inflating to $155K</div>
-      <div class="pulse-card-detail">alexschilling: Enterprise Support auto-attaches, inflating $1.5K deal to $155K. nathanc, jkeeley, sdelabarrera, gpalacio, liv all blocked by same behavior. Standard support overridden or Growth Support forced on deals.</div>
-      <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1773848910943929" target="_blank" class="pulse-card-link"># alexschilling</a>
+      <div class="pulse-card-label">Critical · +120% Spike</div>
+      <div class="pulse-card-issue">Product/Geo Gaps surge: 11 products missing from DC</div>
+      <div class="pulse-card-detail">Financial Accounts (taylormcgavisk, dfortune, mbumanlag-c), Capital (melaniewong), Malaysia Connect (jamesongjx), Japan PayPay (huan), SaaS Billing/Sigma Norway (alvaroyg), Managed Payments (fessm), Faster Payout T+2 Intra-EEA (sofiatorre), Dispute Prevention ONR (maddmeier).</div>
+      <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank" class="pulse-card-link"># channel</a>
     </div>
 
     <div class="pulse-card pulse-r">
-      <div class="pulse-card-label">Critical · P0 Escalated</div>
-      <div class="pulse-card-issue">Link IBP pricing below floor — P0, no fix ETA</div>
-      <div class="pulse-card-detail">radhika escalated to shamila/azmin: Link IBP is allowing pricing below floor today. No ETA for fix visible in channel. Active deals may be pricing incorrectly.</div>
-      <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1773781734057679" target="_blank" class="pulse-card-link"># radhika</a>
+      <div class="pulse-card-label">Critical · Approval · Flat</div>
+      <div class="pulse-card-issue">Approval loop: 11 cases flat — wrong levels + auto-approval failures</div>
+      <div class="pulse-card-detail">dori: deal met all improved metrics, deal pricing applied manual override, then contract generation failed. ejdunne: GR=1.04, no below floor, still routing to L2. vaschauner: correctly priced opp can't send for approval. xtimpson: L1 approved but deal pricing requested again.</div>
+      <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank" class="pulse-card-link"># seller-systems-support</a>
     </div>
 
     <div class="pulse-card pulse-o">
-      <div class="pulse-card-label">High · Persistent · EOQ</div>
-      <div class="pulse-card-issue">Adaptive pricing DC abandons: EMEA + AMER STUP GROW</div>
-      <div class="pulse-card-detail">CPR channel: elevated DC abandons concentrated in EMEA STUP GROW (calvinmc/thaliearamouni teams) and AMER STUP GROW (amc/narh teams). Headwind against Obj 3 as EOQ approaches. isaacanteby tracking.</div>
-      <a href="https://stripe.slack.com/archives/C09E79ZK3PS/p1773165002973119" target="_blank" class="pulse-card-link"># CPR thread</a>
+      <div class="pulse-card-label">High · ONR Calc · +25%</div>
+      <div class="pulse-card-issue">ONR calculation errors up: 8→10 · duplicate, inflated, missing</div>
+      <div class="pulse-card-detail">kssanchez: duplicate line items generating double ONR. stefanietong: renewal showing $6.2M incremental ONR that should be $0. sebverreault: bucketed tiers calculating ONR on empty tier. ejdunne: Connect and Auth Boost both show $0 despite being selected.</div>
+      <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank" class="pulse-card-link"># channel</a>
     </div>
 
     <div class="pulse-card pulse-y">
-      <div class="pulse-card-label">Medium · Stratus · Growing</div>
-      <div class="pulse-card-issue">Stratus: Terminal + FC unavailable, save-to-opp reset bug</div>
-      <div class="pulse-card-detail">dyu: failed to reset opp on save — now can't save anything. timmason: Terminal not in Stratus. katiedeaney: Financial Connections not available. Multiple access provisioning requests backlogged. Adoption outpacing coverage.</div>
-      <a href="https://stripe.slack.com/archives/C0AEUHR9UC8" target="_blank" class="pulse-card-link"># stratus-support</a>
+      <div class="pulse-card-label">Medium · Adaptive Pricing · EOQ</div>
+      <div class="pulse-card-issue">DC abandons in EMEA/AMER STUP GROW — Obj 3 at 69.4%</div>
+      <div class="pulse-card-detail">CPR: elevated DC abandons still concentrated in EMEA STUP GROW (calvinmc/thaliearamouni) and AMER STUP GROW (amc/narh). isaacanteby notes +1.3% WoW improvement but headwind persists as EOQ Mar 28 approaches.</div>
+      <a href="https://stripe.slack.com/archives/C09E79ZK3PS/p1773165002973119" target="_blank" class="pulse-card-link"># CPR thread</a>
     </div>
 
   </div>
@@ -358,8 +457,8 @@
     <div class="card" style="min-width:0; border-top: 2px solid var(--orange);">
       <div class="card-title">W2 Distribution — Top Categories</div>
       <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:12px;">
-        <span style="font-size:22px; font-weight:700; color:var(--text-1);">65</span>
-        <span style="font-size:11px; color:var(--orange); font-weight:600;">+8% WoW · EOQ building</span>
+        <span style="font-size:22px; font-weight:700; color:var(--text-1);">72</span>
+        <span style="font-size:11px; color:var(--yellow); font-weight:600;">-1% WoW · flat · EOQ pressure building</span>
       </div>
       <div style="position:relative; height:248px;">
         <canvas id="pulseChart"></canvas>
@@ -371,7 +470,7 @@
 </div>
 
 <!-- 6. ISSUE TABLE -->
-<div class="section">
+<div class="section" id="issues">
  <div class="page">
   <div class="card">
     <div class="card-title">Issue Breakdown — W1 (Mar 10–16) · W2 (Mar 17–23) · WoW Δ · Severity</div>
@@ -389,51 +488,19 @@
       </thead>
       <tbody>
         <tr>
-          <td class="label">Support Auto-Attachment <span style="font-size:10px;color:var(--red);font-weight:600;">SPIKE</span></td>
-          <td class="c">3</td><td class="c">7</td>
-          <td class="c t-up">↑↑ +133%</td>
+          <td class="label">Product / Geo Gaps in DC <span style="font-size:10px;color:var(--red);font-weight:600;">SPIKE</span></td>
+          <td class="c">5</td><td class="c">11</td>
+          <td class="c t-up">↑↑ +120%</td>
           <td><span class="badge b-crit">Critical</span></td>
-          <td>Week 3 unfixed · $1.5K→$155K</td>
-          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4/p1773147016043879" target="_blank"># alexschilling</a></td>
-        </tr>
-        <tr>
-          <td class="label">Contract / IronClad <span style="font-size:10px;color:var(--red);font-weight:600;">DEFECT</span></td>
-          <td class="c">6</td><td class="c">8</td>
-          <td class="c t-up">↑ +33%</td>
-          <td><span class="badge b-crit">Critical</span></td>
-          <td>3 SPAs with dual rates · audit needed</td>
-          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4/p1773848910943929" target="_blank"># kcatalano</a></td>
-        </tr>
-        <tr>
-          <td class="label">DC Save / Clone Errors</td>
-          <td class="c">8</td><td class="c">10</td>
-          <td class="c t-up">↑ +25%</td>
-          <td><span class="badge b-crit">Critical</span></td>
-          <td>Active · EOQ blocker</td>
+          <td>Fin. Accounts, Capital, Connect MY/JP gaps</td>
           <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
         </tr>
         <tr>
-          <td class="label">Product / Geo Gaps</td>
-          <td class="c">8</td><td class="c">10</td>
-          <td class="c t-up">↑ +25%</td>
-          <td><span class="badge b-high">High</span></td>
-          <td>Brazil, Romania, Faster Payouts, Klarna</td>
-          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
-        </tr>
-        <tr>
-          <td class="label">DC ONR Calc Errors</td>
-          <td class="c">6</td><td class="c">7</td>
-          <td class="c t-up">↑ +17%</td>
-          <td><span class="badge b-high">High</span></td>
-          <td>PIV mismatch · inflated commitments</td>
-          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4/p1773852670193799" target="_blank"># jdwright</a></td>
-        </tr>
-        <tr>
-          <td class="label">ONR / Approval Issues</td>
-          <td class="c">11</td><td class="c">7</td>
-          <td class="c t-down">↓ -36%</td>
-          <td><span class="badge b-high">High</span></td>
-          <td>Improving · still volume</td>
+          <td class="label">Approval Workflow Blocks</td>
+          <td class="c">10</td><td class="c">11</td>
+          <td class="c t-flat">→ +10% · flat</td>
+          <td><span class="badge b-crit">Critical</span></td>
+          <td>Wrong level + auto-approval failures</td>
           <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
         </tr>
         <tr>
@@ -441,58 +508,90 @@
           <td class="c">2</td><td class="c">3</td>
           <td class="c t-up">↑ +50%</td>
           <td><span class="badge b-crit">Critical</span></td>
-          <td>Below-floor P0 · no fix ETA · abandons persist</td>
+          <td>HK ONR, passthrough N/A, $2.7M calc error</td>
           <td><a class="sl" href="https://stripe.slack.com/archives/C09E79ZK3PS/p1773165002973119" target="_blank"># CPR</a></td>
         </tr>
         <tr>
+          <td class="label">DC ONR Calc Errors</td>
+          <td class="c">8</td><td class="c">10</td>
+          <td class="c t-up">↑ +25%</td>
+          <td><span class="badge b-high">High</span></td>
+          <td>Duplicate ONR, bucketed tier overcount, $0 calc</td>
+          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
+        </tr>
+        <tr>
+          <td class="label">Contract / IronClad</td>
+          <td class="c">6</td><td class="c">7</td>
+          <td class="c t-up">↑ +17%</td>
+          <td><span class="badge b-high">High</span></td>
+          <td>Can't close won, internal approver blocks</td>
+          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
+        </tr>
+        <tr>
+          <td class="label">Gong / Tools Access</td>
+          <td class="c">10</td><td class="c">13</td>
+          <td class="c t-up">↑ +30%</td>
+          <td><span class="badge b-med">Medium</span></td>
+          <td>Gong login, Salesloft, Sales Navigator</td>
+          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
+        </tr>
+        <tr>
+          <td class="label">DC Save / Clone Errors</td>
+          <td class="c">8</td><td class="c">7</td>
+          <td class="c t-down">↓ -12%</td>
+          <td><span class="badge b-high">High</span></td>
+          <td>Slight improvement; still EOQ-critical</td>
+          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
+        </tr>
+        <tr>
+          <td class="label">Below Floor False Flags</td>
+          <td class="c">5</td><td class="c">4</td>
+          <td class="c t-down">↓ -20%</td>
+          <td><span class="badge b-high">High</span></td>
+          <td>keithhenry (54bps), huan, pprabhakaran</td>
+          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
+        </tr>
+        <tr>
+          <td class="label">Support Auto-Attach</td>
+          <td class="c">4</td><td class="c">2</td>
+          <td class="c t-down">↓ -50%</td>
+          <td><span class="badge b-med">Medium</span></td>
+          <td>Improving — alisona, tonchi W2</td>
+          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
+        </tr>
+        <tr>
           <td class="label">SFDC / Opp Management</td>
-          <td class="c">4</td><td class="c">4</td>
+          <td class="c">5</td><td class="c">5</td>
           <td class="c t-flat">→ Flat</td>
           <td><span class="badge b-med">Medium</span></td>
-          <td>Steady · access + data issues</td>
+          <td>Permissions, merchant ID, forecast fields</td>
           <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
         </tr>
         <tr>
-          <td class="label">Access / Provisioning</td>
-          <td class="c">7</td><td class="c">6</td>
-          <td class="c t-down">↓ -14%</td>
-          <td><span class="badge b-med">Medium</span></td>
-          <td>Slight improvement</td>
-          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
-        </tr>
-        <tr>
-          <td class="label">Gong Access / Sync</td>
-          <td class="c">7</td><td class="c">5</td>
-          <td class="c t-down">↓ -29%</td>
-          <td><span class="badge b-low">Low</span></td>
-          <td>Declining · stable</td>
-          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
-        </tr>
-        <tr>
-          <td colspan="7" style="padding: 10px 0 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-3); border-bottom: 1px solid var(--border); border-top: 2px solid var(--border);">Stratus — #stratus-support</td>
+          <td colspan="7" style="padding: 10px 0 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-3); border-bottom: 1px solid var(--border); border-top: 2px solid var(--border);">Stratus — #stratus-support · see deep dive below</td>
         </tr>
         <tr>
           <td class="label">Product / Coverage Gaps</td>
-          <td class="c">8</td><td class="c">7</td>
-          <td class="c t-flat">→ -12%</td>
+          <td class="c">7</td><td class="c">2</td>
+          <td class="c t-down">↓ -71%</td>
           <td><span class="badge b-high">High</span></td>
-          <td>Terminal, FC, SMR, Girocard still missing</td>
+          <td>Terminal, FC, Direct Payments still missing</td>
           <td><a class="sl" href="https://stripe.slack.com/archives/C0AEUHR9UC8" target="_blank"># stratus</a></td>
         </tr>
         <tr>
           <td class="label">Access / Provisioning</td>
-          <td class="c">5</td><td class="c">4</td>
-          <td class="c t-down">↓ -20%</td>
+          <td class="c">4</td><td class="c">2</td>
+          <td class="c t-down">↓ -50%</td>
           <td><span class="badge b-med">Medium</span></td>
-          <td>Demand outpacing provisioning</td>
+          <td>Stabilizing; requests still backlogged</td>
           <td><a class="sl" href="https://stripe.slack.com/archives/C0AEUHR9UC8" target="_blank"># stratus</a></td>
         </tr>
         <tr>
-          <td class="label">Save / Calc Bugs</td>
-          <td class="c">3</td><td class="c">2</td>
-          <td class="c t-down">↓ -33%</td>
-          <td><span class="badge b-med">Medium</span></td>
-          <td>Reset bug blocks save · dyu</td>
+          <td class="label">Save / Calc / UX Bugs</td>
+          <td class="c">4</td><td class="c">0</td>
+          <td class="c t-down">↓ -100%</td>
+          <td><span class="badge b-low">Low</span></td>
+          <td>Bugs from W1 may be resolved</td>
           <td><a class="sl" href="https://stripe.slack.com/archives/C0AEUHR9UC8" target="_blank"># stratus</a></td>
         </tr>
       </tbody>
@@ -501,8 +600,260 @@
  </div>
 </div>
 
-<!-- 8. ACTIONS + WATCHLIST -->
-<div class="section last">
+<!-- 7. STRATUS DEEP DIVE -->
+<div class="section" id="stratus">
+ <div class="page">
+  <div class="card" style="border-top: 3px solid var(--purple-dark);">
+
+    <div class="deep-dive-header">
+      <div class="deep-dive-pill dp-stratus">Stratus Deep Dive</div>
+      <div class="deep-dive-meta">
+        <strong>W1: 15 issues → W2: 4 issues</strong> &nbsp;·&nbsp;
+        <span class="wow-badge wow-down" style="display:inline-flex;">↓ -73% WoW · stabilizing post-launch</span>
+        &nbsp;·&nbsp; Sentiment: <span class="sentiment-pill s-mixed">Mixed</span>
+        &nbsp;·&nbsp; <a href="https://stripe.slack.com/archives/C0AEUHR9UC8" target="_blank">#stratus-support</a>
+      </div>
+    </div>
+
+    <div class="deep-dive-grid">
+
+      <!-- Left column: Bugs + Adoption Friction -->
+      <div>
+        <div class="deep-dive-col-title">Top Bugs &amp; Errors (W1 — initial cohort feedback)</div>
+
+        <div class="dd-item">
+          <div class="dd-count">4</div>
+          <div>
+            <div class="dd-label">Save-to-opp failures: reset bug + greyed-out button</div>
+            <div class="dd-detail">dyu: "failed to reset opp" — deal stuck, can't save anything. Grey save button on a fully-configured deal. Active deal blocker.</div>
+            <div class="dd-quote">"I've input all data but the save to opp button is grey, how to save it?" — dyu</div>
+          </div>
+        </div>
+
+        <div class="dd-item">
+          <div class="dd-count">3</div>
+          <div>
+            <div class="dd-label">Committed GR + AONR showing incorrect values</div>
+            <div class="dd-detail">dyu/viveky: Committed GR reading 2.5 (too high); AONR incorrect and exceeds TONR. Deal metrics untrustworthy for approval submission.</div>
+            <div class="dd-quote">"Committed GR of 2.5 seems incorrect. AONR can't be 445k — this is the original estimation before Stratus config." — viveky</div>
+          </div>
+        </div>
+
+        <div class="dd-item">
+          <div class="dd-count">3</div>
+          <div>
+            <div class="dd-label">UX bugs: FX defaults 10%, jumpy input fields, Usage Required false flags</div>
+            <div class="dd-detail">FX rate defaults to 10% (should reflect market rate). Input values get overwritten by system. "Usage Required" shown when values are present. Territory-level inputs not intuitive.</div>
+            <div class="dd-quote">"FX should not default to 10%. Input fields are sometimes jumpy — user-entered values get suddenly overwritten." — viveky</div>
+          </div>
+        </div>
+
+        <div class="dd-item">
+          <div class="dd-count">2</div>
+          <div>
+            <div class="dd-label">Approval escalation showing N/A instead of actual level</div>
+            <div class="dd-detail">Opportunity shows "N/A: Deal not yet priced" for highest escalation even after Stratus configuration complete — creates false confidence or confusion before submitting.</div>
+          </div>
+        </div>
+
+        <div class="dd-item">
+          <div class="dd-count">1</div>
+          <div>
+            <div class="dd-label">Professional Services requires Connect to be added first</div>
+            <div class="dd-detail">dyu: Paid Support + ProServ only deal — can't add professional service without also adding Connect. Unexpected dependency blocking simple deals.</div>
+            <div class="dd-quote">"I found I can't add professional service and must add connect." — dyu</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 16px;">
+          <div class="deep-dive-col-title">Adoption Friction</div>
+          <div class="dd-item"><div class="dd-count">—</div><div><div class="dd-label">Missing products block most deals mid-funnel</div><div class="dd-detail">AEs discover a product isn't in Stratus only after starting to configure — causing mid-deal reversion to DC (rwmartin, dtsiganovski, jens).</div></div></div>
+          <div class="dd-item"><div class="dd-count">—</div><div><div class="dd-label">DC/Stratus proposal conflict: can't use both for same opp</div><div class="dd-detail">williams/donnymcgrath: If you've created a Stratus proposal, you can't also create a DC proposal for the same opp — blocks rev share model transitions.</div></div></div>
+          <div class="dd-item"><div class="dd-count">—</div><div><div class="dd-label">Segment rollout incomplete — Stratus not visible in all opps</div><div class="dd-detail">dtsiganovski: "Is Stratus only available for certain segments yet?" — not visible in their opp. Creates inconsistent AE experience.</div></div></div>
+          <div class="dd-item"><div class="dd-count">—</div><div><div class="dd-label">Access provisioning backlogged</div><div class="dd-detail">kailarson, mollymitchel, epeterson, aboryszewski, rwmartin — all requesting access in W1/W2. Enterprise Platforms-West cohort still waiting.</div></div></div>
+        </div>
+      </div>
+
+      <!-- Right column: Feature Gaps + Summary -->
+      <div>
+        <div class="deep-dive-col-title">Products Missing from Stratus</div>
+        <div style="margin-bottom: 14px;">
+          <span class="product-tag tag-r">Terminal</span>
+          <span class="product-tag tag-r">Financial Connections</span>
+          <span class="product-tag tag-r">Connect SMR (Stripe Managed Risk)</span>
+          <span class="product-tag tag-o">Direct Payments</span>
+          <span class="product-tag tag-o">Girocard (German APM)</span>
+          <span class="product-tag tag-o">Professional Services (standalone)</span>
+          <span class="product-tag tag-o">CNP-only (w/o Connect)</span>
+          <span class="product-tag tag-y">DC Pricing Proposal Auto-Gen</span>
+          <span class="product-tag tag-y">Revenue Share Model</span>
+        </div>
+        <div style="font-size:10.5px; color:var(--text-3); margin-bottom:16px; line-height:1.6;">
+          <strong style="color:var(--text-2);">Red</strong> = requested both weeks &nbsp;·&nbsp; <strong style="color:var(--text-2);">Orange</strong> = requested W1 &nbsp;·&nbsp; <strong style="color:var(--text-2);">Yellow</strong> = DC feature parity gap
+        </div>
+
+        <div style="background:var(--surface-2); border: 1px solid var(--border); border-radius:6px; padding:14px 16px; margin-bottom:16px;">
+          <div class="deep-dive-col-title" style="margin-bottom:10px;">What Stratus Needs to Fix Most Urgently</div>
+          <ul class="priority-list">
+            <li><div class="pn">1</div><div><strong style="color:var(--text-1);">Fix save-to-opp reset bug</strong> — active deal blocker; dyu stuck with no save path. Isolated or systemic?</div></li>
+            <li><div class="pn">2</div><div><strong style="color:var(--text-1);">Ship Terminal &amp; Financial Connections</strong> — most-requested missing products; 2+ weeks unresolved; AEs routing back to DC.</div></li>
+            <li><div class="pn">3</div><div><strong style="color:var(--text-1);">Fix FX default (10% is wrong)</strong> — inflates cost estimates, undermines deal accuracy from first config.</div></li>
+            <li><div class="pn">4</div><div><strong style="color:var(--text-1);">Allow ProServ without forced Connect dependency</strong> — blocking simple Paid Support + ProServ deals.</div></li>
+            <li><div class="pn">5</div><div><strong style="color:var(--text-1);">Publish segment rollout timeline</strong> — AEs don't know when/if they'll get Stratus access; inconsistent visibility in opps creates confusion.</div></li>
+          </ul>
+        </div>
+
+        <div style="background:var(--purple-dim); border:1px solid rgba(99,91,255,0.2); border-radius:6px; padding:12px 14px;">
+          <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--purple-dark); margin-bottom:6px;">Sentiment Signal</div>
+          <div style="font-size:12px; color:var(--text-2); line-height:1.6;">
+            <strong style="color:var(--text-1);">Mixed.</strong> Early cohort AEs are actively trying Stratus — W1 volume was high precisely because engagement was real. W2 drop is a good signal: initial friction was addressed or AEs adapted. But coverage gaps (Terminal, FC, Girocard) are hard blockers that will suppress adoption for the next wave unless resolved before rollout expands.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+ </div>
+</div>
+
+<!-- 8. APPROVALS DEEP DIVE -->
+<div class="section" id="approvals">
+ <div class="page">
+  <div class="card" style="border-top: 3px solid var(--teal);">
+
+    <div class="deep-dive-header">
+      <div class="deep-dive-pill dp-approvals">Approvals Deep Dive</div>
+      <div class="deep-dive-meta">
+        <strong>W1: 10 issues → W2: 11 issues</strong> &nbsp;·&nbsp;
+        <span class="wow-badge wow-flat" style="display:inline-flex;">→ Flat · persistent 3rd week</span>
+        &nbsp;·&nbsp; Tool: DC (primary) · Ironclad (secondary)
+        &nbsp;·&nbsp; <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank">#seller-systems-support</a>
+      </div>
+    </div>
+
+    <div class="deep-dive-grid">
+
+      <!-- Left column: Top blockers -->
+      <div>
+        <div class="deep-dive-col-title">Top Approval Blockers (W2)</div>
+
+        <div class="dd-item">
+          <div class="dd-count">5</div>
+          <div>
+            <div class="dd-label">Submit-for-approval errors despite DC appearing saved</div>
+            <div class="dd-detail">jansaloni (×2), nchall, colintoomey, topher, guilhemrobert — system returns error telling AE to save DC, but DC is already saved. Requires support ticket to unblock.</div>
+            <div class="dd-quote">"Error message tells me to complete Deal Composer but it is already saved. Can you look ASAP so we can send contract today?" — jansaloni</div>
+          </div>
+        </div>
+
+        <div class="dd-item">
+          <div class="dd-count">4</div>
+          <div>
+            <div class="dd-label">Correct pricing triggering wrong approval level (false L2/L3/L4)</div>
+            <div class="dd-detail">ejdunne: GR=1.04, no below floor → still L2. sthempler: GR=0.69, ONR 500k–1M → stuck in L4. alexwilliams: unexpectedly requiring L3. vaschauner: correctly priced, can't send at all.</div>
+            <div class="dd-quote">"GR is 1.04, No below floor, but still going to Level 2 approval. Connect and Auth Boost coming in as $0 although chosen." — ejdunne</div>
+          </div>
+        </div>
+
+        <div class="dd-item">
+          <div class="dd-count">2</div>
+          <div>
+            <div class="dd-label">Auto-approval not firing despite meeting criteria</div>
+            <div class="dd-detail">dori: deal had committed GR 0.65 vs prior 0.64, ONR 116.1% vs 112%, BPS 0.98 vs 0.94 — all improved. Deal pricing applied manual approval override. Contract generation then failed. Clone + re-save → same issue.</div>
+            <div class="dd-quote">"I have no way forward to generate a contract and close this deal by EOM." — dori</div>
+          </div>
+        </div>
+
+        <div class="dd-item">
+          <div class="dd-count">2</div>
+          <div>
+            <div class="dd-label">Approval status reverting (Not Needed → Need to Submit)</div>
+            <div class="dd-detail">katiedeaney: opp initially marked "Not Needed" in ONR Approval Status. Now shows "Need to Submit" again despite Deal Pricing confirming approvals not needed. Bypassing the field is blocked.</div>
+          </div>
+        </div>
+
+        <div class="dd-item">
+          <div class="dd-count">2</div>
+          <div>
+            <div class="dd-label">Ironclad internal approver required but not identified</div>
+            <div class="dd-detail">aaz: GBS uploaded amendment to Ironclad; system requires "internal approver" but no guidance on who that is. Blocked from sending contract to customer.</div>
+            <div class="dd-quote">"Who is this internal approver? I'm blocked from sending the contract to the user." — aaz</div>
+          </div>
+        </div>
+
+        <div class="dd-item">
+          <div class="dd-count">1</div>
+          <div>
+            <div class="dd-label">SPA contradictory rates cycling deals back into approval</div>
+            <div class="dd-detail">kikisimonsen: Received final ONR approval email. When generating SPA in Ironclad, system shows a different negotiated ONR and routes back to approval ladder. Appears systemic — SPA is not reading from approved DC values.</div>
+            <div class="dd-quote">"Showing my ONR negotiated is different and suggesting to go again into approval ladder — seems a systematic issue." — kikisimonsen</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column: Cross-functional + Exception vs Standard + Summary -->
+      <div>
+        <div class="deep-dive-col-title">Cross-Functional Friction</div>
+        <div class="dd-item">
+          <div class="dd-count">—</div>
+          <div>
+            <div class="dd-label">Deal Pricing: manual overrides needed but don't unblock</div>
+            <div class="dd-detail">dori had deal pricing apply manual approval override — contract generation still failed afterward. xtimpson: L1 approved, but system then routed to deal pricing anyway. Manual overrides are not reliably unlocking the pipeline.</div>
+          </div>
+        </div>
+        <div class="dd-item">
+          <div class="dd-count">—</div>
+          <div>
+            <div class="dd-label">DealOps / Legal: IronClad internal approver opaque</div>
+            <div class="dd-detail">No visibility on who the required "internal approver" is for amendment workflows. AEs submitting through Jira cases with no same-day resolution.</div>
+          </div>
+        </div>
+        <div class="dd-item">
+          <div class="dd-count">—</div>
+          <div>
+            <div class="dd-label">DC Engineering: approval logic not matching documented rules</div>
+            <div class="dd-detail">GR &gt; 1.0 should not require L2 approval. GR=0.69 with ONR 500k–1M should not be L4. The delta between documented thresholds and actual behavior is a recurring source of escalations.</div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;">
+          <div class="deep-dive-col-title">Exception vs Standard Approvals</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
+            <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:12px; text-align:center;">
+              <div style="font-size:20px; font-weight:700; color:var(--text-1);">3</div>
+              <div style="font-size:10px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.5px; margin-top:3px;">Below-Floor False Flags</div>
+              <div style="font-size:10.5px; color:var(--text-3); margin-top:4px;">Routed to exception approval when not actually below floor</div>
+            </div>
+            <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:12px; text-align:center;">
+              <div style="font-size:20px; font-weight:700; color:var(--text-1);">5</div>
+              <div style="font-size:10px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.5px; margin-top:3px;">Submit Errors (valid deals)</div>
+              <div style="font-size:10.5px; color:var(--text-3); margin-top:4px;">DC says saved, approval system disagrees</div>
+            </div>
+          </div>
+          <div style="font-size:11px; color:var(--text-3); line-height:1.6;">
+            The most common pattern: deals that <em>should</em> auto-approve or approve at standard L1 are being routed through exception paths due to calculation bugs or system logic gaps — creating unnecessary DealOps and Deal Pricing load.
+          </div>
+        </div>
+
+        <div style="background:rgba(0,150,165,0.06); border:1px solid rgba(0,150,165,0.2); border-radius:6px; padding:12px 14px; margin-top:14px;">
+          <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--teal); margin-bottom:8px;">What's Slowing the Approval Workflow</div>
+          <ul class="priority-list">
+            <li><div class="pn-teal">1</div><div><strong style="color:var(--text-1);">Submit-for-approval validation errors</strong> — DC saves not being recognized by approval system. Requires manual support intervention on every incident.</div></li>
+            <li><div class="pn-teal">2</div><div><strong style="color:var(--text-1);">Wrong approval level thresholds</strong> — GR &gt; 1.0 routing to L2; below-floor false positives routing to exception paths. Rules not matching documented logic.</div></li>
+            <li><div class="pn-teal">3</div><div><strong style="color:var(--text-1);">Auto-approval logic not firing</strong> — even after Deal Pricing manual override, contract generation fails. No clear fallback path for AE.</div></li>
+            <li><div class="pn-teal">4</div><div><strong style="color:var(--text-1);">SPA reads different values than approved DC</strong> — kikisimonsen deal re-looped after Ironclad generated SPA with different ONR than approved. SPA ↔ DC data consistency issue.</div></li>
+            <li><div class="pn-teal">5</div><div><strong style="color:var(--text-1);">Ironclad internal approver opaque</strong> — AEs blocked at contract stage with no guidance on who the required approver is or how to escalate.</div></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+ </div>
+</div>
+
+<!-- 9. ACTIONS + WATCHLIST -->
+<div class="section last" id="actions">
  <div class="page">
   <div class="two-col">
 
@@ -511,100 +862,52 @@
       <div class="action">
         <div class="action-n">1</div>
         <div>
-          <div class="action-body"><strong>Audit all SPAs generated since SPA contradictory-rates bug began</strong> — kcatalano confirmed 3 live examples. Find the regression date and pull all agreements generated since then for review. Legal/Deal Pricing need to know immediately. · <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1773848910943929" target="_blank" class="sl"># kcatalano</a></div>
-          <div class="action-owner">DC Engineering + Deal Pricing + Legal — Today</div>
+          <div class="action-body"><strong>Fix Link IBP ONR calculation bugs across HK, passthrough, and calc modes</strong> — salomon (HK not triggering), duni ($2.7M incorrect), dfortune (Link shows N/A in passthrough). P0 from last week still unresolved. Get fix ETA in #seller-systems-support today.</div>
+          <div class="action-owner">DC/Pricing Engineering — Today</div>
         </div>
       </div>
       <div class="action">
         <div class="action-n">2</div>
         <div>
-          <div class="action-body"><strong>Fix support auto-attachment — week 3 unfixed, entering contract risk territory</strong> — 7 incidents this week, deals inflating from $1.5K to $155K. alexschilling, nathanc, jkeeley, sdelabarrera, gpalacio, liv all blocked. Audit opps where wrong support tier may have been executed. · <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1773147016043879" target="_blank" class="sl"># alexschilling</a></div>
-          <div class="action-owner">DC Engineering + Deal Pricing — Today</div>
+          <div class="action-body"><strong>Triage Product/Geo Gaps +120% spike</strong> — Financial Accounts, Capital, Malaysia Connect, Japan PayPay, SaaS Billing/Sigma Norway, Managed Payments all missing. Separate which are DC config gaps vs product decisions. Communicate ETA or workaround for each.</div>
+          <div class="action-owner">DC Product + GTM Systems — This week</div>
         </div>
       </div>
       <div class="action">
         <div class="action-n">3</div>
         <div>
-          <div class="action-body"><strong>Link IBP below-floor P0 — get fix ETA in channel</strong> — radhika escalated to shamila/azmin. No public fix ETA. Active deals may be submitting incorrect pricing. · <a href="https://stripe.slack.com/archives/C05FDARJBA4/p1773781734057679" target="_blank" class="sl"># radhika</a></div>
-          <div class="action-owner">Pricing Config / DC Engineering — Today</div>
+          <div class="action-body"><strong>Fix approval level threshold logic</strong> — ejdunne (GR=1.04 → L2), sthempler (GR=0.69 → L4), vaschauner (correctly priced, can't submit). These are repeat offenders. Document actual vs expected thresholds and identify the regression point.</div>
+          <div class="action-owner">DC Engineering + Deal Pricing — This week</div>
         </div>
       </div>
       <div class="action">
         <div class="action-n">4</div>
         <div>
-          <div class="action-body"><strong>Manually unblock EOQ DC save errors</strong> — 10 incidents in W2 with EOQ Mar 28 this week. Triage olle, agoullet, llloret, gbruno, samuelfuchs — all blocked on closes.</div>
-          <div class="action-owner">DC Support — This week</div>
+          <div class="action-body"><strong>Fix auto-approval logic for dori-type scenario</strong> — deal metrics all improved, manual override applied by deal pricing, contract generation still failed. This is an unacceptable blocker 3 days before EOQ. Triage and unblock manually, then fix root cause.</div>
+          <div class="action-owner">DC Engineering — Today (EOQ critical)</div>
         </div>
       </div>
       <div class="action">
         <div class="action-n">5</div>
         <div>
-          <div class="action-body"><strong>Publish Stratus Terminal + Financial Connections ETA</strong> — highest-ask products missing for 2+ weeks. Reps are routing back to DC or going unblocked. timmason, katiedeaney, shafrir flagged in channel.</div>
-          <div class="action-owner">Stratus Product — This week</div>
+          <div class="action-body"><strong>Stratus: Fix FX default + save-to-opp reset bug</strong> — FX defaulting to 10% undermines every deal from first config. Save reset bug blocked dyu's active deal. Both have been in channel for 1+ week with no fix confirmation.</div>
+          <div class="action-owner">Stratus Engineering — This week</div>
         </div>
       </div>
     </div>
 
     <div class="card">
       <div class="card-title">Watchlist — Next Run</div>
-      <div class="watch"><div class="dot dot-r"></div><div class="watch-text"><strong>SPA contradictory rates defect</strong> — audit scope confirmed? How many contracts affected? Root cause identified?</div></div>
-      <div class="watch"><div class="dot dot-r"></div><div class="watch-text"><strong>Support auto-attachment</strong> — entering week 3. Any opps closed with wrong support tier billed? Fix committed?</div></div>
-      <div class="watch"><div class="dot dot-r"></div><div class="watch-text"><strong>Link IBP P0</strong> — fix shipped? ETA communicated? Deals submitted with wrong pricing need review.</div></div>
-      <div class="watch"><div class="dot dot-r"></div><div class="watch-text"><strong>EOQ Mar 28 surge</strong> — DC save errors at 10 in W2. Expect further spike this week. Support capacity adequate?</div></div>
-      <div class="watch"><div class="dot dot-o"></div><div class="watch-text"><strong>Adaptive pricing abandons</strong> — EMEA/AMER STUP GROW still elevated. Obj 3 at 69.4% — will EOQ close volume or DC abandons determine the final number?</div></div>
-      <div class="watch"><div class="dot dot-o"></div><div class="watch-text"><strong>DC ONR calc inflation</strong> — jdwright seeing 127M total commitment. Root cause shared with tier calc regression from last week?</div></div>
-      <div class="watch"><div class="dot dot-y"></div><div class="watch-text"><strong>Faster Payout T+1/T+2 bug</strong> — kcatalano can't select both simultaneously. Regression or intentional change?</div></div>
-      <div class="watch"><div class="dot dot-y"></div><div class="watch-text"><strong>Stratus save-to-opp reset bug</strong> — dyu blocked. Isolated or systemic?</div></div>
+      <div class="watch"><div class="dot dot-r"></div><div class="watch-text"><strong>Link IBP P0</strong> — 3 distinct calc failures in W2. Fix shipped? HK, passthrough, $2.7M all confirmed resolved?</div></div>
+      <div class="watch"><div class="dot dot-r"></div><div class="watch-text"><strong>Product/Geo Gaps</strong> — +120% spike. Will volume hold at 11 next week or continue rising as more AEs hit missing products?</div></div>
+      <div class="watch"><div class="dot dot-r"></div><div class="watch-text"><strong>Approval workflow (11 flat)</strong> — entering 3rd consecutive week. Submit errors + wrong levels both unresolved. EOQ closes at risk.</div></div>
+      <div class="watch"><div class="dot dot-o"></div><div class="watch-text"><strong>SPA ↔ DC value mismatch</strong> — kikisimonsen deal re-looped into approval because SPA generated different ONR than approved DC. Isolated or systemic across all SPA-generating deals?</div></div>
+      <div class="watch"><div class="dot dot-o"></div><div class="watch-text"><strong>Adaptive pricing abandons + EOQ</strong> — Obj 3 at 69.4%. Mar 28 EOQ. Will the surge in closed opps (+13%) outpace the DC abandon headwind?</div></div>
+      <div class="watch"><div class="dot dot-o"></div><div class="watch-text"><strong>Stratus next-cohort rollout</strong> — W2 volume dropped to 4 msgs (stabilizing). But Terminal + FC still missing. If rollout expands before coverage improves, expect W1-level spike again.</div></div>
+      <div class="watch"><div class="dot dot-y"></div><div class="watch-text"><strong>Gong/Tools access +30%</strong> — uptick in W2. New AE onboarding wave? Or underlying provisioning issues resurfacing?</div></div>
+      <div class="watch"><div class="dot dot-y"></div><div class="watch-text"><strong>ONR calc errors +25%</strong> — duplicate ONR (kssanchez), bucketed tier overcount (sebverreault), $0 calculations. Spreading across deal types.</div></div>
     </div>
 
-  </div>
-
-  <!-- Stratus Spotlight -->
-  <div class="card" style="margin-top:16px; border-left: 3px solid var(--purple-dark);">
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
-      <div style="background:var(--purple-dark); color:white; font-size:10px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; padding:3px 10px; border-radius:3px;">Stratus Spotlight</div>
-      <div style="font-size:11px; color:var(--text-3);">~20 msgs this period · <a href="https://stripe.slack.com/archives/C0AEUHR9UC8" target="_blank">#stratus-support</a> · Adoption growing; product coverage is the primary blocker</div>
-    </div>
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
-
-      <div>
-        <div style="font-size:10px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; color:var(--text-3); margin-bottom:8px;">Signal — W1 vs W2</div>
-        <div style="display:flex; flex-direction:column; gap:6px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
-            <span style="color:var(--text-1); font-weight:500;">Product / Coverage Gaps</span>
-            <span style="color:var(--text-2); font-weight:700;">8 W1 → 7 W2 &nbsp;<span style="font-weight:400; color:var(--text-3);">slight improvement</span></span>
-          </div>
-          <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
-            <span style="color:var(--text-1); font-weight:500;">Access / Provisioning</span>
-            <span style="color:var(--text-2); font-weight:700;">5 W1 → 4 W2 &nbsp;<span style="font-weight:400; color:var(--text-3);">slight improvement</span></span>
-          </div>
-          <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
-            <span style="color:var(--text-1); font-weight:500;">Save / Calc Bugs</span>
-            <span style="color:var(--green); font-weight:700;">3 W1 → 2 W2 &nbsp;<span style="font-weight:400; color:var(--text-3);">improving</span></span>
-          </div>
-          <div style="margin-top:6px; padding-top:8px; border-top:1px solid var(--border-2); font-size:11px; color:var(--text-2); line-height:1.6;">
-            Volume slightly improving but <strong style="color:var(--text-1);">Terminal and Financial Connections are the most-requested missing products</strong> — reps are routing back to DC as a result.
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div style="font-size:10px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; color:var(--text-3); margin-bottom:8px;">Coverage Gaps — Products Missing</div>
-        <div style="display:flex; flex-wrap:wrap; gap:6px;">
-          <span style="font-size:11px; background:var(--red-dim); color:var(--red); border:1px solid rgba(220,38,38,0.2); padding:2px 9px; border-radius:20px; font-weight:600;">Terminal</span>
-          <span style="font-size:11px; background:var(--red-dim); color:var(--red); border:1px solid rgba(220,38,38,0.2); padding:2px 9px; border-radius:20px; font-weight:600;">Financial Connections</span>
-          <span style="font-size:11px; background:var(--red-dim); color:var(--red); border:1px solid rgba(220,38,38,0.2); padding:2px 9px; border-radius:20px; font-weight:600;">Connect SMR</span>
-          <span style="font-size:11px; background:var(--orange-dim); color:var(--orange); border:1px solid rgba(234,93,42,0.2); padding:2px 9px; border-radius:20px; font-weight:600;">Direct Payments</span>
-          <span style="font-size:11px; background:var(--orange-dim); color:var(--orange); border:1px solid rgba(234,93,42,0.2); padding:2px 9px; border-radius:20px; font-weight:600;">Girocard</span>
-          <span style="font-size:11px; background:var(--orange-dim); color:var(--orange); border:1px solid rgba(234,93,42,0.2); padding:2px 9px; border-radius:20px; font-weight:600;">Professional Services</span>
-          <span style="font-size:11px; background:var(--yellow-dim); color:var(--yellow); border:1px solid rgba(217,119,6,0.2); padding:2px 9px; border-radius:20px; font-weight:600;">DC Feature Parity</span>
-        </div>
-        <div style="margin-top:10px; font-size:11px; color:var(--text-3); line-height:1.6;">
-          <strong style="color:var(--text-2);">Red</strong> = recurring both weeks &nbsp;·&nbsp; <strong style="color:var(--text-2);">Orange</strong> = single week &nbsp;·&nbsp; <strong style="color:var(--text-2);">Yellow</strong> = parity gap
-        </div>
-      </div>
-
-    </div>
   </div>
 
   <div style="margin-top: 12px; font-size: 11px; color: var(--text-3);">
@@ -617,7 +920,7 @@
 <!-- Footer -->
 <div class="footer">
  <div class="footer-inner">
-  ~125 messages analyzed (Mar 10–23) ·
+  ~176 messages analyzed (Mar 10–24) ·
   <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank">#seller-systems-support</a> ·
   <a href="https://stripe.slack.com/archives/C09E79ZK3PS" target="_blank">#gtm-seller-systems-cpr</a> ·
   <a href="https://stripe.slack.com/archives/C0AEUHR9UC8" target="_blank">#stratus-support</a> ·
@@ -636,14 +939,14 @@
   new Chart(document.getElementById('wowChart'), {
     type: 'bar',
     data: {
-      labels: ['Gong','Access','SFDC','ONR/Approval','DC ONR Calc','Contract','DC Save','Product/Geo','Support Auto-Attach'],
+      labels: ['Gong/Tools','SFDC','DC Save','Support Auto-Attach','Below Floor','Contract','DC ONR Calc','Approval Blocks','Product/Geo Gaps'],
       datasets: [
         { label: 'W2 (Mar 17–23)',
-          data: [5, 6, 4, 7, 7, 8, 10, 10, 7],
+          data: [13, 5, 7, 2, 4, 7, 10, 11, 11],
           backgroundColor: 'rgba(99,91,255,0.3)', borderColor: 'transparent',
           borderWidth: 0, borderRadius: 4 },
         { label: 'W1 (Mar 10–16)',
-          data: [7, 7, 4, 11, 6, 6, 8, 8, 3],
+          data: [10, 5, 8, 4, 5, 6, 8, 10, 5],
           backgroundColor: 'rgba(0,163,196,0.35)', borderColor: 'transparent',
           borderWidth: 0, borderRadius: 4 }
       ]
@@ -666,12 +969,17 @@
   new Chart(document.getElementById('pulseChart'), {
     type: 'bar',
     data: {
-      labels: ['Support Auto-Attach','Contract/IronClad','DC Save','Product/Geo','DC ONR Calc','ONR/Approval','Access','SFDC','Gong'],
+      labels: ['Gong/Tools','Contract','DC ONR Calc','Approval Blocks','Product/Geo Gaps','DC Save','SFDC','Below Floor','Support Auto-Attach'],
       datasets: [
         { label: 'W2 Count',
-          data: [7, 8, 10, 10, 7, 7, 6, 4, 5],
-          backgroundColor: 'rgba(255,123,0,0.3)', borderColor: 'transparent',
-          borderWidth: 0, borderRadius: 4 }
+          data: [13, 7, 10, 11, 11, 7, 5, 4, 2],
+          backgroundColor: [
+            'rgba(255,123,0,0.3)','rgba(255,123,0,0.3)','rgba(223,27,65,0.25)','rgba(223,27,65,0.25)',
+            'rgba(223,27,65,0.25)','rgba(255,123,0,0.3)','rgba(255,123,0,0.3)',
+            'rgba(194,122,0,0.25)','rgba(48,185,128,0.3)'
+          ],
+          borderColor: 'transparent', borderWidth: 0, borderRadius: 4
+        }
       ]
     },
     options: {
