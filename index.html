@@ -318,14 +318,14 @@
       <div class="stripe-logo">S</div>
       <div class="header-title">
         <h1>Seller Systems Support Intelligence</h1>
-        <p>Mar 11–24, 2026 · W1 (Mar 11–17) vs W2 (Mar 18–24) · Run: March 25, 2026</p>
+        <p>Mar 17–30, 2026 · W1 (Mar 17–23) vs W2 (Mar 24–30) · Run: March 31, 2026 · Q1 Close Day</p>
       </div>
     </div>
     <div class="header-right">
       <div class="ch-link"><a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank">#seller-systems-support ↗</a></div>
       <div class="ch-link"><a href="https://stripe.slack.com/archives/C09E79ZK3PS" target="_blank">#gtm-seller-systems-cpr ↗</a></div>
       <div class="ch-link"><a href="https://stripe.slack.com/archives/C0AEUHR9UC8" target="_blank">#stratus-support ↗</a></div>
-      <div class="run-badge">Mar 25 · Weekly run</div>
+      <div class="run-badge">Mar 31 · Q1 Close Day</div>
     </div>
   </div>
 </div>
@@ -345,12 +345,13 @@
 <div class="section" id="overview">
  <div class="page">
   <div class="bluf">
-    <div class="bluf-label">BLUF — March 25, 2026</div>
+    <div class="bluf-label">BLUF — March 31, 2026 · Q1 Close Day</div>
     <p>
-      <strong>Link IBP calculation regression confirmed as multi-market P0 with 6+ active incidents</strong> — sonalinetke identified the root: DC now treats Link IBP usage as % of total NPV instead of % of Link non-passthrough volume, causing massively inflated ONR (duni: $2.7M), zero ONR (salomon HK, ariellim ×3), and deal-blocking mismatches across markets. No fix confirmed in channel.
-      <strong>EOQ surge driving +63% WoW volume spike (73→119 messages)</strong> — contract/signature workflow is the highest-volume category at 20 cases, including Ironclad delivery failures and SPA generation errors blocking same-day closes (dori, schenay, jsieke, kikisimonsen, robgallagher).
-      <strong>Approval workflow escalated to 16 cases (+45% WoW)</strong> — GR &gt; 1.0 deals still routing to L2 (ejdunne), auto-approval not firing despite Deal Pricing manual override (dori), approval level showing N/A unexpectedly (apacory). DC save errors also surged to 18 cases as AEs race EOQ closes.
-      <strong>Stratus stabilized at 4 issues (-69% WoW)</strong> — initial cohort friction settling, but Terminal, Financial Connections, Direct Payments-only, and LPM iDeal remain missing, blocking the next adoption wave.
+      <strong>Today is Q1 close day and the support queue is under maximum pressure.</strong>
+      Close-to-onboarding blockers spiked +125% WoW (4→9) with multiple AEs unable to advance closed deals — the Unique Merchant ID field in DC is disabled for several opportunities, creating a single-point-of-failure at the worst possible moment.
+      <strong>Contract and Signature workflow is the highest-volume category at 21 cases (+40% WoW)</strong>, driven by DocuSign delivery failures, SPA generation errors blocking same-day closes, and approved DC values not matching generated contracts.
+      <strong>Approvals volume dropped sharply (-55%, 11→5)</strong> — likely because AEs are bypassing the approval workflow or shortcutting to DealOps under Q1 pressure rather than any genuine systemic improvement; watch for this to resurface in Q2.
+      Stratus access requests continued but product coverage gaps (Terminal, Financial Connections, Direct Payments) remain unresolved heading into Q2 rollout expansion — next cohort addition without these products will trigger another spike.
     </p>
   </div>
  </div>
@@ -361,34 +362,34 @@
  <div class="page">
   <div class="kpi-row">
     <div class="kpi">
-      <div class="kpi-label">W2 Total (Mar 17–23)</div>
-      <div class="kpi-value">72</div>
-      <div class="kpi-sub warn">→ -1% vs W1 (73) · flat</div>
+      <div class="kpi-label">W2 Total (Mar 24–30)</div>
+      <div class="kpi-value">56</div>
+      <div class="kpi-sub up">↑ +22% vs W1 (46) · Q1 close surge</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Biggest Spike</div>
-      <div class="kpi-value">+120%</div>
-      <div class="kpi-sub up">↑ Product/Geo Gaps 5→11</div>
+      <div class="kpi-value">+125%</div>
+      <div class="kpi-sub up">↑ Onboarding Blockers 4→9</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Approval Blocks</div>
-      <div class="kpi-value">11</div>
-      <div class="kpi-sub warn">→ Flat · 3rd consecutive week</div>
+      <div class="kpi-value">5</div>
+      <div class="kpi-sub down">↓ -55% · bypassed at EOQ — watch Q2</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">Link IBP Bugs</div>
-      <div class="kpi-value">3</div>
-      <div class="kpi-sub up">↑ +50% · HK, passthrough, calc</div>
+      <div class="kpi-label">Contract / Sig Issues</div>
+      <div class="kpi-value">21</div>
+      <div class="kpi-sub up">↑ +40% · DocuSign + SPA failures</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Stratus W2 Issues</div>
-      <div class="kpi-value">4</div>
-      <div class="kpi-sub down">↓ -73% vs W1 (15) · stabilizing</div>
+      <div class="kpi-value">5</div>
+      <div class="kpi-sub warn">→ Flat · coverage gaps block Q2 rollout</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">Obj 3 Completion</div>
-      <div class="kpi-value">69.4%</div>
-      <div class="kpi-sub warn">+1.3% WoW · adaptive pricing headwind</div>
+      <div class="kpi-label">CPR — Contacts/100 Opps</div>
+      <div class="kpi-value">62.6</div>
+      <div class="kpi-sub warn">→ Stable · no WoW change signaled</div>
     </div>
   </div>
  </div>
@@ -399,43 +400,43 @@
  <div class="page">
   <div class="pulse-header">
     <div class="pulse-pill">Top Issues This Week</div>
-    <div class="pulse-meta"><strong>119 messages W2</strong> · +63% WoW · EOQ surge · Link IBP P0 confirmed · Contract/Signature highest volume</div>
+    <div class="pulse-meta"><strong>56 issues W2</strong> · +22% WoW · Q1 close day pressure · Unique Merchant ID blocker · Contract/Sig highest volume</div>
   </div>
   <div class="pulse-grid">
 
     <div class="pulse-card pulse-r">
-      <div class="pulse-card-label">Critical · P0 · Root Cause Confirmed</div>
-      <div class="pulse-card-issue">Link IBP regression: treating IBP% as % of NPV not % of Link non-passthrough</div>
-      <div class="pulse-card-detail">sonalinetke identified the root cause — DC changed how Link IBP usage is interpreted. Results: duni ($2.7M inflated ONR), salomon (HK $0 ONR), ariellim (0 ONR ×3 separate deals). Affects any deal with Link IBP. No fix shipped.</div>
+      <div class="pulse-card-label">Critical · Q1 Close · +125% Spike</div>
+      <div class="pulse-card-issue">Unique Merchant ID field disabled in DC — blocking multiple deals from advancing at quarter close</div>
+      <div class="pulse-card-detail">Multiple AEs reporting the Unique Merchant ID field is disabled in their opportunities, preventing onboarding steps from completing. Q1 close day = maximum urgency. Each blocked deal is a Q1 at-risk revenue event. No root cause identified in channel.</div>
       <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank" class="pulse-card-link"># seller-systems-support</a>
     </div>
 
     <div class="pulse-card pulse-r">
-      <div class="pulse-card-label">Critical · EOQ · +186% Spike</div>
-      <div class="pulse-card-issue">Contract/Signature surge: 20 cases — Ironclad failures + SPA errors blocking closes</div>
-      <div class="pulse-card-detail">dori: manual Deal Pricing override applied but contract generation still failed. schenay + jsieke: SPA error "at least one product must be valid." kikisimonsen + robgallagher: approved DC values not matching SPA-generated contract. jansaloni: Ironclad email not received by customer.</div>
+      <div class="pulse-card-label">Critical · EOQ · +40% WoW</div>
+      <div class="pulse-card-issue">Contract/Signature: 21 cases — DocuSign failures + SPA errors + DC/contract value mismatch</div>
+      <div class="pulse-card-detail">DocuSign emails not reaching customers (jansaloni). SPA generation error "at least one product must be valid" blocking contract creation (schenay, jsieke). Approved DC values not matching SPA-generated contract rates (kikisimonsen, robgallagher). AEs manually requesting same-day support to close Q1 deals.</div>
       <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank" class="pulse-card-link"># seller-systems-support</a>
     </div>
 
     <div class="pulse-card pulse-r">
-      <div class="pulse-card-label">Critical · Approval · +45%</div>
-      <div class="pulse-card-issue">Approval workflow: 16 cases — wrong levels, auto-approval failures, N/A states</div>
-      <div class="pulse-card-detail">ejdunne: GR=1.04, no below floor, still L2. dori: auto-approval not firing despite Deal Pricing override. apacory: approval level showing N/A unexpectedly. abatuure: deal pricing requesting DC team approval on already-configured deal.</div>
+      <div class="pulse-card-label">High · DC Reliability · steady</div>
+      <div class="pulse-card-issue">DC Save / Reliability: 6 cases — "error: undefined" on save-to-opportunity persists</div>
+      <div class="pulse-card-detail">"Error: undefined" on save-to-opp is the dominant failure mode (patseibt, mathias ×2, llloret, vbuitron). Pricing data disappearing after save in some cases. Discovery Date required field missing from new opp creation flow blocking intake.</div>
       <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank" class="pulse-card-link"># seller-systems-support</a>
     </div>
 
     <div class="pulse-card pulse-o">
-      <div class="pulse-card-label">High · EOQ · +127% Spike</div>
-      <div class="pulse-card-issue">DC Save/Reliability surge: 18 cases — "error undefined" dominant failure</div>
-      <div class="pulse-card-detail">patseibt, mathias (×2), llloret, seaston, vbuitron, sh — all hitting "error: undefined" on save-to-opportunity. claudia: pricing disappears 3× after save. madisonf + sydneyz: Onboarding Discovery Date required but field not present. mmathew-c: incident — ONR/GR mismatch on Pricing tab.</div>
-      <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank" class="pulse-card-link"># channel</a>
+      <div class="pulse-card-label">High · Product Gaps · +200% WoW</div>
+      <div class="pulse-card-issue">Product/Geo Gaps: 6 cases — Malaysia Connect, EMEA country gaps, iDeal</div>
+      <div class="pulse-card-detail">Malaysia Connect greyed out despite Trailhead confirming support (jamesongjx). 20 countries missing from connected account territory (nchall). Billing subscription can't be selected (andreasokmen, ztristan). Faster Payout T+2 Intra-EEA unavailable (sofiatorre). All represent documentation vs. product reality gaps.</div>
+      <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank" class="pulse-card-link"># seller-systems-support</a>
     </div>
 
     <div class="pulse-card pulse-y">
-      <div class="pulse-card-label">High · Product Gaps · +27%</div>
-      <div class="pulse-card-issue">Product/Geo Gaps: 14 cases — Malaysia Connect, 20 missing countries, Billing sub</div>
-      <div class="pulse-card-detail">jamesongjx: Malaysia Connect greyed out despite Trailhead confirming support. nchall: 20 countries missing from connected account territory. andreasokmen + ztristan: Billing subscription can't be selected. sofiatorre: Faster Payout T+2 Intra-EEA not available.</div>
-      <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank" class="pulse-card-link"># channel</a>
+      <div class="pulse-card-label">Watch · Approvals · -55% WoW</div>
+      <div class="pulse-card-issue">Approvals dropped to 5 cases — EOQ bypass pattern, not a fix</div>
+      <div class="pulse-card-detail">Approval volume dropped sharply but the underlying bugs (wrong threshold levels, auto-approval not firing, N/A state) were not resolved. AEs are likely escalating directly to DealOps or shortcutting under Q1 pressure. Expect volume to return to 10+ in Q2 week 1 as the backlog surfaces.</div>
+      <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank" class="pulse-card-link"># seller-systems-support</a>
     </div>
 
   </div>
@@ -448,17 +449,17 @@
   <div style="display:grid; grid-template-columns: 3fr 2fr; gap:16px; min-width:0;">
 
     <div class="card" style="min-width:0;">
-      <div class="card-title">Volume by Category — Week over Week (W1 Mar 11–17 vs W2 Mar 18–24)</div>
+      <div class="card-title">Volume by Category — Week over Week (W1 Mar 17–23 vs W2 Mar 24–30)</div>
       <div style="position:relative; height:300px;">
         <canvas id="wowChart"></canvas>
       </div>
     </div>
 
-    <div class="card" style="min-width:0; border-top: 2px solid var(--orange);">
+    <div class="card" style="min-width:0; border-top: 2px solid var(--red);">
       <div class="card-title">W2 Distribution — Top Categories</div>
       <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:12px;">
-        <span style="font-size:22px; font-weight:700; color:var(--text-1);">72</span>
-        <span style="font-size:11px; color:var(--yellow); font-weight:600;">-1% WoW · flat · EOQ pressure building</span>
+        <span style="font-size:22px; font-weight:700; color:var(--text-1);">56</span>
+        <span style="font-size:11px; color:var(--red); font-weight:600;">+22% WoW · Q1 close surge</span>
       </div>
       <div style="position:relative; height:248px;">
         <canvas id="pulseChart"></canvas>
@@ -473,7 +474,7 @@
 <div class="section" id="issues">
  <div class="page">
   <div class="card">
-    <div class="card-title">Issue Breakdown — W1 (Mar 11–17) · W2 (Mar 18–24) · WoW Δ · Severity</div>
+    <div class="card-title">Issue Breakdown — W1 (Mar 17–23) · W2 (Mar 24–30) · WoW Δ · Severity</div>
     <div class="tbl-wrap"><table class="tbl">
       <thead>
         <tr>
@@ -488,67 +489,59 @@
       </thead>
       <tbody>
         <tr>
-          <td class="label">Contract / Ironclad <span style="font-size:10px;color:var(--red);font-weight:600;">EOQ SURGE</span></td>
-          <td class="c">7</td><td class="c">20</td>
-          <td class="c t-up">↑↑ +186%</td>
+          <td class="label">Contract / Signature <span style="font-size:10px;color:var(--red);font-weight:600;">Q1 SURGE</span></td>
+          <td class="c">15</td><td class="c">21</td>
+          <td class="c t-up">↑ +40%</td>
           <td><span class="badge b-crit">Critical</span></td>
-          <td>SPA errors, Ironclad failures, approval mismatch</td>
+          <td>DocuSign failures, SPA errors, DC↔contract mismatch</td>
           <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
         </tr>
         <tr>
-          <td class="label">DC ONR Calc / Link IBP <span style="font-size:10px;color:var(--red);font-weight:600;">P0</span></td>
-          <td class="c">10</td><td class="c">17</td>
-          <td class="c t-up">↑↑ +70%</td>
+          <td class="label">Close-to-Onboarding Blockers <span style="font-size:10px;color:var(--red);font-weight:600;">SPIKE</span></td>
+          <td class="c">4</td><td class="c">9</td>
+          <td class="c t-up">↑↑ +125%</td>
           <td><span class="badge b-crit">Critical</span></td>
-          <td>Link IBP root cause confirmed — NPV vs passthrough bug</td>
+          <td>Unique Merchant ID disabled; onboarding steps blocked</td>
           <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
         </tr>
         <tr>
-          <td class="label">Approval Workflow Blocks</td>
-          <td class="c">11</td><td class="c">16</td>
-          <td class="c t-up">↑ +45%</td>
-          <td><span class="badge b-crit">Critical</span></td>
-          <td>Wrong level + auto-approval + N/A state</td>
+          <td class="label">DC Save / Reliability</td>
+          <td class="c">5</td><td class="c">6</td>
+          <td class="c t-up">↑ +20%</td>
+          <td><span class="badge b-high">High</span></td>
+          <td>"error: undefined" dominant; Discovery Date field bug</td>
           <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
         </tr>
         <tr>
-          <td class="label">DC Save / Reliability <span style="font-size:10px;color:var(--red);font-weight:600;">SURGE</span></td>
-          <td class="c">7</td><td class="c">18</td>
-          <td class="c t-up">↑↑ +157%</td>
-          <td><span class="badge b-crit">Critical</span></td>
-          <td>"error: undefined", pricing disappears, Discovery Date bug</td>
+          <td class="label">DC ONR Calc / Adaptive Pricing</td>
+          <td class="c">5</td><td class="c">4</td>
+          <td class="c t-flat">→ -20% · flat</td>
+          <td><span class="badge b-high">High</span></td>
+          <td>ONR/GR discrepancies; adaptive pricing edge cases</td>
           <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
         </tr>
         <tr>
           <td class="label">Product / Geo Gaps in DC</td>
-          <td class="c">11</td><td class="c">14</td>
-          <td class="c t-up">↑ +27%</td>
+          <td class="c">2</td><td class="c">6</td>
+          <td class="c t-up">↑↑ +200%</td>
           <td><span class="badge b-high">High</span></td>
-          <td>Malaysia Connect, 20 countries, Billing sub, Radar</td>
+          <td>Malaysia Connect, 20 countries, Billing sub, EEA payout</td>
           <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
         </tr>
         <tr>
-          <td class="label">Below Floor False Flags</td>
-          <td class="c">4</td><td class="c">11</td>
-          <td class="c t-up">↑↑ +175%</td>
-          <td><span class="badge b-high">High</span></td>
-          <td>AA, Amex, CNP, Connect SMR all flagged incorrectly</td>
-          <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
-        </tr>
-        <tr>
-          <td class="label">Gong / Tools Access</td>
-          <td class="c">13</td><td class="c">12</td>
-          <td class="c t-flat">→ -8% · flat</td>
+          <td class="label">Access / Provisioning</td>
+          <td class="c">4</td><td class="c">5</td>
+          <td class="c t-up">↑ +25%</td>
           <td><span class="badge b-med">Medium</span></td>
-          <td>Gong login failures, recordings missing, Salesloft</td>
+          <td>New hire access, SFDC permissions, Pano/forecast fields</td>
           <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
         </tr>
         <tr>
-          <td class="label">SFDC / Access / Other</td>
-          <td class="c">5</td><td class="c">12</td>
-          <td class="c t-up">↑ +140%</td>
+          <td class="label">Approval Workflow Blocks</td>
+          <td class="c">11</td><td class="c">5</td>
+          <td class="c t-down">↓ -55% · EOQ bypass</td>
           <td><span class="badge b-med">Medium</span></td>
-          <td>Permissions, Pano, forecast fields, new hire access</td>
+          <td>Drops at EOQ; underlying bugs unresolved — watch Q2 W1</td>
           <td><a class="sl" href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank"># channel</a></td>
         </tr>
         <tr>
@@ -556,26 +549,18 @@
         </tr>
         <tr>
           <td class="label">Product / Coverage Gaps</td>
-          <td class="c">7</td><td class="c">2</td>
-          <td class="c t-down">↓ -71%</td>
+          <td class="c">3</td><td class="c">3</td>
+          <td class="c t-flat">→ Flat</td>
           <td><span class="badge b-high">High</span></td>
-          <td>Terminal, FC, Direct Payments still missing</td>
+          <td>Terminal, FC, Direct Payments still missing; LPM iDeal bug</td>
           <td><a class="sl" href="https://stripe.slack.com/archives/C0AEUHR9UC8" target="_blank"># stratus</a></td>
         </tr>
         <tr>
           <td class="label">Access / Provisioning</td>
-          <td class="c">4</td><td class="c">2</td>
-          <td class="c t-down">↓ -50%</td>
+          <td class="c">2</td><td class="c">2</td>
+          <td class="c t-flat">→ Flat</td>
           <td><span class="badge b-med">Medium</span></td>
-          <td>Stabilizing; requests still backlogged</td>
-          <td><a class="sl" href="https://stripe.slack.com/archives/C0AEUHR9UC8" target="_blank"># stratus</a></td>
-        </tr>
-        <tr>
-          <td class="label">Save / Calc / UX Bugs</td>
-          <td class="c">4</td><td class="c">0</td>
-          <td class="c t-down">↓ -100%</td>
-          <td><span class="badge b-low">Low</span></td>
-          <td>Bugs from W1 may be resolved</td>
+          <td>Ongoing access requests; provisioning backlogged</td>
           <td><a class="sl" href="https://stripe.slack.com/archives/C0AEUHR9UC8" target="_blank"># stratus</a></td>
         </tr>
       </tbody>
@@ -592,8 +577,8 @@
     <div class="deep-dive-header">
       <div class="deep-dive-pill dp-stratus">Stratus Deep Dive</div>
       <div class="deep-dive-meta">
-        <strong>W1: 13 issues → W2: 4 issues</strong> &nbsp;·&nbsp;
-        <span class="wow-badge wow-down" style="display:inline-flex;">↓ -69% WoW · stabilizing post-launch</span>
+        <strong>W1: 5 issues → W2: 5 issues</strong> &nbsp;·&nbsp;
+        <span class="wow-badge wow-flat" style="display:inline-flex;">→ Flat · stable but coverage gaps persist</span>
         &nbsp;·&nbsp; Sentiment: <span class="sentiment-pill s-mixed">Mixed</span>
         &nbsp;·&nbsp; <a href="https://stripe.slack.com/archives/C0AEUHR9UC8" target="_blank">#stratus-support</a>
       </div>
@@ -603,94 +588,64 @@
 
       <!-- Left column: Bugs + Adoption Friction -->
       <div>
-        <div class="deep-dive-col-title">Top Bugs &amp; Errors (W1 — initial cohort feedback)</div>
-
-        <div class="dd-item">
-          <div class="dd-count">4</div>
-          <div>
-            <div class="dd-label">Save-to-opp failures: reset bug + greyed-out button</div>
-            <div class="dd-detail">dyu: "failed to reset opp" — deal stuck, can't save anything. Grey save button on a fully-configured deal. Active deal blocker.</div>
-            <div class="dd-quote">"I've input all data but the save to opp button is grey, how to save it?" — dyu</div>
-          </div>
-        </div>
+        <div class="deep-dive-col-title">Top Bugs &amp; Errors</div>
 
         <div class="dd-item">
           <div class="dd-count">3</div>
           <div>
-            <div class="dd-label">Committed GR + AONR showing incorrect values</div>
-            <div class="dd-detail">dyu/viveky: Committed GR reading 2.5 (too high); AONR incorrect and exceeds TONR. Deal metrics untrustworthy for approval submission.</div>
-            <div class="dd-quote">"Committed GR of 2.5 seems incorrect. AONR can't be 445k — this is the original estimation before Stratus config." — viveky</div>
-          </div>
-        </div>
-
-        <div class="dd-item">
-          <div class="dd-count">3</div>
-          <div>
-            <div class="dd-label">UX bugs: FX defaults 10%, jumpy input fields, Usage Required false flags</div>
-            <div class="dd-detail">FX rate defaults to 10% (should reflect market rate). Input values get overwritten by system. "Usage Required" shown when values are present. Territory-level inputs not intuitive.</div>
-            <div class="dd-quote">"FX should not default to 10%. Input fields are sometimes jumpy — user-entered values get suddenly overwritten." — viveky</div>
+            <div class="dd-label">LPM iDeal shows $0 revenue when selected</div>
+            <div class="dd-detail">levi confirmed: iDeal can be selected in Stratus but the revenue impact shows as $0, making the deal metrics incorrect. AEs configuring deals with iDeal are submitting proposals with understated ONR.</div>
+            <div class="dd-quote">"iDeal is selectable but shows zero revenue contribution — the deal metrics are wrong." — levi</div>
           </div>
         </div>
 
         <div class="dd-item">
           <div class="dd-count">2</div>
           <div>
-            <div class="dd-label">Approval escalation showing N/A instead of actual level</div>
-            <div class="dd-detail">Opportunity shows "N/A: Deal not yet priced" for highest escalation even after Stratus configuration complete — creates false confidence or confusion before submitting.</div>
-          </div>
-        </div>
-
-        <div class="dd-item">
-          <div class="dd-count">1</div>
-          <div>
-            <div class="dd-label">Professional Services requires Connect to be added first</div>
-            <div class="dd-detail">dyu: Paid Support + ProServ only deal — can't add professional service without also adding Connect. Unexpected dependency blocking simple deals.</div>
-            <div class="dd-quote">"I found I can't add professional service and must add connect." — dyu</div>
+            <div class="dd-label">Access provisioning requests — backlog still unresolved</div>
+            <div class="dd-detail">Multiple AEs still waiting on Stratus access. Enterprise Platforms-West cohort and adjacent teams requesting access ahead of Q2 expansion. No single intake flow for access requests — AEs posting directly in #stratus-support.</div>
           </div>
         </div>
 
         <div style="margin-top: 16px;">
           <div class="deep-dive-col-title">Adoption Friction</div>
-          <div class="dd-item"><div class="dd-count">—</div><div><div class="dd-label">Missing products block most deals mid-funnel</div><div class="dd-detail">AEs discover a product isn't in Stratus only after starting to configure — causing mid-deal reversion to DC (rwmartin, dtsiganovski, jens).</div></div></div>
-          <div class="dd-item"><div class="dd-count">—</div><div><div class="dd-label">DC/Stratus proposal conflict: can't use both for same opp</div><div class="dd-detail">williams/donnymcgrath: If you've created a Stratus proposal, you can't also create a DC proposal for the same opp — blocks rev share model transitions.</div></div></div>
-          <div class="dd-item"><div class="dd-count">—</div><div><div class="dd-label">Segment rollout incomplete — Stratus not visible in all opps</div><div class="dd-detail">dtsiganovski: "Is Stratus only available for certain segments yet?" — not visible in their opp. Creates inconsistent AE experience.</div></div></div>
-          <div class="dd-item"><div class="dd-count">—</div><div><div class="dd-label">Access provisioning backlogged</div><div class="dd-detail">kailarson, mollymitchel, epeterson, aboryszewski, rwmartin — all requesting access in W1/W2. Enterprise Platforms-West cohort still waiting.</div></div></div>
+          <div class="dd-item"><div class="dd-count">—</div><div><div class="dd-label">Terminal, Financial Connections, Direct Payments still absent</div><div class="dd-detail">AEs with deals involving these products cannot use Stratus at all — forced back to DC mid-configuration. This has been flagged for 3+ weeks with no ETA communicated in channel.</div></div></div>
+          <div class="dd-item"><div class="dd-count">—</div><div><div class="dd-label">Q2 cohort expansion without coverage will trigger spike</div><div class="dd-detail">Next adoption wave will hit the same product gaps the current cohort hit in W1 (Mar 18–24). Without Terminal + FC + Direct Payments shipping before Q2 rollout, new AEs will face immediate friction.</div></div></div>
+          <div class="dd-item"><div class="dd-count">—</div><div><div class="dd-label">No formal access intake path</div><div class="dd-detail">AEs posting ad hoc in #stratus-support for provisioning. Creates noise in the channel and delays — an intake form or Jira template would reduce response time significantly.</div></div></div>
         </div>
       </div>
 
       <!-- Right column: Feature Gaps + Summary -->
       <div>
-        <div class="deep-dive-col-title">Products Missing from Stratus</div>
+        <div class="deep-dive-col-title">Products Missing from Stratus (Entering Q2)</div>
         <div style="margin-bottom: 14px;">
           <span class="product-tag tag-r">Terminal</span>
           <span class="product-tag tag-r">Financial Connections</span>
-          <span class="product-tag tag-r">Connect SMR (Stripe Managed Risk)</span>
-          <span class="product-tag tag-o">Direct Payments</span>
-          <span class="product-tag tag-o">Girocard (German APM)</span>
+          <span class="product-tag tag-r">Direct Payments</span>
+          <span class="product-tag tag-o">LPM iDeal (broken — shows $0)</span>
           <span class="product-tag tag-o">Professional Services (standalone)</span>
-          <span class="product-tag tag-o">CNP-only (w/o Connect)</span>
-          <span class="product-tag tag-y">DC Pricing Proposal Auto-Gen</span>
           <span class="product-tag tag-y">Revenue Share Model</span>
+          <span class="product-tag tag-y">DC Pricing Proposal Auto-Gen</span>
         </div>
         <div style="font-size:10.5px; color:var(--text-3); margin-bottom:16px; line-height:1.6;">
-          <strong style="color:var(--text-2);">Red</strong> = requested both weeks &nbsp;·&nbsp; <strong style="color:var(--text-2);">Orange</strong> = requested W1 &nbsp;·&nbsp; <strong style="color:var(--text-2);">Yellow</strong> = DC feature parity gap
+          <strong style="color:var(--text-2);">Red</strong> = missing, blocking adoption &nbsp;·&nbsp; <strong style="color:var(--text-2);">Orange</strong> = present but broken &nbsp;·&nbsp; <strong style="color:var(--text-2);">Yellow</strong> = DC feature parity gap
         </div>
 
         <div style="background:var(--surface-2); border: 1px solid var(--border); border-radius:6px; padding:14px 16px; margin-bottom:16px;">
-          <div class="deep-dive-col-title" style="margin-bottom:10px;">What Stratus Needs to Fix Most Urgently</div>
+          <div class="deep-dive-col-title" style="margin-bottom:10px;">What Stratus Needs to Fix Before Q2 Rollout</div>
           <ul class="priority-list">
-            <li><div class="pn">1</div><div><strong style="color:var(--text-1);">Fix save-to-opp reset bug</strong> — active deal blocker; dyu stuck with no save path. Isolated or systemic?</div></li>
-            <li><div class="pn">2</div><div><strong style="color:var(--text-1);">Ship Terminal &amp; Financial Connections</strong> — most-requested missing products; 2+ weeks unresolved; AEs routing back to DC.</div></li>
-            <li><div class="pn">3</div><div><strong style="color:var(--text-1);">Fix FX default (10% is wrong)</strong> — inflates cost estimates, undermines deal accuracy from first config.</div></li>
-            <li><div class="pn">4</div><div><strong style="color:var(--text-1);">Allow ProServ without forced Connect dependency</strong> — blocking simple Paid Support + ProServ deals.</div></li>
-            <li><div class="pn">5</div><div><strong style="color:var(--text-1);">Publish segment rollout timeline</strong> — AEs don't know when/if they'll get Stratus access; inconsistent visibility in opps creates confusion.</div></li>
+            <li><div class="pn">1</div><div><strong style="color:var(--text-1);">Ship Terminal &amp; Financial Connections</strong> — most-requested missing products. Without these, Q2 cohort expansion triggers W1-level spike immediately.</div></li>
+            <li><div class="pn">2</div><div><strong style="color:var(--text-1);">Fix LPM iDeal $0 revenue bug</strong> — selectable but broken; AEs submitting proposals with incorrect ONR. Deal accuracy issue with direct approval implications.</div></li>
+            <li><div class="pn">3</div><div><strong style="color:var(--text-1);">Add Direct Payments support</strong> — third most-common missing product. Blocks a meaningful segment of EMEA and APAC deals from migrating to Stratus.</div></li>
+            <li><div class="pn">4</div><div><strong style="color:var(--text-1);">Create formal access intake process</strong> — eliminate ad hoc #stratus-support provisioning requests. Jira template or form reduces noise and improves SLA visibility.</div></li>
+            <li><div class="pn">5</div><div><strong style="color:var(--text-1);">Publish Q2 rollout timeline and product roadmap</strong> — AEs don't know when Terminal/FC are coming; uncertainty suppresses proactive adoption and creates repeated "is this available?" questions.</div></li>
           </ul>
         </div>
 
         <div style="background:var(--purple-dim); border:1px solid rgba(99,91,255,0.2); border-radius:6px; padding:12px 14px;">
           <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--purple-dark); margin-bottom:6px;">Sentiment Signal</div>
           <div style="font-size:12px; color:var(--text-2); line-height:1.6;">
-            <strong style="color:var(--text-1);">Mixed.</strong> Early cohort AEs are actively trying Stratus — W1 volume was high precisely because engagement was real. W2 drop is a good signal: initial friction was addressed or AEs adapted. But coverage gaps (Terminal, FC, Girocard) are hard blockers that will suppress adoption for the next wave unless resolved before rollout expands.
+            <strong style="color:var(--text-1);">Mixed, trending cautious.</strong> Current cohort has adapted — flat volume (5→5) reflects stabilization, not enthusiasm. AEs who hit product coverage walls reverted to DC and stopped asking. Sentiment will turn negative if Q2 expansion rolls out without Terminal, FC, and Direct Payments. The real test is Q2 week 1.
           </div>
         </div>
       </div>
@@ -708,8 +663,8 @@
     <div class="deep-dive-header">
       <div class="deep-dive-pill dp-approvals">Approvals Deep Dive</div>
       <div class="deep-dive-meta">
-        <strong>W1: 11 issues → W2: 16 issues</strong> &nbsp;·&nbsp;
-        <span class="wow-badge wow-flat" style="display:inline-flex;">↑ +45% · EOQ-driven escalation</span>
+        <strong>W1: 11 issues → W2: 5 issues</strong> &nbsp;·&nbsp;
+        <span class="wow-badge wow-down" style="display:inline-flex;">↓ -55% · EOQ bypass, not a fix</span>
         &nbsp;·&nbsp; Tool: DC (primary) · Ironclad (secondary)
         &nbsp;·&nbsp; <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank">#seller-systems-support</a>
       </div>
@@ -722,20 +677,11 @@
         <div class="deep-dive-col-title">Top Approval Blockers (W2)</div>
 
         <div class="dd-item">
-          <div class="dd-count">5</div>
+          <div class="dd-count">2</div>
           <div>
-            <div class="dd-label">Submit-for-approval errors despite DC appearing saved</div>
-            <div class="dd-detail">jansaloni (×2), nchall, colintoomey, topher, guilhemrobert — system returns error telling AE to save DC, but DC is already saved. Requires support ticket to unblock.</div>
-            <div class="dd-quote">"Error message tells me to complete Deal Composer but it is already saved. Can you look ASAP so we can send contract today?" — jansaloni</div>
-          </div>
-        </div>
-
-        <div class="dd-item">
-          <div class="dd-count">4</div>
-          <div>
-            <div class="dd-label">Correct pricing triggering wrong approval level (false L2/L3/L4)</div>
-            <div class="dd-detail">ejdunne: GR=1.04, no below floor → still L2. sthempler: GR=0.69, ONR 500k–1M → stuck in L4. alexwilliams: unexpectedly requiring L3. vaschauner: correctly priced, can't send at all.</div>
-            <div class="dd-quote">"GR is 1.04, No below floor, but still going to Level 2 approval. Connect and Auth Boost coming in as $0 although chosen." — ejdunne</div>
+            <div class="dd-label">Correct pricing triggering wrong approval level</div>
+            <div class="dd-detail">ejdunne: GR=1.04, no below floor, still routing to L2. abatuure: deal pricing requesting DC team approval on an already-configured deal. These are carryovers from W1 — the threshold logic has not been fixed.</div>
+            <div class="dd-quote">"GR is 1.04, No below floor, but still going to Level 2 approval." — ejdunne</div>
           </div>
         </div>
 
@@ -743,34 +689,25 @@
           <div class="dd-count">2</div>
           <div>
             <div class="dd-label">Auto-approval not firing despite meeting criteria</div>
-            <div class="dd-detail">dori: deal had committed GR 0.65 vs prior 0.64, ONR 116.1% vs 112%, BPS 0.98 vs 0.94 — all improved. Deal pricing applied manual approval override. Contract generation then failed. Clone + re-save → same issue.</div>
+            <div class="dd-detail">dori: deal had improved GR, ONR, and BPS — all metrics better than prior approved deal. Deal Pricing applied manual approval override. Contract generation then failed. Clone + re-save produced same result. AE had no path to close.</div>
             <div class="dd-quote">"I have no way forward to generate a contract and close this deal by EOM." — dori</div>
-          </div>
-        </div>
-
-        <div class="dd-item">
-          <div class="dd-count">2</div>
-          <div>
-            <div class="dd-label">Approval status reverting (Not Needed → Need to Submit)</div>
-            <div class="dd-detail">katiedeaney: opp initially marked "Not Needed" in ONR Approval Status. Now shows "Need to Submit" again despite Deal Pricing confirming approvals not needed. Bypassing the field is blocked.</div>
-          </div>
-        </div>
-
-        <div class="dd-item">
-          <div class="dd-count">2</div>
-          <div>
-            <div class="dd-label">Ironclad internal approver required but not identified</div>
-            <div class="dd-detail">aaz: GBS uploaded amendment to Ironclad; system requires "internal approver" but no guidance on who that is. Blocked from sending contract to customer.</div>
-            <div class="dd-quote">"Who is this internal approver? I'm blocked from sending the contract to the user." — aaz</div>
           </div>
         </div>
 
         <div class="dd-item">
           <div class="dd-count">1</div>
           <div>
-            <div class="dd-label">SPA contradictory rates cycling deals back into approval</div>
-            <div class="dd-detail">kikisimonsen: Received final ONR approval email. When generating SPA in Ironclad, system shows a different negotiated ONR and routes back to approval ladder. Appears systemic — SPA is not reading from approved DC values.</div>
+            <div class="dd-label">SPA reads different ONR than approved DC — re-loops deal into approval</div>
+            <div class="dd-detail">kikisimonsen: received final ONR approval email, then went to generate SPA in Ironclad. System showed a different negotiated ONR and re-routed through the approval ladder. SPA is not reading from approved DC values — confirmed systemic by kikisimonsen ("seems a systematic issue").</div>
             <div class="dd-quote">"Showing my ONR negotiated is different and suggesting to go again into approval ladder — seems a systematic issue." — kikisimonsen</div>
+          </div>
+        </div>
+
+        <div class="dd-item">
+          <div class="dd-count">—</div>
+          <div>
+            <div class="dd-label">W1 carryover: volume drop likely reflects EOQ bypass behavior</div>
+            <div class="dd-detail">W1 had 11 approval issues including submit errors, N/A states, and Ironclad internal approver blockers. None resolved in W2. AEs under Q1 pressure are escalating to DealOps directly or getting manual overrides rather than waiting for systemic resolution.</div>
           </div>
         </div>
       </div>
@@ -781,52 +718,52 @@
         <div class="dd-item">
           <div class="dd-count">—</div>
           <div>
-            <div class="dd-label">Deal Pricing: manual overrides needed but don't unblock</div>
-            <div class="dd-detail">dori had deal pricing apply manual approval override — contract generation still failed afterward. xtimpson: L1 approved, but system then routed to deal pricing anyway. Manual overrides are not reliably unlocking the pipeline.</div>
+            <div class="dd-label">Deal Pricing: manual overrides requested but don't fully unblock</div>
+            <div class="dd-detail">dori's deal had Deal Pricing apply manual approval override — contract generation still failed. Manual overrides are being used as a workaround but the underlying approval logic bug means the deal still can't proceed.</div>
           </div>
         </div>
         <div class="dd-item">
           <div class="dd-count">—</div>
           <div>
-            <div class="dd-label">DealOps / Legal: IronClad internal approver opaque</div>
-            <div class="dd-detail">No visibility on who the required "internal approver" is for amendment workflows. AEs submitting through Jira cases with no same-day resolution.</div>
+            <div class="dd-label">DealOps absorbing Q1 pressure as AEs bypass channel</div>
+            <div class="dd-detail">Approval issue drop in #seller-systems-support likely reflects AEs going directly to DealOps via Jira or Slack DM under Q1 urgency. This masks the real volume and creates hidden load on DealOps.</div>
           </div>
         </div>
         <div class="dd-item">
           <div class="dd-count">—</div>
           <div>
-            <div class="dd-label">DC Engineering: approval logic not matching documented rules</div>
-            <div class="dd-detail">GR &gt; 1.0 should not require L2 approval. GR=0.69 with ONR 500k–1M should not be L4. The delta between documented thresholds and actual behavior is a recurring source of escalations.</div>
+            <div class="dd-label">DC Engineering: threshold logic still mismatched to documented rules</div>
+            <div class="dd-detail">GR &gt; 1.0 should not require L2. GR 0.69 with ONR 500k–1M should not be L4. These mismatches have appeared in 3 consecutive runs. No fix confirmed in channel or engineering update cited.</div>
           </div>
         </div>
 
         <div style="margin-top:14px;">
-          <div class="deep-dive-col-title">Exception vs Standard Approvals</div>
+          <div class="deep-dive-col-title">Exception vs Standard Approvals (W2)</div>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
             <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:12px; text-align:center;">
-              <div style="font-size:20px; font-weight:700; color:var(--text-1);">3</div>
-              <div style="font-size:10px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.5px; margin-top:3px;">Below-Floor False Flags</div>
-              <div style="font-size:10.5px; color:var(--text-3); margin-top:4px;">Routed to exception approval when not actually below floor</div>
+              <div style="font-size:20px; font-weight:700; color:var(--text-1);">2</div>
+              <div style="font-size:10px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.5px; margin-top:3px;">Wrong Level Routing</div>
+              <div style="font-size:10.5px; color:var(--text-3); margin-top:4px;">Deals at correct pricing routed to L2+ unnecessarily</div>
             </div>
             <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:12px; text-align:center;">
-              <div style="font-size:20px; font-weight:700; color:var(--text-1);">5</div>
-              <div style="font-size:10px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.5px; margin-top:3px;">Submit Errors (valid deals)</div>
-              <div style="font-size:10.5px; color:var(--text-3); margin-top:4px;">DC says saved, approval system disagrees</div>
+              <div style="font-size:20px; font-weight:700; color:var(--text-1);">2</div>
+              <div style="font-size:10px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.5px; margin-top:3px;">Auto-Approve Failures</div>
+              <div style="font-size:10.5px; color:var(--text-3); margin-top:4px;">Criteria met but manual override still required</div>
             </div>
           </div>
           <div style="font-size:11px; color:var(--text-3); line-height:1.6;">
-            The most common pattern: deals that <em>should</em> auto-approve or approve at standard L1 are being routed through exception paths due to calculation bugs or system logic gaps — creating unnecessary DealOps and Deal Pricing load.
+            Visible approval issues are lower in W2 but that reflects <em>behavior change</em> (bypassing the channel), not bug resolution. Expect a rebound in Q2 W1 as the approval queue clears and standard workflows resume.
           </div>
         </div>
 
         <div style="background:rgba(0,150,165,0.06); border:1px solid rgba(0,150,165,0.2); border-radius:6px; padding:12px 14px; margin-top:14px;">
           <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--teal); margin-bottom:8px;">What's Slowing the Approval Workflow</div>
           <ul class="priority-list">
-            <li><div class="pn-teal">1</div><div><strong style="color:var(--text-1);">Submit-for-approval validation errors</strong> — DC saves not being recognized by approval system. Requires manual support intervention on every incident.</div></li>
-            <li><div class="pn-teal">2</div><div><strong style="color:var(--text-1);">Wrong approval level thresholds</strong> — GR &gt; 1.0 routing to L2; below-floor false positives routing to exception paths. Rules not matching documented logic.</div></li>
-            <li><div class="pn-teal">3</div><div><strong style="color:var(--text-1);">Auto-approval logic not firing</strong> — even after Deal Pricing manual override, contract generation fails. No clear fallback path for AE.</div></li>
-            <li><div class="pn-teal">4</div><div><strong style="color:var(--text-1);">SPA reads different values than approved DC</strong> — kikisimonsen deal re-looped after Ironclad generated SPA with different ONR than approved. SPA ↔ DC data consistency issue.</div></li>
-            <li><div class="pn-teal">5</div><div><strong style="color:var(--text-1);">Ironclad internal approver opaque</strong> — AEs blocked at contract stage with no guidance on who the required approver is or how to escalate.</div></li>
+            <li><div class="pn-teal">1</div><div><strong style="color:var(--text-1);">Approval level threshold logic mismatched to rules</strong> — GR &gt; 1.0 routing to L2; appears in 3 consecutive runs. Requires DC Engineering to audit approval threshold configuration vs. documented rules.</div></li>
+            <li><div class="pn-teal">2</div><div><strong style="color:var(--text-1);">Auto-approval not firing</strong> — even after Deal Pricing manual override, contract generation fails. No clear fallback path. AEs stranded at Q1 close.</div></li>
+            <li><div class="pn-teal">3</div><div><strong style="color:var(--text-1);">SPA reads different ONR than approved DC</strong> — SPA↔DC data consistency issue re-loops approved deals into the approval ladder. Confirmed systemic by at least one AE.</div></li>
+            <li><div class="pn-teal">4</div><div><strong style="color:var(--text-1);">DealOps hidden load from EOQ bypass behavior</strong> — approval drop in channel masks real volume absorbed by DealOps. Need visibility into DealOps Jira ticket volume to get true picture.</div></li>
+            <li><div class="pn-teal">5</div><div><strong style="color:var(--text-1);">No self-serve troubleshooting path</strong> — AEs with approval issues have no runbook or escalation path. Every incident requires a support interaction. A "why is my deal in L2?" diagnostic tool would deflect a significant share of volume.</div></li>
           </ul>
         </div>
       </div>
@@ -842,54 +779,54 @@
   <div class="two-col">
 
     <div class="card">
-      <div class="card-title">Immediate Actions</div>
+      <div class="card-title">Immediate Actions — Q1 Close Day</div>
       <div class="action">
         <div class="action-n">1</div>
         <div>
-          <div class="action-body"><strong>Fix Link IBP calculation regression immediately</strong> — root cause confirmed: DC treating IBP% as % of total NPV instead of % of Link non-passthrough. Affects any deal with Link IBP. 6+ AEs blocked. Get engineering on this today — EOQ closes at risk.</div>
-          <div class="action-owner">DC/Pricing Engineering — Today · P0</div>
+          <div class="action-body"><strong>Unblock Unique Merchant ID field today</strong> — multiple AEs cannot complete onboarding steps for closed Q1 deals because the field is disabled. Each blocked deal is a Q1 revenue risk. DC Engineering needs to identify root cause and enable the field immediately or provide a manual workaround.</div>
+          <div class="action-owner">DC Engineering — Today · P0 · Q1 close</div>
         </div>
       </div>
       <div class="action">
         <div class="action-n">2</div>
         <div>
-          <div class="action-body"><strong>Manually unblock EOQ contract generation failures</strong> — dori (auto-approval override not persisting through contract gen), schenay + jsieke (SPA product validation error), kikisimonsen + robgallagher (approved DC values not matching SPA). Each needs same-day resolution before EOQ.</div>
+          <div class="action-body"><strong>Manually unblock contract generation failures</strong> — dori (auto-approval override not persisting through contract gen), schenay + jsieke (SPA product validation error), kikisimonsen + robgallagher (DC↔SPA ONR mismatch re-looping approval). Each needs same-day resolution before Q1 books close.</div>
           <div class="action-owner">DC Engineering + DealOps — Today · EOQ critical</div>
         </div>
       </div>
       <div class="action">
         <div class="action-n">3</div>
         <div>
-          <div class="action-body"><strong>Fix DC save "error: undefined" surge</strong> — 18 cases this week including incident flagged by mmathew-c (ONR/GR mismatch on Pricing tab). The Onboarding Discovery Date required field bug is blocking new opp creation (madisonf, sydneyz). Triage and identify if there is a common root cause.</div>
-          <div class="action-owner">DC Engineering — This week</div>
+          <div class="action-body"><strong>Fix approval level threshold logic — 3rd consecutive run</strong> — GR &gt; 1.0 routing to L2, auto-approval not firing despite criteria being met, approval reverting from "Not Needed" to "Need to Submit." This is not an edge case anymore. Audit the actual threshold configuration vs. documented rules and identify the regression.</div>
+          <div class="action-owner">DC Engineering + Deal Pricing — This week</div>
         </div>
       </div>
       <div class="action">
         <div class="action-n">4</div>
         <div>
-          <div class="action-body"><strong>Fix approval level threshold logic</strong> — ejdunne (GR=1.04 → L2), apacory (N/A state), abatuure (DC requesting deal team approval on configured deal). These are repeat offenders from last 3 weeks. Document actual vs expected thresholds and identify regression.</div>
-          <div class="action-owner">DC Engineering + Deal Pricing — This week</div>
+          <div class="action-body"><strong>Fix SPA ↔ DC ONR data consistency</strong> — kikisimonsen's deal was re-looped into the approval ladder after receiving final ONR approval because SPA generated a different rate than what DC approved. Confirmed systemic. SPA must read from the approved DC state, not recalculate independently.</div>
+          <div class="action-owner">DC Engineering + Ironclad team — This week</div>
         </div>
       </div>
       <div class="action">
         <div class="action-n">5</div>
         <div>
-          <div class="action-body"><strong>Stratus: Add Terminal + Financial Connections + LPM iDeal</strong> — these three are the most-requested missing products blocking the next adoption wave. levi confirmed LPM iDeal shows no revenue even when selected. Terminal and FC have been missing since launch.</div>
-          <div class="action-owner">Stratus Engineering — Q2 priority</div>
+          <div class="action-body"><strong>Stratus: Ship Terminal + Financial Connections before Q2 cohort expansion</strong> — most-requested missing products for 3+ weeks. Q2 rollout expansion without these will immediately trigger a W1-level spike in #stratus-support. Get an ETA from Stratus Engineering and communicate it to the AE population proactively.</div>
+          <div class="action-owner">Stratus Engineering — Q2 priority · pre-expansion</div>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title">Watchlist — Next Run</div>
-      <div class="watch"><div class="dot dot-r"></div><div class="watch-text"><strong>Link IBP P0 — root cause confirmed</strong> — fix shipped? All 6+ active incidents (duni, salomon HK, ariellim ×3) need confirmation of resolution before next run.</div></div>
-      <div class="watch"><div class="dot dot-r"></div><div class="watch-text"><strong>EOQ contract surge (20 cases)</strong> — will post-EOQ volume drop sharply or remain elevated? SPA ↔ DC value mismatch (kikisimonsen, robgallagher) appears systemic — needs investigation.</div></div>
-      <div class="watch"><div class="dot dot-r"></div><div class="watch-text"><strong>DC Save surge (+157%, 18 cases)</strong> — "error: undefined" is the most common failure mode. Is there a new regression? Onboarding Discovery Date bug blocking new opp creation needs immediate fix.</div></div>
-      <div class="watch"><div class="dot dot-r"></div><div class="watch-text"><strong>Approval workflow (16, +45%)</strong> — 4th consecutive week of high volume. Auto-approval logic and wrong threshold issues unresolved. Post-EOQ: does volume normalize or stay elevated?</div></div>
-      <div class="watch"><div class="dot dot-o"></div><div class="watch-text"><strong>Below Floor false flags (+175%, 4→11)</strong> — massive spike this week. AA, Amex, CNP, Connect SMR all flagged. Is this a floor config regression or volume of AEs hitting edge cases at EOQ?</div></div>
-      <div class="watch"><div class="dot dot-o"></div><div class="watch-text"><strong>Stratus next-cohort rollout</strong> — W2 volume at 4 (stable). Terminal + FC + LPM iDeal still missing. Next cohort expansion without coverage will trigger W1-level spike again.</div></div>
-      <div class="watch"><div class="dot dot-y"></div><div class="watch-text"><strong>Product/Geo Gaps (14, +27%)</strong> — Malaysia Connect contradicts Trailhead docs (jamesongjx). 20 countries missing from connected account territory (nchall). Documentation vs reality gap needs audit.</div></div>
-      <div class="watch"><div class="dot dot-y"></div><div class="watch-text"><strong>SFDC/Access issues (+140%)</strong> — new hire access problems (derrick, klucken), internal mobility SFDC requests (fkurniawati). Provisioning process review needed for Q2 headcount ramp.</div></div>
+      <div class="card-title">Watchlist — Q2 Week 1</div>
+      <div class="watch"><div class="dot dot-r"></div><div class="watch-text"><strong>Unique Merchant ID blocker</strong> — confirmed disabling multiple Q1 closes today. Needs immediate resolution and a post-mortem on why this field can become disabled and what onboarding workflow changes triggered it.</div></div>
+      <div class="watch"><div class="dot dot-r"></div><div class="watch-text"><strong>Contract/Signature (21 cases, +40%)</strong> — SPA generation errors and DocuSign failures blocked Q1 EOQ closes. Post-quarter: does volume normalize or do unresolved deal closures create a backlog in Q2 W1?</div></div>
+      <div class="watch"><div class="dot dot-r"></div><div class="watch-text"><strong>Approval volume rebound in Q2 W1</strong> — the -55% drop in approvals is an EOQ bypass pattern, not a fix. Expect 10–15 cases in Q2 W1 as AEs return to standard workflows and encounter the same threshold logic and auto-approval bugs.</div></div>
+      <div class="watch"><div class="dot dot-o"></div><div class="watch-text"><strong>Stratus Q2 expansion readiness</strong> — next cohort rollout without Terminal, FC, and Direct Payments will produce a W1-level spike (13+ issues). Monitor the #stratus-support channel in Q2 W1 for the adoption pattern repeating.</div></div>
+      <div class="watch"><div class="dot dot-o"></div><div class="watch-text"><strong>LPM iDeal $0 revenue bug in Stratus</strong> — iDeal is selectable but shows zero revenue, making proposal metrics wrong. Any AE who submitted an iDeal proposal in W1/W2 may have incorrect ONR in their deal record. Audit needed.</div></div>
+      <div class="watch"><div class="dot dot-o"></div><div class="watch-text"><strong>Product/Geo Gaps surge (+200%, 2→6)</strong> — Malaysia Connect contradiction vs. Trailhead docs (jamesongjx), 20 missing connected account countries (nchall). Documentation vs. product reality audit needed before next quarter's new business push.</div></div>
+      <div class="watch"><div class="dot dot-y"></div><div class="watch-text"><strong>DC Save "error: undefined"</strong> — steady at 5–6 cases/week for multiple runs. Not spiking but not resolving. Discovery Date required field bug adds new opp creation friction. Triage to identify if there is a common root cause or multiple unrelated bugs.</div></div>
+      <div class="watch"><div class="dot dot-y"></div><div class="watch-text"><strong>DealOps hidden load</strong> — approval drop in channel likely masks real volume absorbed by DealOps Jira at EOQ. Get DealOps to share Jira ticket volume data for comparative analysis next run.</div></div>
     </div>
 
   </div>
@@ -904,11 +841,11 @@
 <!-- Footer -->
 <div class="footer">
  <div class="footer-inner">
-  ~250+ messages analyzed (Mar 11–25) ·
+  ~200+ messages analyzed (Mar 17–31) ·
   <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank">#seller-systems-support</a> ·
   <a href="https://stripe.slack.com/archives/C09E79ZK3PS" target="_blank">#gtm-seller-systems-cpr</a> ·
   <a href="https://stripe.slack.com/archives/C0AEUHR9UC8" target="_blank">#stratus-support</a> ·
-  Run: March 25, 2026
+  Run: March 31, 2026 · Q1 Close Day
  </div>
 </div>
 
@@ -923,14 +860,14 @@
   new Chart(document.getElementById('wowChart'), {
     type: 'bar',
     data: {
-      labels: ['Gong/Tools','Product/Geo Gaps','Below Floor','DC Save','SFDC/Other','Contract/Ironclad','DC ONR/Link IBP','Approval Blocks'],
+      labels: ['Approvals','DC Calc/IBP','Access','DC Save','Product/Geo','Onboarding Blockers','Contract/Sig'],
       datasets: [
-        { label: 'W2 (Mar 18–24)',
-          data: [12, 14, 11, 18, 12, 20, 17, 16],
+        { label: 'W2 (Mar 24–30)',
+          data: [5, 4, 5, 6, 6, 9, 21],
           backgroundColor: 'rgba(99,91,255,0.3)', borderColor: 'transparent',
           borderWidth: 0, borderRadius: 4 },
-        { label: 'W1 (Mar 11–17)',
-          data: [13, 11, 4, 7, 5, 7, 10, 11],
+        { label: 'W1 (Mar 17–23)',
+          data: [11, 5, 4, 5, 2, 4, 15],
           backgroundColor: 'rgba(0,163,196,0.35)', borderColor: 'transparent',
           borderWidth: 0, borderRadius: 4 }
       ]
@@ -953,14 +890,14 @@
   new Chart(document.getElementById('pulseChart'), {
     type: 'bar',
     data: {
-      labels: ['Gong/Tools','Product/Geo Gaps','Below Floor','SFDC/Other','DC Save','DC ONR/Link IBP','Approval Blocks','Contract/Ironclad'],
+      labels: ['Approvals','DC Calc/IBP','Access','DC Save','Product/Geo','Onboarding','Contract/Sig'],
       datasets: [
         { label: 'W2 Count',
-          data: [12, 14, 11, 12, 18, 17, 16, 20],
+          data: [5, 4, 5, 6, 6, 9, 21],
           backgroundColor: [
-            'rgba(255,123,0,0.3)','rgba(255,123,0,0.3)','rgba(223,27,65,0.25)','rgba(223,27,65,0.25)',
-            'rgba(223,27,65,0.25)','rgba(255,123,0,0.3)','rgba(255,123,0,0.3)',
-            'rgba(194,122,0,0.25)','rgba(48,185,128,0.3)'
+            'rgba(48,185,128,0.3)','rgba(255,123,0,0.3)','rgba(255,123,0,0.3)',
+            'rgba(255,123,0,0.3)','rgba(223,27,65,0.25)','rgba(223,27,65,0.4)',
+            'rgba(223,27,65,0.5)'
           ],
           borderColor: 'transparent', borderWidth: 0, borderRadius: 4
         }
