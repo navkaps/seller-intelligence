@@ -1,0 +1,325 @@
+{
+  "run_date": "March 31, 2026",
+  "period": "Mar 17–30, 2026",
+  "w1_label": "Mar 17–23",
+  "w2_label": "Mar 24–30",
+  "note": "Q1 Close Day",
+  "bluf": "Today is Q1 close day and the support queue is under maximum pressure. Close-to-onboarding blockers spiked +125% WoW (4→9) with multiple AEs unable to advance closed deals — the Unique Merchant ID field in DC is disabled for several opportunities, creating a single-point-of-failure at the worst possible moment. Contract and Signature workflow is the highest-volume category at 21 cases (+40% WoW), driven by DocuSign delivery failures, SPA generation errors blocking same-day closes, and approved DC values not matching generated contracts. Approvals volume dropped sharply (-55%, 11→5) — likely because AEs are bypassing the approval workflow under Q1 pressure rather than any genuine systemic improvement; watch for this to resurface in Q2. Stratus access requests continued but product coverage gaps (Terminal, Financial Connections, Direct Payments) remain unresolved heading into Q2 rollout expansion.",
+  "kpis": {
+    "w2_total": 56,
+    "w1_total": 46,
+    "wow_pct": "+22%",
+    "wow_direction": "up",
+    "biggest_spike_pct": "+125%",
+    "biggest_spike_label": "Onboarding Blockers 4→9",
+    "approval_blocks": 5,
+    "approval_blocks_wow": "↓ -55% · EOQ bypass — watch Q2",
+    "approval_blocks_direction": "down",
+    "contract_sig": 21,
+    "contract_sig_wow": "↑ +40% · DocuSign + SPA failures",
+    "contract_sig_direction": "up",
+    "stratus_w2": 5,
+    "stratus_wow": "→ Flat · coverage gaps block Q2 rollout",
+    "stratus_direction": "flat",
+    "cpr_metric": "62.6",
+    "cpr_label": "Contacts/100 Opps",
+    "cpr_wow": "→ Stable · no WoW change signaled",
+    "cpr_direction": "flat"
+  },
+  "pulse": [
+    {
+      "severity": "critical",
+      "label": "Critical · Q1 Close · +125% Spike",
+      "title": "Unique Merchant ID field disabled in DC — blocking multiple deals from advancing at quarter close",
+      "detail": "Multiple AEs reporting the Unique Merchant ID field is disabled in their opportunities, preventing onboarding steps from completing. Q1 close day = maximum urgency. Each blocked deal is a Q1 at-risk revenue event. No root cause identified in channel.",
+      "channel_id": "C05FDARJBA4",
+      "channel_name": "seller-systems-support"
+    },
+    {
+      "severity": "critical",
+      "label": "Critical · EOQ · +40% WoW",
+      "title": "Contract/Signature: 21 cases — DocuSign failures + SPA errors + DC/contract value mismatch",
+      "detail": "DocuSign emails not reaching customers (jansaloni). SPA generation error \"at least one product must be valid\" blocking contract creation (schenay, jsieke). Approved DC values not matching SPA-generated contract rates (kikisimonsen, robgallagher). AEs manually requesting same-day support to close Q1 deals.",
+      "channel_id": "C05FDARJBA4",
+      "channel_name": "seller-systems-support"
+    },
+    {
+      "severity": "critical",
+      "label": "High · DC Reliability · steady",
+      "title": "DC Save / Reliability: 6 cases — \"error: undefined\" on save-to-opportunity persists",
+      "detail": "\"Error: undefined\" on save-to-opp is the dominant failure mode (patseibt, mathias ×2, llloret, vbuitron). Pricing data disappearing after save in some cases. Discovery Date required field missing from new opp creation flow blocking intake.",
+      "channel_id": "C05FDARJBA4",
+      "channel_name": "seller-systems-support"
+    },
+    {
+      "severity": "high",
+      "label": "High · Product Gaps · +200% WoW",
+      "title": "Product/Geo Gaps: 6 cases — Malaysia Connect, EMEA country gaps, iDeal",
+      "detail": "Malaysia Connect greyed out despite Trailhead confirming support (jamesongjx). 20 countries missing from connected account territory (nchall). Billing subscription can't be selected (andreasokmen, ztristan). Faster Payout T+2 Intra-EEA unavailable (sofiatorre).",
+      "channel_id": "C05FDARJBA4",
+      "channel_name": "seller-systems-support"
+    },
+    {
+      "severity": "watch",
+      "label": "Watch · Approvals · -55% WoW",
+      "title": "Approvals dropped to 5 cases — EOQ bypass pattern, not a fix",
+      "detail": "Approval volume dropped sharply but the underlying bugs (wrong threshold levels, auto-approval not firing, N/A state) were not resolved. AEs are likely escalating directly to DealOps or shortcutting under Q1 pressure. Expect volume to return to 10+ in Q2 week 1.",
+      "channel_id": "C05FDARJBA4",
+      "channel_name": "seller-systems-support"
+    }
+  ],
+  "categories": [
+    {
+      "name": "Contract / Signature",
+      "tag": "Q1 SURGE",
+      "tag_color": "red",
+      "w1": 15,
+      "w2": 21,
+      "delta": "+40%",
+      "delta_direction": "up",
+      "severity": "Critical",
+      "status": "DocuSign failures, SPA errors, DC↔contract mismatch",
+      "channel": "C05FDARJBA4"
+    },
+    {
+      "name": "Close-to-Onboarding Blockers",
+      "tag": "SPIKE",
+      "tag_color": "red",
+      "w1": 4,
+      "w2": 9,
+      "delta": "+125%",
+      "delta_direction": "up",
+      "severity": "Critical",
+      "status": "Unique Merchant ID disabled; onboarding steps blocked",
+      "channel": "C05FDARJBA4"
+    },
+    {
+      "name": "DC Save / Reliability",
+      "tag": "",
+      "tag_color": "",
+      "w1": 5,
+      "w2": 6,
+      "delta": "+20%",
+      "delta_direction": "up",
+      "severity": "High",
+      "status": "\"error: undefined\" dominant; Discovery Date field bug",
+      "channel": "C05FDARJBA4"
+    },
+    {
+      "name": "DC ONR Calc / Adaptive Pricing",
+      "tag": "",
+      "tag_color": "",
+      "w1": 5,
+      "w2": 4,
+      "delta": "-20%",
+      "delta_direction": "flat",
+      "severity": "High",
+      "status": "ONR/GR discrepancies; adaptive pricing edge cases",
+      "channel": "C05FDARJBA4"
+    },
+    {
+      "name": "Product / Geo Gaps in DC",
+      "tag": "",
+      "tag_color": "",
+      "w1": 2,
+      "w2": 6,
+      "delta": "+200%",
+      "delta_direction": "up",
+      "severity": "High",
+      "status": "Malaysia Connect, 20 countries, Billing sub, EEA payout",
+      "channel": "C05FDARJBA4"
+    },
+    {
+      "name": "Access / Provisioning",
+      "tag": "",
+      "tag_color": "",
+      "w1": 4,
+      "w2": 5,
+      "delta": "+25%",
+      "delta_direction": "up",
+      "severity": "Medium",
+      "status": "New hire access, SFDC permissions, Pano/forecast fields",
+      "channel": "C05FDARJBA4"
+    },
+    {
+      "name": "Approval Workflow Blocks",
+      "tag": "",
+      "tag_color": "",
+      "w1": 11,
+      "w2": 5,
+      "delta": "-55%",
+      "delta_direction": "down",
+      "severity": "Medium",
+      "status": "Drops at EOQ; underlying bugs unresolved — watch Q2 W1",
+      "channel": "C05FDARJBA4"
+    },
+    {
+      "name": "Stratus: Product / Coverage Gaps",
+      "tag": "",
+      "tag_color": "",
+      "w1": 3,
+      "w2": 3,
+      "delta": "0%",
+      "delta_direction": "flat",
+      "severity": "High",
+      "status": "Terminal, FC, Direct Payments still missing; LPM iDeal bug",
+      "channel": "C0AEUHR9UC8",
+      "stratus": true
+    },
+    {
+      "name": "Stratus: Access / Provisioning",
+      "tag": "",
+      "tag_color": "",
+      "w1": 2,
+      "w2": 2,
+      "delta": "0%",
+      "delta_direction": "flat",
+      "severity": "Medium",
+      "status": "Ongoing access requests; provisioning backlogged",
+      "channel": "C0AEUHR9UC8",
+      "stratus": true
+    }
+  ],
+  "stratus": {
+    "w1": 5,
+    "w2": 5,
+    "delta": "0%",
+    "delta_direction": "flat",
+    "sentiment": "mixed",
+    "sentiment_label": "Mixed, trending cautious",
+    "sentiment_detail": "Current cohort has adapted — flat volume (5→5) reflects stabilization, not enthusiasm. AEs who hit product coverage walls reverted to DC and stopped asking. Sentiment will turn negative if Q2 expansion rolls out without Terminal, FC, and Direct Payments. The real test is Q2 week 1.",
+    "bugs": [
+      {
+        "count": 3,
+        "label": "LPM iDeal shows $0 revenue when selected",
+        "detail": "levi confirmed: iDeal can be selected in Stratus but the revenue impact shows as $0, making deal metrics incorrect. AEs submitting proposals with understated ONR.",
+        "quote": "iDeal is selectable but shows zero revenue contribution — the deal metrics are wrong. — levi"
+      },
+      {
+        "count": 2,
+        "label": "Access provisioning backlog — no formal intake",
+        "detail": "Multiple AEs still waiting on Stratus access. Enterprise Platforms-West cohort and adjacent teams requesting access ahead of Q2 expansion. AEs posting directly in #stratus-support.",
+        "quote": ""
+      }
+    ],
+    "friction": [
+      "Terminal, Financial Connections, Direct Payments still absent — AEs forced back to DC mid-deal for 3+ weeks with no ETA communicated",
+      "Q2 cohort expansion without these products will trigger a W1-level adoption spike immediately",
+      "No formal access intake path — provisioning delays from ad hoc channel requests"
+    ],
+    "missing_products": [
+      { "name": "Terminal", "severity": "red" },
+      { "name": "Financial Connections", "severity": "red" },
+      { "name": "Direct Payments", "severity": "red" },
+      { "name": "LPM iDeal (broken — shows $0)", "severity": "orange" },
+      { "name": "Professional Services (standalone)", "severity": "orange" },
+      { "name": "Revenue Share Model", "severity": "yellow" },
+      { "name": "DC Pricing Proposal Auto-Gen", "severity": "yellow" }
+    ],
+    "priorities": [
+      "Ship Terminal & Financial Connections before Q2 cohort expansion — without these, Q2 expansion triggers W1-level spike immediately.",
+      "Fix LPM iDeal $0 revenue bug — selectable but broken; AEs submitting proposals with incorrect ONR.",
+      "Add Direct Payments support — blocks EMEA/APAC deals from migrating to Stratus.",
+      "Create formal access intake process — eliminate ad hoc #stratus-support provisioning requests.",
+      "Publish Q2 rollout timeline and product roadmap — AEs asking repeatedly, uncertainty suppresses adoption."
+    ]
+  },
+  "approvals": {
+    "w1": 11,
+    "w2": 5,
+    "delta": "-55%",
+    "delta_direction": "down",
+    "note": "EOQ bypass — not a fix",
+    "blockers": [
+      {
+        "count": 2,
+        "label": "Correct pricing triggering wrong approval level",
+        "detail": "ejdunne: GR=1.04, no below floor, still routing to L2. abatuure: deal pricing requesting DC team approval on already-configured deal. Carryovers from W1 — threshold logic not fixed.",
+        "quote": "GR is 1.04, No below floor, but still going to Level 2 approval. — ejdunne"
+      },
+      {
+        "count": 2,
+        "label": "Auto-approval not firing despite meeting criteria",
+        "detail": "dori: improved GR, ONR, and BPS vs prior deal. Deal Pricing applied manual override. Contract generation still failed. Clone + re-save = same result.",
+        "quote": "I have no way forward to generate a contract and close this deal by EOM. — dori"
+      },
+      {
+        "count": 1,
+        "label": "SPA reads different ONR than approved DC — re-loops into approval",
+        "detail": "kikisimonsen: received final ONR approval email, then Ironclad generated SPA with different ONR and re-routed through approval ladder. Confirmed systemic.",
+        "quote": "Showing my ONR negotiated is different and suggesting to go again into approval ladder — seems a systematic issue. — kikisimonsen"
+      },
+      {
+        "count": 0,
+        "label": "W1 carryover: volume drop reflects EOQ bypass, not resolution",
+        "detail": "W1 had 11 approval issues including submit errors, N/A states, Ironclad internal approver blockers. None resolved in W2. AEs escalating to DealOps directly.",
+        "quote": ""
+      }
+    ],
+    "cross_functional": [
+      "Deal Pricing: manual overrides requested but don't fully unblock — dori's deal still failed after override",
+      "DealOps absorbing Q1 pressure directly via Jira/DM — approval drop in channel masks real volume",
+      "DC Engineering: threshold logic mismatched to documented rules for 3 consecutive runs"
+    ],
+    "exception_breakdown": {
+      "wrong_level": 2,
+      "wrong_level_label": "Wrong Level Routing",
+      "wrong_level_detail": "Deals at correct pricing routed to L2+ unnecessarily",
+      "auto_approve_fail": 2,
+      "auto_approve_label": "Auto-Approve Failures",
+      "auto_approve_detail": "Criteria met but manual override still required"
+    },
+    "priorities": [
+      "Approval level threshold logic wrong — GR>1.0 routing to L2; 3rd consecutive run; needs DC Engineering audit vs. documented rules.",
+      "Auto-approval not firing — even after Deal Pricing override; no fallback path; AEs stranded at Q1 close.",
+      "SPA reads different ONR than approved DC — confirmed systemic; re-loops approved deals.",
+      "DealOps hidden load from EOQ bypass — need Jira ticket volume data for true picture.",
+      "No self-serve troubleshooting path — every incident requires a support interaction."
+    ]
+  },
+  "actions": [
+    {
+      "n": 1,
+      "title": "Unblock Unique Merchant ID field today",
+      "detail": "Multiple AEs cannot complete onboarding steps for closed Q1 deals because the field is disabled. Each blocked deal is a Q1 revenue risk. DC Engineering needs to identify root cause and enable the field immediately or provide a manual workaround.",
+      "owner": "DC Engineering — Today · P0 · Q1 close"
+    },
+    {
+      "n": 2,
+      "title": "Manually unblock contract generation failures",
+      "detail": "dori (auto-approval override not persisting through contract gen), schenay + jsieke (SPA product validation error), kikisimonsen + robgallagher (DC↔SPA ONR mismatch re-looping approval). Each needs same-day resolution before Q1 books close.",
+      "owner": "DC Engineering + DealOps — Today · EOQ critical"
+    },
+    {
+      "n": 3,
+      "title": "Fix approval level threshold logic — 3rd consecutive run",
+      "detail": "GR > 1.0 routing to L2, auto-approval not firing despite criteria being met, approval reverting from "Not Needed" to "Need to Submit." Audit actual threshold configuration vs. documented rules and identify the regression.",
+      "owner": "DC Engineering + Deal Pricing — This week"
+    },
+    {
+      "n": 4,
+      "title": "Fix SPA ↔ DC ONR data consistency",
+      "detail": "kikisimonsen's deal was re-looped into the approval ladder because SPA generated a different rate than DC approved. Confirmed systemic. SPA must read from the approved DC state.",
+      "owner": "DC Engineering + Ironclad team — This week"
+    },
+    {
+      "n": 5,
+      "title": "Stratus: Ship Terminal + Financial Connections before Q2 cohort expansion",
+      "detail": "Most-requested missing products for 3+ weeks. Q2 rollout expansion without these will immediately trigger a W1-level spike in #stratus-support. Get an ETA and communicate it to the AE population proactively.",
+      "owner": "Stratus Engineering — Q2 priority · pre-expansion"
+    }
+  ],
+  "watchlist": [
+    { "severity": "red", "text": "Unique Merchant ID blocker — confirmed disabling multiple Q1 closes today. Needs immediate resolution and a post-mortem on why this field can become disabled." },
+    { "severity": "red", "text": "Contract/Signature (21 cases, +40%) — SPA generation errors and DocuSign failures blocked Q1 EOQ closes. Post-quarter: does volume normalize or do unresolved deals create a Q2 backlog?" },
+    { "severity": "red", "text": "Approval volume rebound in Q2 W1 — the -55% drop is an EOQ bypass pattern, not a fix. Expect 10–15 cases in Q2 W1 as AEs return to standard workflows." },
+    { "severity": "orange", "text": "Stratus Q2 expansion readiness — next cohort without Terminal, FC, and Direct Payments will produce a W1-level spike (13+ issues). Monitor #stratus-support in Q2 W1." },
+    { "severity": "orange", "text": "LPM iDeal $0 revenue bug in Stratus — any AE who submitted an iDeal proposal in W1/W2 may have incorrect ONR in their deal record. Audit needed." },
+    { "severity": "orange", "text": "Product/Geo Gaps surge (+200%, 2→6) — Malaysia Connect contradiction vs. Trailhead docs. Documentation vs. product reality audit needed before Q2 new business push." },
+    { "severity": "yellow", "text": "DC Save \"error: undefined\" — steady at 5–6 cases/week for multiple runs. Discovery Date required field bug adds new opp creation friction. Triage for common root cause." },
+    { "severity": "yellow", "text": "DealOps hidden load — approval drop in channel likely masks real volume absorbed by DealOps Jira at EOQ. Get Jira ticket volume data for next run." }
+  ],
+  "chart_categories": ["Approvals", "DC Calc/IBP", "Access", "DC Save", "Product/Geo", "Onboarding", "Contract/Sig"],
+  "chart_w1": [11, 5, 4, 5, 2, 4, 15],
+  "chart_w2": [5, 4, 5, 6, 6, 9, 21]
+}
