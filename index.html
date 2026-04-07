@@ -190,7 +190,7 @@
 // ─── DATA SOURCE ─────────────────────────────────────────────────────────────
 // After publishing the sheet: File → Share → Publish to web → "data" tab → CSV
 // paste the URL here and commit this one line change.
-const DATA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRw9Q6m_ioJZQwEDz9I-4TciSrDZRraSBz2-M19_B5af_Krj39774Ou0HCpbSIP5_ZTLYSrhxVdZyU9/pub?gid=0&single=true&output=csv';
+const DATA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTYduNR0YRQFzpmIhcNK4oSLuxv8BBrdW9OvMntv2dorgWR_-h9tLLFHCtUCdumihI77ONvB3NRpmt9/pub?gid=0&single=true&output=csv';
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 function h(s) {
@@ -1010,10 +1010,43 @@ const INLINE_DATA = {
 };
 
 // ─── LOAD ─────────────────────────────────────────────────────────────────────
+// DATA_URL: published Google Sheet (Sheet1, row 22 = full JSON blob)
+// To publish: open the sheet → File → Share → Publish to web → Sheet1 → CSV
+// Then update DATA_URL below and commit — no further PRs needed after that.
+// Each run just writes new JSON to Sheet1!A22 via update_google_drive_sheet.
+
 async function init() {
   const loading = document.getElementById('loading');
   try {
-    const data = INLINE_DATA;
+    let data = null;
+
+    // Try fetching live data from published sheet (row 22 = full_json)
+    if (DATA_URL && DATA_URL.startsWith('https://docs.google.com/spreadsheets/d/e/')) {
+      try {
+        const resp = await fetch(DATA_URL, { cache: 'no-store' });
+        if (resp.ok) {
+          const csv = await resp.text();
+          const rows = csv.split('\n');
+          // Row 22 (index 21) contains the JSON blob
+          if (rows.length > 21) {
+            let jsonStr = rows[21].trim();
+            // Strip surrounding CSV quotes if present
+            if (jsonStr.startsWith('"') && jsonStr.endsWith('"')) {
+              jsonStr = jsonStr.slice(1, -1).replace(/""/g, '"');
+            }
+            if (jsonStr.startsWith('{')) {
+              data = JSON.parse(jsonStr);
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Live data fetch failed, falling back to inline data:', e);
+      }
+    }
+
+    // Fallback to baked-in snapshot
+    if (!data) data = INLINE_DATA;
+
     loading.style.display = 'none';
     document.getElementById('app').style.display = 'block';
     render(data);
