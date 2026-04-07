@@ -669,15 +669,15 @@ function buildCharts(d) {
 // ─── INLINE DATA ─────────────────────────────────────────────────────────────
 const INLINE_DATA = {
   "meta": {
-    "period": "Mar 18 – Apr 1, 2026",
+    "period": "Mar 23 – Apr 6, 2026",
     "w1": {
-      "label": "Mar 18–25"
+      "label": "Mar 23–30"
     },
     "w2": {
-      "label": "Mar 25–Apr 1"
+      "label": "Mar 30–Apr 6"
     },
-    "run_date": "Apr 1, 2026",
-    "run_note": "Q1 Close",
+    "run_date": "Apr 6, 2026",
+    "run_note": "Q1 Close + Q2 Ramp",
     "channels": [
       {
         "name": "seller-systems-support",
@@ -694,171 +694,188 @@ const INLINE_DATA = {
     ],
     "cpr_rate": "62.6",
     "cpr_note": "Stable WoW · Apr 8 monthly review",
-    "messages_analyzed": "307 messages"
+    "messages_analyzed": "~115 messages across 3 channels"
   },
-  "bluf": "**Deal Composer reliability is the #1 critical issue this week**: 90 DC-related incidents in W2 (+100% WoW), spanning save failures, negative BPS retention errors, below-floor false positives, and Klarna/Link pricing bugs — the Q1 close surge is magnifying every friction point. **Contract and signature workflows buckled under Q1 pressure**: 49 W2 incidents (+158% WoW) driven by Ironclad internal reviewer blocks, DocuSign non-delivery, and SPA generation failures are holding deals from the finish line. **Approvals volume surged +135% WoW** to 40 incidents; the most acute blocker is a broken ONR resubmission flow where reps cannot re-submit after rejection — directly blocking Q1 close deals. **Immediate actions needed today**: clear the Ironclad internal reviewer queue, patch the ONR resubmission bug, and investigate DC BPS/GR miscalculations generating false below-floor flags.",
+  "bluf": "**Post-Q1 close, support volume has dropped sharply** — W1 logged 60 issues in #seller-systems-support (Mar 23–30) driven by end-of-quarter DC bugs, approvals pressure, and contract workflow failures; W2 activity is minimal, consistent with the natural exhale after close. **A critical misbilling escalation requires immediate Q2 action**: ACH Faster Settlement validation is missing in Stratus — 26 merchants are accumulating at sticker rate totaling $2M+ in potentially incorrect billing (GTMS-38895, overdue since Dec 2025). **Stratus product gap posture is unchanged**: Terminal still absent (multiple weekly requests), Financial Connections not priceable, LPM/iDeal showing $0 ONR — same gaps from last run with no movement. **CPR rate holds at 62.6 contacts/100 active opps**, stable WoW; Apr 8 monthly review will cover full trending.",
   "categories": [
     {
-      "name": "DC Reliability",
-      "w1": 45,
-      "w2": 90,
-      "severity": "crit",
-      "status": "Save errors, BPS/GR calc bugs, false below-floor flags, Klarna pricing not pulling",
-      "channel": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "flags": [
-        "Q1 surge"
-      ]
+      "name": "DC Bugs / Errors",
+      "w1": 24,
+      "w2": 2,
+      "severity": "high",
+      "status": "Q1 peak subsiding; tiered pricing deletes, ONR calc errors, Link $0 revenue persist",
+      "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
+    },
+    {
+      "name": "Pricing / Approvals",
+      "w1": 16,
+      "w2": 1,
+      "severity": "high",
+      "status": "Below-floor false positives, ONR routing errors from W1 — volume falling post-close",
+      "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
     },
     {
       "name": "Contract / Signature Workflow",
-      "w1": 19,
-      "w2": 49,
-      "severity": "crit",
-      "status": "Ironclad internal reviewer holds, DocuSign non-delivery, SPA generation errors",
-      "channel": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "flags": [
-        "Q1 surge"
-      ]
-    },
-    {
-      "name": "Approvals / Workflow Blockers",
-      "w1": 17,
-      "w2": 40,
-      "severity": "crit",
-      "status": "ONR resubmission bug, false below-floor flags triggering L2, auto-routing errors",
+      "w1": 8,
+      "w2": 0,
+      "severity": "med",
+      "status": "Q1 surge resolved; Ironclad and DocuSign issues from W1 need follow-up confirmation",
       "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
     },
     {
       "name": "Product / Geo Gaps",
-      "w1": 18,
-      "w2": 36,
-      "severity": "high",
-      "status": "Terminal/Fin Connections not in Stratus, Klarna Nordic, Canada Connect",
-      "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
-    },
-    {
-      "name": "Access / Provisioning",
-      "w1": 14,
-      "w2": 30,
-      "severity": "high",
-      "status": "Gong access/forecast issues, Salesforce permissions, Panorama booking",
-      "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
-    },
-    {
-      "name": "Closed / Onboarding Blockers",
-      "w1": 1,
-      "w2": 9,
-      "severity": "high",
-      "status": "Q1 close: Unique Merchant ID uneditable, BPS not pulling, contract missing",
-      "channel": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "flags": [
-        "New spike"
-      ]
-    },
-    {
-      "name": "Adaptive Pricing Friction",
-      "w1": 3,
-      "w2": 10,
+      "w1": 7,
+      "w2": 0,
       "severity": "med",
-      "status": "IC+ passthrough miscalc, blended ONR errors, premium support auto-add",
+      "status": "Stratus gaps (Terminal, Fin Connections, Standard Connect) carrying into Q2",
+      "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
+    },
+    {
+      "name": "Misbilling / ACH",
+      "w1": 4,
+      "w2": 1,
+      "severity": "crit",
+      "status": "ACH Faster Settlement: $2M+ misbilling, 26 merchants, GTMS-38895 overdue Dec 2025",
       "channel": "https://stripe.slack.com/archives/C05FDARJBA4",
       "flags": [
-        "↑↑ 233%"
+        "ESCALATION"
       ]
+    },
+    {
+      "name": "Access / Roles",
+      "w1": 1,
+      "w2": 0,
+      "severity": "low",
+      "status": "Minimal activity post-close",
+      "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
     }
   ],
   "stratus_categories": [
     {
-      "name": "Stratus Adoption / Access",
-      "w1": 3,
-      "w2": 3,
-      "severity": "med",
-      "status": "Per-opp access requests, product gap questions",
-      "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-    },
-    {
-      "name": "Stratus Bugs",
+      "name": "Stratus — Terminal / Card Present",
       "w1": 1,
       "w2": 2,
       "severity": "high",
-      "status": "LPM/iDeal $0 revenue; direct payments selection missing",
+      "status": "Not supported; AEs forced to DC for all Terminal deals. Top adoption blocker.",
+      "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8",
+      "flags": [
+        "Recurring"
+      ]
+    },
+    {
+      "name": "Stratus — Financial Connections",
+      "w1": 0,
+      "w2": 1,
+      "severity": "med",
+      "status": "Not priceable in Stratus; no roadmap ETA communicated to AEs",
+      "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8"
+    },
+    {
+      "name": "Stratus — ACH Faster Settlement",
+      "w1": 0,
+      "w2": 1,
+      "severity": "crit",
+      "status": "Missing validation rule — $2M+ misbilling across 26 merchants. GTMS-38895 overdue.",
+      "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8",
+      "flags": [
+        "CRITICAL"
+      ]
+    },
+    {
+      "name": "Stratus — LPM / iDeal",
+      "w1": 1,
+      "w2": 0,
+      "severity": "high",
+      "status": "LPM iDeal showing $0 ONR — blocks pricing workflow in Stratus",
+      "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8"
+    },
+    {
+      "name": "Stratus — Standard Connect Access",
+      "w1": 0,
+      "w2": 1,
+      "severity": "med",
+      "status": "New Standard Connect accounts need Stratus access; provisioning path unclear",
       "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8"
     }
   ],
   "pulse_cards": [
     {
-      "label": "Critical — DC",
-      "issue": "BPS/GR Calculation Errors",
-      "detail": "Negative BPS retention, Non-Amex mix ≠ 100%, and false below-floor triggers blocking saves. 30+ unique incidents in W2.",
+      "label": "Critical — Misbilling",
+      "issue": "ACH Faster Settlement: $2M+ Misbilling",
+      "detail": "26 merchants on sticker rate due to missing validation logic in Stratus. HubSpot $198K, Emburse $2M+. GTMS-38895 was due Dec 2025 — still unresolved entering Q2.",
       "severity": "crit",
-      "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
+      "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8"
     },
     {
-      "label": "Critical — Contract",
-      "issue": "Ironclad Internal Reviewer Block",
-      "detail": "Agreements stuck in 'waiting on internal reviewer'. No clear DRI, creating a Q1-close bottleneck across multiple deals.",
-      "severity": "crit",
-      "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
+      "label": "High — Stratus",
+      "issue": "Terminal Not Supported in Stratus",
+      "detail": "Two new requests this week. Every Terminal deal stays in DC, blocking Stratus adoption for a core enterprise product segment.",
+      "severity": "high",
+      "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8"
     },
     {
-      "label": "Critical — Approvals",
-      "issue": "ONR Resubmission Bug",
-      "detail": "After approval rejection, reps cannot resubmit ONR — the resubmission flow is broken. Q1 deal directly blocked.",
-      "severity": "crit",
-      "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
-    },
-    {
-      "label": "High — Onboarding",
-      "issue": "Q1 Close-Out Surge",
-      "detail": "9 onboarding blockers in W2 vs 1 in W1: Unique Merchant ID uneditable, BPS not pulling from DC/Stratus, missing contract object.",
+      "label": "High — DC",
+      "issue": "DC Bugs Persisting into Q2",
+      "detail": "Tiered pricing delete failures, ONR calculation errors, and Link $0 revenue issues that spiked at Q1 close haven't fully resolved — 2 fresh DC issues in W2.",
       "severity": "high",
       "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
     },
     {
       "label": "High — Stratus",
-      "issue": "LPM/iDeal Revenue $0",
-      "detail": "Pricing a deal with LPM - iDeal in Stratus shows no revenue flowing. Terminal and Financial Connections still absent from Stratus catalog.",
+      "issue": "LPM / iDeal $0 ONR",
+      "detail": "Pricing a deal with LPM - iDeal in Stratus shows no revenue flowing. Unresolved from prior run.",
       "severity": "high",
+      "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8"
+    },
+    {
+      "label": "Med — Stratus",
+      "issue": "Financial Connections Absent",
+      "detail": "New request this week. Not priceable in Stratus; no ETA communicated. AEs asking weekly.",
+      "severity": "med",
       "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8"
     }
   ],
   "stratus_deep_dive": {
-    "w1_total": 4,
+    "w1_total": 2,
     "w2_total": 5,
-    "wow_note": "Steady volume; product gaps driving all friction",
+    "wow_note": "Volume picking up as Q2 ramp begins; ACH misbilling is the critical new signal",
     "sentiment": "mixed",
-    "sentiment_note": "AEs want to use Stratus but are hitting hard walls: missing products (Terminal, Financial Connections), a revenue calculation bug for LPM/iDeal, and per-opportunity manual access requests. Tone in #stratus-support is politely frustrated — people are trying but can't complete workflows.",
+    "sentiment_note": "AEs are attempting to use Stratus for Q2 deals but running into hard blockers: Terminal is still absent, ACH Faster Settlement creates compliance risk, and iDeal/LPM shows $0 revenue. Tone in #stratus-support is pragmatically frustrated — people route around it rather than fight it.",
     "bugs": [
       {
-        "count": 2,
-        "title": "LPM / iDeal — No Revenue Flowing",
-        "detail": "Pricing a deal with LPM - iDeal shows $0 revenue on the product pricing page in Stratus.",
-        "quote": "trying to price a deal with LPM - iDeal but no revenue is showing as flowing through"
+        "count": 1,
+        "title": "ACH Faster Settlement — Missing Validation Logic",
+        "detail": "Stratus lacks the validation rule that enforces ACH Faster Settlement eligibility. 26 merchants being billed at sticker rate — $2M+ exposure. GTMS-38895 overdue since Dec 2025.",
+        "quote": "ACH Faster Settlement pricing validation missing in Stratus — merchants are accumulating at sticker rate"
       },
       {
-        "count": 2,
-        "title": "Direct Payments Selection Unavailable",
-        "detail": "AEs cannot select standalone Direct Payments as a product in Stratus — only bundled configurations appear.",
-        "quote": "why can't I pick just direct payments in Stratus?"
+        "count": 1,
+        "title": "LPM / iDeal — $0 ONR",
+        "detail": "Pricing a deal with LPM - iDeal in Stratus shows zero revenue flowing. Blocks pricing workflow for iDeal-heavy deals.",
+        "quote": "trying to price a deal with LPM - iDeal but no revenue is showing as flowing through"
       }
     ],
     "adoption_friction": [
       {
-        "title": "Per-Opportunity Access Request Required",
-        "detail": "No self-serve provisioning — AEs must request Stratus access for each deal individually, creating delays."
-      },
-      {
-        "title": "Terminal Absent → AEs Route Back to DC",
-        "detail": "Terminal is the most-requested missing product. Every Terminal deal stays in DC, limiting Stratus adoption."
+        "title": "Terminal Absent — Biggest Adoption Wall",
+        "detail": "2 requests this week alone. Every Terminal deal must go through DC. Until Terminal ships in Stratus, adoption ceiling is hard."
       },
       {
         "title": "Financial Connections Not Priceable",
-        "detail": "Multiple AEs asking if Financial Connections is in Stratus yet. It is not — unclear roadmap timeline."
+        "detail": "New ask this week. No roadmap ETA visible to AEs — they're asking because they're actively trying to use Stratus for these deals."
+      },
+      {
+        "title": "Standard Connect Provisioning Unclear",
+        "detail": "New Standard Connect accounts need Stratus access; the provisioning path is undefined, creating friction at the sales handoff."
+      },
+      {
+        "title": "Per-Opportunity Manual Access Still Required",
+        "detail": "No self-serve provisioning path. AEs must request Stratus access deal by deal. Scaling problem as Q2 volume picks up."
       }
     ],
     "missing_products": [
       {
-        "name": "Terminal",
+        "name": "Terminal / Card Present",
         "status": "missing"
       },
       {
@@ -870,8 +887,8 @@ const INLINE_DATA = {
         "status": "broken"
       },
       {
-        "name": "Direct Payments (standalone)",
-        "status": "gap"
+        "name": "ACH Faster Settlement (validation)",
+        "status": "broken"
       },
       {
         "name": "Standard Connect (new)",
@@ -879,125 +896,115 @@ const INLINE_DATA = {
       }
     ],
     "priorities": [
-      "Fix LPM/iDeal revenue calculation — $0 showing blocks pricing workflow entirely",
-      "Add Terminal to Stratus product catalog — top-requested gap, AEs forced back to DC",
-      "Add Financial Connections to Stratus pricing",
-      "Build self-serve access provisioning — per-opp manual requests are a scaling problem",
-      "Enable standalone Direct Payments product selection"
+      "Ship ACH Faster Settlement validation rule in Stratus — $2M+ misbilling risk, GTMS-38895 overdue since Dec 2025",
+      "Add Terminal to Stratus product catalog — top adoption blocker, weekly requests, AEs forced to DC",
+      "Fix LPM/iDeal $0 ONR — blocks pricing workflow for iDeal deals entirely",
+      "Add Financial Connections to Stratus — weekly asks, no ETA communicated",
+      "Build self-serve Stratus access provisioning — per-opp manual requests won't scale into Q2 volume"
     ]
   },
   "approvals_deep_dive": {
-    "w1_total": 17,
-    "w2_total": 40,
-    "wow_note": "Q1 close surge driving volume",
+    "w1_total": 16,
+    "w2_total": 1,
+    "wow_note": "Q1 surge resolved; residual DC false-positive flags to monitor in Q2",
     "tool": "DC + Ironclad",
     "blockers": [
       {
-        "count": 12,
-        "title": "False Below-Floor Flags / L2 Triggering",
-        "detail": "DC flagging deals as below floor when GR/BPS are at or above floor. Unnecessary L2 approvals and review delays.",
+        "count": 8,
+        "title": "False Below-Floor Flags / L2 Triggering (W1 peak)",
+        "detail": "DC flagging deals as below floor when GR/BPS are at or above floor. Drove bulk of W1 approval noise at Q1 close. W2 volume fell sharply.",
         "quote": "opp is flagging as below floor on cards when it is above floor"
       },
       {
-        "count": 8,
-        "title": "Ironclad Internal Reviewer Hold",
-        "detail": "Agreements stuck waiting for 'internal reviewer'. No clear DRI to action these — creates end-of-quarter bottleneck.",
-        "quote": "waiting on 'internal reviewer'. who can action that?"
-      },
-      {
-        "count": 6,
-        "title": "ONR Resubmission Bug After Rejection",
-        "detail": "Reps who receive an ONR rejection cannot resubmit — submission flow is broken post-rejection.",
-        "quote": "resubmitting ONR approval after rejection, but cannot submit it again now (facing blocker)"
-      },
-      {
         "count": 5,
-        "title": "Auto-Routing to Wrong Approval Level",
-        "detail": "Deals routing to L2 or 'Not Recommended' when GR ≥ 1.0 and metrics are above floor.",
+        "title": "ONR Resubmission Bug (W1)",
+        "detail": "Reps who received an ONR rejection could not resubmit. If not patched, this will recur when Q2 deal volume ramps.",
+        "quote": "resubmitting ONR approval after rejection, but cannot submit it again now"
+      },
+      {
+        "count": 3,
+        "title": "Auto-Routing to Wrong Approval Level (W1)",
+        "detail": "Deals routed to L2 or 'Not Recommended' when GR ≥ 1.0 and metrics above floor. Resolved at end of Q1 but root cause unclear.",
         "quote": "GR is 1.04 & No below floor but still going to Level 2 approval"
       }
     ],
     "cross_functional": [
       {
         "title": "DealOps / Finance — ONR Queue Backlog",
-        "detail": "AEs waiting on DealOps/Finance for ONR approvals at Q1 close. Backlog growing with no visibility into queue status."
+        "detail": "W1 ONR approval backlogs at Q1 close. W2 activity minimal — but underlying queue delays should be confirmed cleared."
       },
       {
-        "title": "Legal — Ironclad Internal Review SLA",
-        "detail": "Internal legal reviewers are a bottleneck for contract signature flow. No defined SLA or clear routing."
-      },
-      {
-        "title": "DocuSign — Internal + External Delivery Failures",
-        "detail": "Both internal (manager) and external (user) signatories not receiving DocuSign notifications. No fallback."
+        "title": "Legal — Ironclad Internal Review",
+        "detail": "Agreements stuck in 'waiting on internal reviewer' during W1. DRI assignment and SLA still unconfirmed for Q2."
       }
     ],
     "exception_stats": {
       "wrong_level": {
-        "count": 9,
-        "label": "False L2 Triggers",
-        "detail": "Deals at/above floor incorrectly routed to L2"
+        "count": 8,
+        "label": "False L2 Triggers (W1)",
+        "detail": "Deals at/above floor routed to L2 — GR/BPS miscalculation"
       },
       "auto_approve_fail": {
-        "count": 6,
-        "label": "Resubmission Failures",
+        "count": 5,
+        "label": "Resubmission Failures (W1)",
         "detail": "Cannot re-submit after ONR approval rejection"
       }
     },
-    "exception_note": "Majority of W2 approval blocks appear to be system errors (false positives, routing bugs) rather than legitimate below-floor exceptions. True exception volume is likely much lower.",
-    "carryover_note": "Several W1 approval blocks appear to have carried into W2 unresolved — particularly Ironclad holds and DocuSign delivery issues.",
+    "exception_note": "W1 approval blocks were predominantly system errors (false positives, routing bugs), not legitimate below-floor exceptions. W2 volume has fallen but the root causes — BPS/GR calc and resubmission bug — should be confirmed patched before Q2 ramp.",
+    "carryover_note": "Ironclad internal reviewer queue and DocuSign delivery failures from W1 need status confirmation — unclear if resolved or just quieted due to post-close lull.",
     "priorities": [
-      "Fix ONR resubmission bug — reps are stuck with zero recourse when approval is rejected",
-      "Investigate DC below-floor false positives — GR/BPS miscalculations generating unnecessary L2 reviews",
-      "Establish Ironclad internal reviewer DRI + SLA — queue is unowned at critical Q1 close",
-      "Audit DocuSign routing config — both internal and external delivery failures occurring simultaneously"
+      "Confirm ONR resubmission bug is patched — if not, it will recur at Q2 ramp",
+      "Confirm DC below-floor false positive root cause is resolved — BPS/GR miscalculation drove 8 unnecessary L2 reviews in W1",
+      "Establish Ironclad internal reviewer DRI + SLA before Q2 volume resumes",
+      "Confirm DocuSign routing fix — internal and external delivery failures from W1 need status"
     ]
   },
   "actions": [
     {
-      "body": "**Clear Ironclad internal reviewer queue today** — identify all deals stuck in 'waiting on internal reviewer' state, assign a DRI, and unblock by EOD. Multiple Q1 deals are blocked.",
-      "owner": "Owner: Seller Systems + Legal · Due: Apr 1 EOD"
+      "body": "**Prioritize GTMS-38895 (ACH Faster Settlement validation) for Q2 P0** — 26 merchants accumulating $2M+ in misbilling. This was due December 2025. Add Stratus validation rule immediately and identify remediation plan for affected merchants.",
+      "owner": "Owner: Stratus Engineering + DealOps · Due: Apr 10"
     },
     {
-      "body": "**Fix ONR resubmission bug** — reps cannot resubmit ONR approvals after rejection. File Jira P0; provide clone + resubmit workaround to affected reps immediately.",
-      "owner": "Owner: Seller Systems Engineering · Due: Apr 1–2"
+      "body": "**Confirm ONR resubmission bug is patched** — if it shipped during Q1 close, verify fix. If not, it will resurface when Q2 deal volume ramps. File Jira P1 if still open.",
+      "owner": "Owner: Seller Systems Engineering · Due: Apr 8"
     },
     {
-      "body": "**Resolve Q1 close-out onboarding blockers** — Unique Merchant ID field uneditable, BPS not pulling from DC/Stratus, missing contract objects blocking move to Closed/Onboarding.",
-      "owner": "Owner: Seller Systems Ops · Due: Apr 1 EOD"
+      "body": "**Confirm Ironclad internal reviewer queue is cleared** — deals stuck during Q1 close may still be unresolved. Verify queue status and assign a DRI for the Q2 review SLA.",
+      "owner": "Owner: Seller Systems + Legal · Due: Apr 8"
     },
     {
-      "body": "**Investigate DC BPS/GR calculation errors** — negative BPS retention, Non-Amex mix ≠ 100%, and false below-floor flags generating approval queue noise. Root-cause investigation.",
-      "owner": "Owner: DC Engineering · Due: Apr 3"
+      "body": "**Fix LPM/iDeal $0 ONR in Stratus** — revenue not flowing for iDeal deals blocks pricing workflow. Unresolved from prior run.",
+      "owner": "Owner: Stratus Engineering · Due: Apr 10"
     },
     {
-      "body": "**Fix DocuSign routing failures** — both internal (manager) and external (user) signatories not receiving notifications. Audit routing config; identify all affected open deals.",
-      "owner": "Owner: Seller Systems · Due: Apr 3"
+      "body": "**Plan Terminal in Stratus for Q2 roadmap** — most-requested missing product, 2+ new asks this week. AEs are routing all Terminal deals to DC, capping Stratus adoption.",
+      "owner": "Owner: Stratus PM · Due: roadmap slot Apr 13"
     },
     {
-      "body": "**Fix LPM/iDeal revenue calculation in Stratus** — $0 revenue shown for iDeal deals blocks pricing workflow entirely.",
-      "owner": "Owner: Stratus Engineering · Due: Apr 3"
+      "body": "**Communicate Financial Connections and Standard Connect roadmap timeline to AEs** — no ETA is visible and weekly asks are growing. Even a 'not in Q2' answer reduces noise.",
+      "owner": "Owner: Stratus PM + Seller Enablement · Due: Apr 10"
     }
   ],
   "watchlist": [
     {
       "severity": "red",
-      "text": "**DC false below-floor spike** — if BPS/GR miscalculation is systemic, expect continued approval queue noise in Q2 ramp. Monitor for recurrence after the Q1 rush subsides."
+      "text": "**ACH Faster Settlement misbilling ($2M+)** — 26 merchants on sticker rate. GTMS-38895 overdue since Dec 2025. Every week this stays open is more merchant exposure. Must ship Q2 W1."
     },
     {
       "severity": "red",
-      "text": "**Stratus Terminal gap** — AEs asking weekly. Until Terminal is in Stratus, DC remains default for Terminal deals, limiting Stratus adoption tracking."
+      "text": "**DC bug carryover into Q2** — tiered pricing delete, ONR calc errors, and Link $0 revenue appeared in W2. If these aren't root-caused, Q2 ramp will re-amplify them."
     },
     {
       "severity": "orange",
-      "text": "**Adaptive Pricing Friction +233% WoW** — IC+ passthrough calculation errors and blended pricing bugs are a growing category. Watch for sustained increase in Q2 W1."
+      "text": "**Stratus Terminal gap** — weekly requests, growing. Stratus adoption tracking is incomplete until Terminal deals can be priced there. No workaround exists."
     },
     {
       "severity": "orange",
-      "text": "**Gong forecast visibility gaps** — multiple reps reporting opps missing from Gong dashboards and forecasts. Possible data sync issue affecting pipeline visibility."
+      "text": "**ONR resubmission + below-floor false positives** — patched or just quiet? Q2 volume will stress-test. Confirm fix status before Apr 13."
     },
     {
       "severity": "yellow",
-      "text": "**GTM contact rate 62.6/100 opps, stable WoW** — monthly seller support ticket review session on Apr 8 will cover trending."
+      "text": "**CPR rate 62.6/100 opps, stable WoW** — Apr 8 monthly review will surface whether Q1 close pressure affected contact rate trends going into Q2."
     }
   ]
 };
