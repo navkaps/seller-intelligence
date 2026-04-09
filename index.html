@@ -766,395 +766,375 @@ function buildCharts(d) {
 // ─── INLINE DATA ─────────────────────────────────────────────────────────────
 const INLINE_DATA = {
   "meta": {
-    "period": "Apr 1 – Apr 8, 2026",
+    "period": "Apr 2 – Apr 9, 2026",
+    "run_date": "April 9, 2026",
+    "run_note": "SFDC via Hubble (restricted_sfdc_pii) + Slack MCP",
     "w1": {
-      "label": "Apr 1–3"
+      "label": "Mar 26–Apr 1",
+      "start": "2026-03-26",
+      "end": "2026-04-01"
     },
     "w2": {
-      "label": "Apr 7–8"
-    },
-    "run_date": "Apr 8, 2026",
-    "run_note": "Q2 Ramp · DC Volume Surging · ACH FS Sticker Bug Confirmed",
-    "channels": [
-      {
-        "name": "seller-systems-support",
-        "url": "https://stripe.slack.com/archives/C05FDARJBA4"
-      },
-      {
-        "name": "gtm-seller-systems-cpr",
-        "url": "https://stripe.slack.com/archives/C09E79ZK3PS"
-      },
-      {
-        "name": "stratus-support",
-        "url": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-      }
-    ],
-    "cpr_rate": "62.6",
-    "cpr_note": "Stable WoW · Apr 8 monthly review in session",
-    "messages_analyzed": "~200+ messages across 3 channels"
+      "label": "Apr 2–Apr 9",
+      "start": "2026-04-02",
+      "end": "2026-04-09"
+    }
   },
-  "bluf": "**DC volume is surging in Q2** — 54 issues in W2 (Apr 7–8 alone), up 32% from the prior period, led by save errors, ONR calculation bugs, and a new cross-opp data mapping bug (DC_SUPPORT-8277) where changes in one deal contaminated another. **ACH Faster Settlement has two separate failure modes both active this week**: wrong sticker in DC (1.5% auto-populating instead of 0.60%, forcing unnecessary Deal Pricing reviews) and the $2M+ misbilling guardrail that viveky confirmed is not being built in Stratus. **Terminal remains in manual per-team enablement** — AEs still asking whether it’s supported. **Ironclad confusion resolved**: Ironclad moved to the Contracting tab in the SFDC UI update; AEs who couldn’t find it now unblocked.",
+  "bluf": "**DC volume remains the dominant driver** — 28 issues in W2 with save errors, ONR miscalculations, bucket tier bugs, and the cross-opp data contamination (DC_SUPPORT-8277) still open. **Ironclad confusion is persisting** despite last week’s resolution: two AEs (nigep, chrismc) reported this week they can’t find Ironclad in SFDC — the broadcast was not sent. **ACH Faster Settlement misbilling (GTMS-38895) remains in backlog** with 26 merchants accumulating at sticker and $2M+ already confirmed. **One positive signal**: Stratus is gaining pull — shafrir proactively migrated two DC deals to Stratus today and was enabled within minutes.",
+  "pulse_cards": [
+    {
+      "label": "DC save errors",
+      "value": "4 open",
+      "trend": "up",
+      "note": "yee/LPM Revenue Share unresolved 3+ days; joshford Non-Amex; sarahhunt; llloret opp-specific"
+    },
+    {
+      "label": "Ironclad broadcast",
+      "value": "not sent",
+      "trend": "warn",
+      "note": "nigep + chrismc blocked this week; second week of same issue"
+    },
+    {
+      "label": "ACH FS guardrail",
+      "value": "still backlog",
+      "trend": "crit",
+      "note": "GTMS-38895 P2 overdue; 26 merchants at sticker; $2M+ confirmed"
+    },
+    {
+      "label": "Stratus adoption",
+      "value": "accelerating",
+      "trend": "positive",
+      "note": "shafrir migrated 2 deals same-day; DC→Stratus workflow question growing"
+    }
+  ],
   "categories": [
     {
       "name": "DC Bugs / Errors",
       "w1": 41,
-      "w2": 54,
+      "w2": 28,
       "severity": "high",
-      "status": "Q2 ramp driving volume up 32% WoW; new cross-opp data mapping bug (DC_SUPPORT-8277) and SMP ONR $0 bug (DC_SUPPORT-8261, workaround: change settlement currency to SGD)",
-      "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
+      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
+      "note": "Save errors, ONR miscalculations, bucket tiers broken, cross-opp contamination, term length field missing."
     },
     {
-      "name": "Contract / Signature Workflow",
+      "name": "Contract / Signature",
       "w1": 22,
-      "w2": 10,
-      "severity": "med",
-      "status": "Ironclad confusion largely resolved — moved to Contracting tab in SFDC UI update. Contract/SPA generation errors persisting for some AEs.",
-      "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
+      "w2": 7,
+      "severity": "high",
+      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
+      "note": "Ironclad confusion persists (2 AEs can’t find it). SPA error after approval. DocuSign senders rights gap."
     },
     {
       "name": "Access / Roles",
       "w1": 16,
-      "w2": 13,
+      "w2": 6,
       "severity": "low",
-      "status": "SFDC access changes affecting UKI ESMs, Gong access for new managers, ZoomInfo and Level 11 provisioning requests",
-      "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
+      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
+      "note": "SFDC access degraded (shackett). License required. ZoomInfo, Level 11, Gong hierarchy."
     },
     {
       "name": "Pricing / ACH",
       "w1": 4,
-      "w2": 4,
+      "w2": 5,
       "severity": "high",
-      "status": "ACH Faster Settlement sticker bug confirmed — 1.5% auto-populating instead of 0.60%, deflating GR and routing deals to unnecessary Deal Pricing review. Known issue, no fix owner.",
-      "channel": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "flags": ["ESCALATION"]
+      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
+      "note": "ACH FS sticker 1.5% bug persists. GTMS-38895 guardrail backlog. GR wrong at 0.85 on sticker deals."
     },
     {
       "name": "Approvals / Workflow",
       "w1": 4,
-      "w2": 1,
+      "w2": 2,
       "severity": "low",
-      "status": "Approval volume down significantly from Q1 close peak; below-floor false positive patterns not re-spiking yet",
-      "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
+      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
+      "note": "No approval level on negative ONR deals. Stage completion blocked. Volume declining."
     },
     {
       "name": "Misbilling / ACH",
       "w1": 1,
       "w2": 2,
       "severity": "crit",
-      "status": "GTMS-38895 still unresolved — guardrail NOT in Stratus build plan per viveky. $2M+, 26 merchants at sticker. ACH FS sticker bug in DC is a separate second failure mode.",
-      "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8",
-      "flags": ["ESCALATION"]
+      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
+      "note": "SMP ONR $0 on Stripe Managed Payments (new variant). ACH FS misbilling accumulating."
     }
   ],
   "stratus_categories": [
     {
-      "name": "Stratus — Terminal / Card Present",
-      "w1": 1,
-      "w2": 2,
-      "severity": "med",
-      "status": "Still in manual per-team enablement — AEs asking if Terminal support is available this week. Not broadly self-serve yet.",
-      "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8"
+      "name": "Terminal / Card Present",
+      "w1": 3,
+      "w2": 4,
+      "note": "Manual per-team enablement. shafrir enabled same-day. katiedeaney asked again."
     },
     {
-      "name": "Stratus — ACH Faster Settlement",
+      "name": "LPM/iDeal ONR $0",
+      "w1": 2,
+      "w2": 2,
+      "note": "GTMS-42934 root cause found (INTRA_EEA + CZ). Fix timeline TBD."
+    },
+    {
+      "name": "DC→Stratus migration",
       "w1": 0,
-      "w2": 2,
-      "severity": "crit",
-      "status": "Two failure modes: (1) $2M+ misbilling guardrail NOT in build plan (GTMS-38895), (2) DC sticker bug 1.5% vs 0.60% confirmed this week. No unified fix owner.",
-      "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8",
-      "flags": ["CRITICAL"]
+      "w2": 3,
+      "note": "New this week: AEs asking how to use Stratus for counter-offers on DC deals."
     },
     {
-      "name": "Stratus — LPM / iDeal",
-      "w1": 1,
-      "w2": 0,
-      "severity": "high",
-      "status": "Root cause confirmed (INTRA_EEA + CZ territory conflict, GTMS-42934). viveky debugging; no ETA.",
-      "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-    },
-    {
-      "name": "Stratus — Access / Provisioning",
+      "name": "ACH FS validation",
       "w1": 1,
       "w2": 1,
-      "severity": "med",
-      "status": "websterpilcher requested Stratus access this week. Financial Connections + Standard Connect still not self-serve.",
-      "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8"
+      "note": "GTMS-38895 validation rule not in Stratus build."
     },
     {
-      "name": "Stratus — DC Overlap / Onboarding",
-      "w1": 0,
+      "name": "Overlapping pricing config",
+      "w1": 1,
       "w2": 1,
-      "severity": "med",
-      "status": "DC allowing overlapping location pricing; 4-week onboarding block reported again by levi. Stratus validation gap.",
-      "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-    }
-  ],
-  "pulse_cards": [
-    {
-      "label": "Critical — Misbilling",
-      "issue": "ACH FS: Two Active Failure Modes, No Unified Owner",
-      "detail": "Failure mode 1: GTMS-38895 guardrail not being built (viveky confirmed Apr 2). 26 merchants, $2M+ open. Failure mode 2: DC auto-populates 1.5% sticker instead of 0.60% for ACH Faster Settlement — confirmed this week (calliewalsh), forces unnecessary Deal Pricing reviews and references prior $1.2M misbilling (INCIDENT-23396).",
-      "severity": "crit",
-      "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-    },
-    {
-      "label": "High — DC",
-      "issue": "DC Volume Surging — New Cross-Opp Data Mapping Bug",
-      "detail": "54 DC issues in W2 (Apr 7–8 alone), up 32% WoW. New bug: austinjohnson reported Deal Composer changes from one opp (Tapestry) contaminating another (1-800-Flowers) when both tabs were open — hours of pricing work lost. DC_SUPPORT-8277 filed. viv-c could not reproduce; no fix confirmed.",
-      "severity": "high",
-      "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
-    },
-    {
-      "label": "High — Stratus",
-      "issue": "Terminal Still Manual — AEs Asking Weekly",
-      "detail": "katiedeaney asked again Apr 8: 'is Terminal support still planned for today?' Terminal is in per-team manual enablement (viveky enabled Apr 6 for requesting AEs) but not broadly self-serve. Same AEs asking each week.",
-      "severity": "high",
-      "channel": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-    },
-    {
-      "label": "Resolved — Contract",
-      "issue": "Ironclad UI Confusion Resolved",
-      "detail": "nigep and others couldn’t find Ironclad/Generate Agreement button after SFDC interface update. Root cause: Ironclad moved to the Contracting tab. nigep confirmed resolved after support. Proactive comms to all AEs recommended to cut future support volume.",
-      "severity": "low",
-      "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
-    },
-    {
-      "label": "Med — DC",
-      "issue": "SMP ONR $0 Bug — Workaround Available",
-      "detail": "nicholasgoh (Razer AI — SG): DC can’t add usage % for Stripe Managed Payments → ONR fixed at $0. DC_SUPPORT-8261. viv-c workaround: change default settlement currency to SGD to make usage % editable. Engineering investigating root cause.",
-      "severity": "med",
-      "channel": "https://stripe.slack.com/archives/C05FDARJBA4"
+      "note": "DC allows overlapping config that breaks onboarding."
     }
   ],
   "stratus_deep_dive": {
-    "w1_total": 4,
-    "w2_total": 6,
-    "wow_note": "Terminal still in manual enablement; ACH FS has two active failure modes; DC overlap issue persists",
-    "sentiment": "mixed",
-    "sentiment_note": "Terminal is in phased rollout but AEs still asking weekly — enablement isn’t reaching them proactively. ACH Faster Settlement now has two separate confirmed bugs. DC overlapping pricing continues. Cautious: progress on Terminal but critical gaps unresolved.",
+    "w1_count": 7,
+    "w2_count": 11,
+    "sentiment": "Mixed",
     "bugs": [
       {
+        "desc": "LPM/iDeal ONR $0 (INTRA_EEA + CZ territory conflict)",
         "count": 2,
-        "title": "ACH Faster Settlement — Two Failure Modes, No Owner",
-        "detail": "Failure 1: GTMS-38895 Stratus renewal validation not being built. Failure 2: DC sticker auto-populates 1.5% (Instant Payouts rate) instead of 0.60% — confirmed by calliewalsh this week, references INCIDENT-23396 ($1.2M misbilling) as precedent.",
-        "quote": "The 1.5% appears to be the Instant Payouts (Direct, US) sticker rate being applied to the wrong product."
+        "quote": "iDeal but no revenue is showing as flowing through",
+        "status": "Root cause found; fix timeline TBD (GTMS-42934)"
       },
       {
-        "count": 1,
-        "title": "LPM / iDeal — $0 ONR (Root Cause Confirmed, Fix Pending)",
-        "detail": "INTRA_EEA + CZ territory conflict: calc system uses CZ’s 0% APM data for INTRA_EEA line item. GTMS-42934 open, viveky debugging. No ETA.",
-        "quote": "This is happening because these deals have both INTRA_EEA and CZ both on them — the deal has CZ at 0% APM, hence 0 numbers."
+        "desc": "Terminal / Card Present not available in Stratus",
+        "count": 4,
+        "quote": "any way I can get access to use Stratus for Stripe Terminal?",
+        "status": "Manual per-team enablement by viveky"
       },
       {
+        "desc": "ACH FS validation rule missing",
         "count": 1,
-        "title": "DC Overlapping Location Pricing → Onboarding Block",
-        "detail": "DC allows pricing overlapping locations/territories — same issue reported again this week by levi. 4-week onboarding delay post-signature. Stratus needs this validation before GA.",
-        "quote": "DC is letting sellers price locations and pricing that overlap, causing friction and blockers with the onboarding process"
+        "quote": "26 merchants currently accumulating at sticker",
+        "status": "GTMS-38895 in backlog (P2, rlotun). Overdue since Mar 9."
       }
     ],
     "adoption_friction": [
-      {
-        "title": "Terminal in Manual Per-Team Enablement — Not Self-Serve",
-        "detail": "viveky enabled Terminal for requesting AEs (Apr 6) but AEs who haven’t explicitly requested it still can’t access it. katiedeaney asked again Apr 8. No broad self-serve path."
-      },
-      {
-        "title": "Financial Connections Still Not Priceable",
-        "detail": "No update this week. No roadmap ETA communicated to AEs. Weekly asks continuing."
-      },
-      {
-        "title": "Standard Connect Provisioning Still Manual",
-        "detail": "New Standard Connect accounts require manual Stratus access provisioning. No self-serve path defined."
-      }
+      "No self-serve Stratus access — AEs must request per-deal enablement from viveky/williams",
+      "DC→Stratus migration has no documented workflow — AEs unsure if they can move mid-deal",
+      "Adaptive pricing not yet in Stratus — forces DC fallback for complex deals",
+      "Product coverage gaps not visible to AEs — Terminal confirmed supported but AEs don’t know"
     ],
-    "missing_products": [
-      {
-        "name": "Terminal / Card Present (self-serve)",
-        "status": "gap"
-      },
-      {
-        "name": "ACH FS Validation (guardrail)",
-        "status": "broken"
-      },
-      {
-        "name": "ACH FS Sticker in DC (1.5% vs 0.60%)",
-        "status": "broken"
-      },
-      {
-        "name": "iDeal / LPM (INTRA+CZ deals)",
-        "status": "broken"
-      },
-      {
-        "name": "Financial Connections",
-        "status": "missing"
-      }
+    "feature_gaps": [
+      "Adaptive pricing — available in DC, not yet in Stratus",
+      "Overlapping location/pricing validation — DC allows invalid configs; Stratus should block",
+      "Counter-offer workflow — AEs want to open Stratus for deals that started in DC"
     ],
     "priorities": [
-      "Assign a single owner for all ACH Faster Settlement failure modes — misbilling guardrail (GTMS-38895) and DC sticker bug are two separate tickets with no unified DRI",
-      "Broadcast Terminal enablement proactively — AEs shouldn’t have to ask; create a self-serve or team-level access path",
-      "Get ETA from viveky on GTMS-42934 LPM/iDeal fix — root cause confirmed, no timeline given",
-      "File and escalate DC overlapping pricing validation as a Stratus pre-GA requirement",
-      "Communicate to all AEs: Ironclad is now in the Contracting tab in SFDC — proactive comms will cut support volume"
+      "Ship self-serve Stratus access or team-level enablement — viveky is the manual bottleneck",
+      "Document DC→Stratus migration workflow and publish to #stratus-support",
+      "Fix GTMS-42934 LPM/iDeal INTRA_EEA + CZ conflict — needs timeline from viveky",
+      "Get GTMS-38895 ACH FS validation rule into Q2 build plan"
     ]
   },
   "approvals_deep_dive": {
-    "w1_total": 4,
-    "w2_total": 1,
-    "wow_note": "Approvals volume sharply down from Q1 close peak — Q2 ramp not yet stressing approval workflows",
-    "tool": "DC",
+    "w1_count": 4,
+    "w2_count": 2,
     "blockers": [
       {
+        "desc": "No Approval Level on negative ONR deals",
         "count": 1,
-        "title": "ACH Faster Settlement GR Deflation → Forced Deal Pricing Review",
-        "detail": "DC sticker misconfiguration (1.5% vs 0.60%) causes GR to calculate artificially low (0.47 for a deal that should be L1 self-approval). AEs routed to Deal Pricing review unnecessarily. calliewalsh flagged with full data this week.",
-        "quote": "If the correct 0.60% sticker were applied, the GR would be significantly higher and likely within L1 self-approval range."
-      }
-    ],
-    "cross_functional": [
-      {
-        "title": "Deal Pricing — ACH FS Sticker Fix Unowned",
-        "detail": "DC_SUPPORT coach directed calliewalsh to escalate and request manual ONR override from Deal Pricing while sticker gets fixed. No confirmation that Deal Pricing team is aware of or owning the sticker correction."
+        "tool": "DC",
+        "note": "rafaelnavarrogomez — negative ONR causing retention trigger with no approval level displayed"
       },
       {
-        "title": "Legal — Ironclad Signature Coordinator DRI",
-        "detail": "Ironclad UI confusion mostly resolved (Contracting tab). Signature coordinator DRI still not publicly confirmed. Volume lower this week."
+        "desc": "Stage completion blocked despite filled required fields",
+        "count": 1,
+        "tool": "SFDC",
+        "note": "kaushick — SFDC rejecting stage complete with all fields filled"
       }
     ],
-    "exception_stats": {
-      "wrong_level": {
-        "count": 1,
-        "label": "ACH FS GR Miscalculation",
-        "detail": "Wrong sticker → deflated GR → L2 routing on deals that should self-approve at L1"
-      },
-      "auto_approve_fail": {
-        "count": 0,
-        "label": "Post-Approval Locks",
-        "detail": "No new post-approval lock reports this week"
-      }
-    },
-    "exception_note": "Approvals volume is low this week — Q2 close pressure hasn’t arrived yet. The ACH FS sticker bug is the one active approval blocker, creating artificial Deal Pricing escalations.",
-    "carryover_note": "ACH FS sticker bug (1.5% vs 0.60%) is now a confirmed approval workflow blocker. Should be tracked as a Deal Pricing + DC issue, not just a pricing configuration question.",
+    "friction": [
+      "Negative ONR deals surface approval edge cases DC doesn’t handle cleanly",
+      "SFDC stage validation errors don’t surface the exact missing field"
+    ],
+    "exception_note": "Approval volume down 50% WoW — post-Q1 normalization. No below-floor escalations this week.",
+    "auto_approve_fail": null,
     "priorities": [
-      "Fix ACH Faster Settlement sticker in DC — 1.5% must be corrected to 0.60%; reference DC_SUPPORT-4705, 5801, and INCIDENT-23396 for urgency",
-      "Notify Deal Pricing team of active ACH FS cases being incorrectly routed to them due to the sticker misconfiguration",
-      "Monitor approval volume through April — Q2 close will stress-test whether below-floor false positives from Q1 are truly resolved"
+      "Clarify DC behavior for negative-ONR deals — approval level display broken in this edge case",
+      "SFDC stage completion validation — surface exact missing field to AE instead of generic error"
     ]
   },
   "actions": [
     {
-      "body": "**Fix ACH Faster Settlement sticker in DC** — 1.5% (Instant Payouts rate) is auto-populating instead of 0.60%. Confirmed this week by calliewalsh. Three prior tickets (DC_SUPPORT-4705, 5801, INCIDENT-23396 $1.2M misbilling). Deals being incorrectly routed to Deal Pricing review.",
-      "owner": "Owner: DC Eng / Deal Pricing · Due: Apr 10"
+      "body": "**Send Ironclad broadcast NOW** — nigep and chrismc both couldn’t find Ironclad this week. Second week of same issue. One Slack note in #seller-systems-support with the correct Contracting tab location will stop this immediately.",
+      "owner": "Owner: Seller Systems Ops · Due: Apr 9 (today)"
     },
     {
-      "body": "**Assign single DRI for all ACH Faster Settlement failure modes** — GTMS-38895 (misbilling guardrail, not being built) and DC sticker bug are tracked separately with no unified owner. 26 merchants, $2M+ exposure.",
-      "owner": "Owner: Stratus PM + Product · Due: Apr 10"
+      "body": "**Get DRI + Q2 commit for GTMS-38895 ACH FS guardrail** — 26 merchants accumulating at sticker, $2M+ confirmed. Overdue P2 assigned to rlotun since Mar 9. Need a timeline or explicit deprioritization decision.",
+      "owner": "Owner: Stratus PM (lorishyu) · Due: Apr 11"
     },
     {
-      "body": "**Investigate DC cross-opp data mapping bug** — DC_SUPPORT-8277: austinjohnson reported Deal Composer changes from one opp contaminating another when both tabs were open. viv-c could not reproduce. Needs engineering investigation before it causes wider data loss.",
+      "body": "**Resolve DC_SUPPORT-8229 yee save error** — LPM Revenue Share save error open 3+ days. Support claimed fixed but AE reproduced with detailed repro. Customer presentation Friday Apr 11.",
+      "owner": "Owner: jperez-c / DC Eng · Due: Apr 10"
+    },
+    {
+      "body": "**Fix ACH Faster Settlement sticker (1.5% → 0.60%)** — calliewalsh hit this again this week. Three prior tickets, one $1.2M misbilling incident. Incorrectly routing deals to Deal Pricing review.",
       "owner": "Owner: DC Eng · Due: Apr 11"
     },
     {
-      "body": "**Broadcast Ironclad UI change to all AEs** — Ironclad moved to the Contracting tab in the SFDC update. Multiple AEs lost time this week thinking it was removed. A proactive Slack note in #seller-systems-support will cut support volume.",
-      "owner": "Owner: Seller Systems Ops · Due: Apr 9"
+      "body": "**Publish DC→Stratus migration guide** — shafrir asked today about using Stratus for a counter-offer on a DC-originated deal. Growing question as adoption increases. Trailhead doc or #stratus-support pinned message.",
+      "owner": "Owner: Stratus PM / Enablement · Due: Apr 14"
     },
     {
-      "body": "**Build self-serve Terminal access in Stratus** — viveky is manually enabling per-team. AEs who haven’t requested it can’t access it. katiedeaney asked again Apr 8. Create a self-serve or team-level enablement path.",
-      "owner": "Owner: Stratus PM · Due: Apr 14"
-    },
-    {
-      "body": "**Get ETA from viveky on GTMS-42934 LPM/iDeal fix** — root cause confirmed (INTRA_EEA + CZ territory conflict). Fix in progress but no timeline. AEs with these deal configs are blocked in Stratus.",
-      "owner": "Owner: viveky / Stratus Eng · Due: Apr 10"
+      "body": "**Investigate DC_SUPPORT-8277 cross-opp contamination** — austinjohnson reported DC mapping countries/pricing across opps when both are open. viv-c could not reproduce. Needs eng investigation before deal data loss occurs.",
+      "owner": "Owner: DC Eng · Due: Apr 11"
     }
   ],
   "watchlist": [
     {
       "severity": "red",
-      "text": "**ACH Faster Settlement — two active failure modes, no unified owner**: (1) $2M+ misbilling guardrail not in Stratus build plan, (2) DC sticker auto-populates wrong rate (1.5% vs 0.60%). Both open, both causing active damage."
+      "text": "**ACH FS misbilling (GTMS-38895) — still backlog** — 26 merchants at sticker (1.2% uncapped), $2M+ confirmed. Overdue P2. Each week without a guardrail adds accumulation."
     },
     {
       "severity": "red",
-      "text": "**DC volume surging** — 54 issues in W2 (Apr 7–8 only), up 32% WoW. New cross-opp data mapping bug (DC_SUPPORT-8277). Q2 deal ramp will keep this elevated."
+      "text": "**Ironclad broadcast not sent** — second week of AEs unable to find it. 5-minute fix (one Slack message) preventing ~5 support tickets/week."
     },
     {
       "severity": "orange",
-      "text": "**LPM/iDeal fix timeline** — root cause confirmed (INTRA_EEA + CZ conflict, GTMS-42934). viveky debugging but no ETA. AEs with INTRA_EEA + CZ deals blocked in Stratus."
+      "text": "**DC save errors — 4 open cases** — yee/LPM Revenue Share (deadline Friday), joshford/Non-Amex Card Mix, sarahhunt/subscription, llloret/opp-specific. Different root causes, all unresolved."
     },
     {
       "severity": "orange",
-      "text": "**Terminal Stratus adoption** — still in manual per-team enablement. AEs asking weekly. Monitor whether self-serve path gets created or access requests keep piling up."
+      "text": "**LPM/iDeal GTMS-42934** — root cause confirmed (INTRA_EEA + CZ). viveky investigating, no fix timeline yet."
     },
     {
       "severity": "yellow",
-      "text": "**CPR rate 62.6/100 opps, stable WoW** — Apr 8 monthly review in session today. Watch whether Q2 ramp shifts this metric."
+      "text": "**Stratus adoption accelerating** — shafrir migrated 2 deals today, asking about DC→Stratus workflow. Self-serve path needed before volume overwhelms viveky."
+    },
+    {
+      "severity": "yellow",
+      "text": "**SFDC queue volumes declining** — W2 total 1,144 vs W1 2,036 (-44%). Post-Q1 flush. Watch whether Q2 ramp reverses in 2 weeks."
     }
   ],
   "quotes": {
     "kudos": [
       {
-        "quote": "works now. thank you!",
-        "author": "AE",
-        "channel": "seller-systems-support",
-        "theme": "SFDC access fix",
-        "context": "License blocker on SFDC opportunities resolved same-day after support team routed to the right owner"
+        "quote": "awesome, thank you!",
+        "author": "AE (shafrir)",
+        "channel": "stratus-support",
+        "theme": "Stratus same-day access",
+        "context": "viveky enabled Stratus for two deals within minutes of request. LPMs confirmed supported."
       },
       {
-        "quote": "I am debugging this, but I don't have a root cause yet... I will pick this first thing tomorrow AM. If I can not resolve this tomorrow, I will create a deal for you in DC with same config so that your work does not go waste. Appreciate the patience.",
-        "author": "Eng (viveky)",
-        "channel": "stratus-support",
-        "theme": "Team transparency",
-        "context": "Engineering proactively communicated LPM/iDeal investigation status and offered a fallback — found root cause the next day (INTRA_EEA + CZ territory conflict)"
+        "quote": "works now. thank you!",
+        "author": "AE (huan)",
+        "channel": "seller-systems-support",
+        "theme": "SFDC license fix",
+        "context": "License blocker on SFDC opportunities resolved same-day after support team routed correctly."
       }
     ],
     "opportunity_areas": [
       {
-        "quote": "this user needs pricing today - we are in a hyper competitive RFP vs Adyen and have already been granted an exception/extension to today, since this has been going on since Friday - we can't afford any delay",
-        "author": "AE",
+        "quote": "I need to present pricing to the user on Friday so if this could please be resolved quickly. I just tried saving again and am still receiving the same errors.",
+        "author": "AE (yee)",
         "channel": "seller-systems-support",
-        "theme": "Competitive deal blocked",
-        "context": "DC tooling issue stalled a live Adyen competitive deal for 3+ days; AE had already received one extension"
+        "theme": "DC save error — 3 days open",
+        "context": "LPM Revenue Share save error since Apr 6. Support claimed fixed; AE reproduced. Customer deadline Friday."
       },
       {
-        "quote": "We are now 4 weeks post signature for this user, meaning the rates are not onboarded and the chances of misbilling also increase, because the DC output and contract does not consider the requirements of onboarding",
-        "author": "AE (levi)",
-        "channel": "stratus-support",
-        "theme": "DC → onboarding gap",
-        "context": "DC allows overlapping location/pricing config that breaks onboarding — merchant 4 weeks delayed, misbilling risk accumulating"
+        "quote": "this user needs pricing today - we are in a hyper competitive RFP vs Adyen and have already been granted an exception/extension to today, since this has been going on since Friday - we can’t afford any delay",
+        "author": "AE (joostvandermersch)",
+        "channel": "seller-systems-support",
+        "theme": "Competitive deal blocked",
+        "context": "DC issue stalled live Adyen competitive deal 3+ days; AE had already received one deadline extension."
       },
       {
         "quote": "26 merchants currently accumulating at sticker — the new contract overrides Fortuna pricing and the merchant is charged the sticker rate of 1.2% uncapped instead of their negotiated rate",
         "author": "Ops (arunima)",
         "channel": "stratus-support",
         "theme": "ACH FS misbilling — $2M+",
-        "context": "No validation rule in Stratus/DC to enforce ACH Debit Faster Settlement line item on renewal; $2M+ misbilled across known incidents (HubSpot, Emburse), 26 more at risk"
+        "context": "No validation rule in Stratus/DC. $2M+ misbilled (HubSpot, Emburse). GTMS-38895 overdue since Mar 9."
       },
       {
-        "quote": "Hi @gchauhan-c — @handonglee has the same issue. Could you urgently escalate this issue, otherwise we cannot proceed quotations at all.",
-        "author": "AE (tetsuya)",
+        "quote": "Hey team - has something changed in SFDC? I am unable to generate a contract/SPA from opportunities in SFDC anymore, and Ironclad isn’t even showing within the opp as an option?",
+        "author": "AE (nigep)",
         "channel": "seller-systems-support",
-        "theme": "Quotation system down",
-        "context": "Multiple AEs in APAC unable to generate quotes; escalated to eng as a full workflow blocker"
+        "theme": "Ironclad — still missing",
+        "context": "Second AE this week blocked from generating contracts. Broadcast about Contracting tab move not sent."
       },
       {
-        "quote": "I need to present pricing to the user on Friday so if this could please be resolved quickly. I just tried saving again and am still receiving the same errors.",
-        "author": "AE (yee)",
-        "channel": "seller-systems-support",
-        "theme": "DC save error — open",
-        "context": "DC save error on LPM Revenue Share configuration; unresolved as of Apr 8 despite multiple follow-ups — deadline Friday"
+        "quote": "if I used deal composer for original pricing on an opp can I use Stratus to price a counter offer? would prefer to use Stratus going forward",
+        "author": "AE (shafrir)",
+        "channel": "stratus-support",
+        "theme": "DC→Stratus migration",
+        "context": "AE proactively wants to move to Stratus mid-deal. No documented workflow for this transition."
       }
     ]
   },
   "sfdc": {
-    "w1_total": 2014,
-    "w2_total": 1299,
-    "note": "SFDC data from Hubble query 6d3bbd26 (SFDC-only pass, restricted_sfdc_pii.case_pii). Apr 1–7 vs Mar 25–31.",
+    "w1_total": 2036,
+    "w2_total": 1144,
+    "note": "SFDC data from Hubble (restricted_sfdc_pii.case_pii). W1=Mar 26–Apr 1, W2=Apr 2–Apr 9.",
     "queues": [
-      {"name": "Data Operations",               "w1": 757, "w2": 576, "severity": "high",   "top_type": "Account Management",          "status": "Account Management dominates; volume down 24% WoW — likely end-of-quarter flush settling"},
-      {"name": "Monetization Ops",              "w1": 506, "w2": 229, "severity": "high",   "top_type": "Onboarding",                  "status": "Onboarding cases dropped 56% WoW — may reflect Q1 close batch clearing through the queue"},
-      {"name": "Deal Strategy",                 "w1": 290, "w2": 186, "severity": "med",    "top_type": "Fee Schedule Requests",        "status": "Fee Schedule + SPA volume down 36% — Deal Strategy queue normalizing post-Q1"},
-      {"name": "Sales Ops",                     "w1": 260, "w2": 159, "severity": "med",    "top_type": "Opportunity Management",       "status": "Ownership Requests spiking 21→35 (+67%) — rep transitions or pipeline churn driving this"},
-      {"name": "Deal Pricing",                  "w1": 161, "w2": 115, "severity": "med",    "top_type": "Pricing Approval",             "status": "Pricing Approvals down 34%; Analytics Support flat — steady state"},
-      {"name": "Renewals Team",                 "w1": 23,  "w2": 27,  "severity": "low",    "top_type": "Renewals Team Support - Scaled","status": "Only queue trending up WoW (+17%) — watch for renewal cycle acceleration"},
-      {"name": "MonOps - Contract Success (MACS)", "w1": 17, "w2": 6, "severity": "low",   "top_type": "Contract Review",              "status": "Contract Review down sharply — MACS load lightening post-Q1"},
-      {"name": "System/Tooling Enhancement",    "w1": 0,   "w2": 1,  "severity": "low",    "top_type": "System/Tooling Enhancement",   "status": "Single case this week — no pattern yet"}
+      {
+        "name": "Data Operations",
+        "w1": 784,
+        "w2": 532,
+        "severity": "high",
+        "top_type": "Account Management",
+        "status": "Account Management dominant; -32% WoW as post-Q1 batch clears"
+      },
+      {
+        "name": "Monetization Ops",
+        "w1": 523,
+        "w2": 176,
+        "severity": "high",
+        "top_type": "Onboarding",
+        "status": "Onboarding -66% WoW — Q1 close batch fully cleared"
+      },
+      {
+        "name": "Deal Strategy",
+        "w1": 295,
+        "w2": 166,
+        "severity": "med",
+        "top_type": "Fee Schedule Requests",
+        "status": "Normalizing post-Q1; Exception cases up slightly (2→5)"
+      },
+      {
+        "name": "Sales Ops",
+        "w1": 243,
+        "w2": 123,
+        "severity": "med",
+        "top_type": "Opportunity Management",
+        "status": "Ownership Requests elevated (18→25); Opp Mgmt -44%"
+      },
+      {
+        "name": "Deal Pricing",
+        "w1": 157,
+        "w2": 114,
+        "severity": "med",
+        "top_type": "Pricing Approval",
+        "status": "Pricing Approvals -34%; Analytics Support stable"
+      },
+      {
+        "name": "Renewals Team",
+        "w1": 23,
+        "w2": 25,
+        "severity": "low",
+        "top_type": "Renewals Team Support - Scaled",
+        "status": "Only queue trending up (+9%) — Q2 renewal cycle building"
+      },
+      {
+        "name": "MonOps - Contract Success (MACS)",
+        "w1": 11,
+        "w2": 6,
+        "severity": "low",
+        "top_type": "Contract Review",
+        "status": "Contract Review down; MACS load lightening"
+      },
+      {
+        "name": "System/Tooling Enhancement",
+        "w1": 0,
+        "w2": 2,
+        "severity": "low",
+        "top_type": "System/Tooling Enhancement",
+        "status": "2 cases this week — watch next week"
+      }
     ]
   }
 }
