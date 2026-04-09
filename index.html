@@ -298,6 +298,7 @@ function render(d) {
     <a class="nav-tab" href="#sfdc">SFDC Cases</a>
     <a class="nav-tab" href="#stratus">Stratus Deep Dive</a>
     <a class="nav-tab" href="#approvals">Approvals Deep Dive</a>
+    <a class="nav-tab" href="#quotes">Critical Quotes</a>
     <a class="nav-tab" href="#actions">Actions &amp; Watchlist</a>
   </div>
 </div>
@@ -416,6 +417,9 @@ ${renderStratusDeepDive(d, m)}
 
 <!-- APPROVALS DEEP DIVE -->
 ${renderApprovalsDeepDive(d, m)}
+
+<!-- CRITICAL QUOTES -->
+${renderQuotesSection(d, m)}
 
 <!-- ACTIONS + WATCHLIST -->
 <div class="section last" id="actions"><div class="page">
@@ -609,6 +613,45 @@ function renderApprovalsDeepDive(d, m) {
           </ul>
         </div>
       </div>
+    </div>
+  </div>
+</div></div>`;
+}
+
+function renderQuotesSection(d, m) {
+  const q = d.quotes;
+  if (!q) return '';
+  const kudos = q.kudos || [];
+  const opps = q.opportunity_areas || [];
+  if (kudos.length === 0 && opps.length === 0) return '';
+  return `
+<div class="section" id="quotes"><div class="page">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;">
+    <div class="card" style="border-top:3px solid #22c55e;">
+      <div class="card-title" style="color:#16a34a;">Kudos — What's Working</div>
+      ${kudos.map(k => `
+      <div style="border-left:3px solid #86efac;padding:10px 12px;margin-bottom:10px;background:rgba(34,197,94,0.05);border-radius:0 6px 6px 0;">
+        <div style="font-size:13px;color:var(--text-1);line-height:1.6;font-style:italic;">"${h(k.quote)}"</div>
+        <div style="margin-top:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          ${k.author ? `<span style="font-size:11px;font-weight:600;color:var(--text-2);">${h(k.author)}</span>` : ''}
+          ${k.channel ? `<span style="font-size:10px;color:var(--text-3);">#${h(k.channel)}</span>` : ''}
+          ${k.theme ? `<span style="font-size:10px;background:rgba(34,197,94,0.15);color:#16a34a;padding:1px 6px;border-radius:10px;font-weight:600;">${h(k.theme)}</span>` : ''}
+        </div>
+        ${k.context ? `<div style="font-size:11px;color:var(--text-3);margin-top:4px;">${h(k.context)}</div>` : ''}
+      </div>`).join('')}
+    </div>
+    <div class="card" style="border-top:3px solid var(--red);">
+      <div class="card-title" style="color:var(--red);">Opportunity Areas — What Needs Fixing</div>
+      ${opps.map(o => `
+      <div style="border-left:3px solid rgba(239,68,68,0.4);padding:10px 12px;margin-bottom:10px;background:rgba(239,68,68,0.04);border-radius:0 6px 6px 0;">
+        <div style="font-size:13px;color:var(--text-1);line-height:1.6;font-style:italic;">"${h(o.quote)}"</div>
+        <div style="margin-top:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          ${o.author ? `<span style="font-size:11px;font-weight:600;color:var(--text-2);">${h(o.author)}</span>` : ''}
+          ${o.channel ? `<span style="font-size:10px;color:var(--text-3);">#${h(o.channel)}</span>` : ''}
+          ${o.theme ? `<span style="font-size:10px;background:rgba(239,68,68,0.12);color:var(--red);padding:1px 6px;border-radius:10px;font-weight:600;">${h(o.theme)}</span>` : ''}
+        </div>
+        ${o.context ? `<div style="font-size:11px;color:var(--text-3);margin-top:4px;">${h(o.context)}</div>` : ''}
+      </div>`).join('')}
     </div>
   </div>
 </div></div>`;
@@ -1044,11 +1087,75 @@ const INLINE_DATA = {
       "text": "**CPR rate 62.6/100 opps, stable WoW** — Apr 8 monthly review in session today. Watch whether Q2 ramp shifts this metric."
     }
   ],
+  "quotes": {
+    "kudos": [
+      {
+        "quote": "works now. thank you!",
+        "author": "AE",
+        "channel": "seller-systems-support",
+        "theme": "SFDC access fix",
+        "context": "License blocker on SFDC opportunities resolved same-day after support team routed to the right owner"
+      },
+      {
+        "quote": "I am debugging this, but I don't have a root cause yet... I will pick this first thing tomorrow AM. If I can not resolve this tomorrow, I will create a deal for you in DC with same config so that your work does not go waste. Appreciate the patience.",
+        "author": "Eng (viveky)",
+        "channel": "stratus-support",
+        "theme": "Team transparency",
+        "context": "Engineering proactively communicated LPM/iDeal investigation status and offered a fallback — found root cause the next day (INTRA_EEA + CZ territory conflict)"
+      }
+    ],
+    "opportunity_areas": [
+      {
+        "quote": "this user needs pricing today - we are in a hyper competitive RFP vs Adyen and have already been granted an exception/extension to today, since this has been going on since Friday - we can't afford any delay",
+        "author": "AE",
+        "channel": "seller-systems-support",
+        "theme": "Competitive deal blocked",
+        "context": "DC tooling issue stalled a live Adyen competitive deal for 3+ days; AE had already received one extension"
+      },
+      {
+        "quote": "We are now 4 weeks post signature for this user, meaning the rates are not onboarded and the chances of misbilling also increase, because the DC output and contract does not consider the requirements of onboarding",
+        "author": "AE (levi)",
+        "channel": "stratus-support",
+        "theme": "DC → onboarding gap",
+        "context": "DC allows overlapping location/pricing config that breaks onboarding — merchant 4 weeks delayed, misbilling risk accumulating"
+      },
+      {
+        "quote": "26 merchants currently accumulating at sticker — the new contract overrides Fortuna pricing and the merchant is charged the sticker rate of 1.2% uncapped instead of their negotiated rate",
+        "author": "Ops (arunima)",
+        "channel": "stratus-support",
+        "theme": "ACH FS misbilling — $2M+",
+        "context": "No validation rule in Stratus/DC to enforce ACH Debit Faster Settlement line item on renewal; $2M+ misbilled across known incidents (HubSpot, Emburse), 26 more at risk"
+      },
+      {
+        "quote": "Hi @gchauhan-c — @handonglee has the same issue. Could you urgently escalate this issue, otherwise we cannot proceed quotations at all.",
+        "author": "AE (tetsuya)",
+        "channel": "seller-systems-support",
+        "theme": "Quotation system down",
+        "context": "Multiple AEs in APAC unable to generate quotes; escalated to eng as a full workflow blocker"
+      },
+      {
+        "quote": "I need to present pricing to the user on Friday so if this could please be resolved quickly. I just tried saving again and am still receiving the same errors.",
+        "author": "AE (yee)",
+        "channel": "seller-systems-support",
+        "theme": "DC save error — open",
+        "context": "DC save error on LPM Revenue Share configuration; unresolved as of Apr 8 despite multiple follow-ups — deadline Friday"
+      }
+    ]
+  },
   "sfdc": {
-    "w1_total": 0,
-    "w2_total": 0,
-    "note": "SFDC data from Hubble query 6d3bbd26. access-redshift-salesforce-pii approved Apr 8 — SFDC data will populate on next run. Hubble query also requires slack_archiver access (separate LDAP request needed for full query to run).",
-    "queues": []
+    "w1_total": 2014,
+    "w2_total": 1299,
+    "note": "SFDC data from Hubble query 6d3bbd26 (SFDC-only pass, restricted_sfdc_pii.case_pii). Apr 1–7 vs Mar 25–31.",
+    "queues": [
+      {"name": "Data Operations",               "w1": 757, "w2": 576, "severity": "high",   "top_type": "Account Management",          "status": "Account Management dominates; volume down 24% WoW — likely end-of-quarter flush settling"},
+      {"name": "Monetization Ops",              "w1": 506, "w2": 229, "severity": "high",   "top_type": "Onboarding",                  "status": "Onboarding cases dropped 56% WoW — may reflect Q1 close batch clearing through the queue"},
+      {"name": "Deal Strategy",                 "w1": 290, "w2": 186, "severity": "med",    "top_type": "Fee Schedule Requests",        "status": "Fee Schedule + SPA volume down 36% — Deal Strategy queue normalizing post-Q1"},
+      {"name": "Sales Ops",                     "w1": 260, "w2": 159, "severity": "med",    "top_type": "Opportunity Management",       "status": "Ownership Requests spiking 21→35 (+67%) — rep transitions or pipeline churn driving this"},
+      {"name": "Deal Pricing",                  "w1": 161, "w2": 115, "severity": "med",    "top_type": "Pricing Approval",             "status": "Pricing Approvals down 34%; Analytics Support flat — steady state"},
+      {"name": "Renewals Team",                 "w1": 23,  "w2": 27,  "severity": "low",    "top_type": "Renewals Team Support - Scaled","status": "Only queue trending up WoW (+17%) — watch for renewal cycle acceleration"},
+      {"name": "MonOps - Contract Success (MACS)", "w1": 17, "w2": 6, "severity": "low",   "top_type": "Contract Review",              "status": "Contract Review down sharply — MACS load lightening post-Q1"},
+      {"name": "System/Tooling Enhancement",    "w1": 0,   "w2": 1,  "severity": "low",    "top_type": "System/Tooling Enhancement",   "status": "Single case this week — no pattern yet"}
+    ]
   }
 }
 
