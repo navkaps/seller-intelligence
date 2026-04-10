@@ -766,310 +766,309 @@ function buildCharts(d) {
 // ─── INLINE DATA ─────────────────────────────────────────────────────────────
 const INLINE_DATA = {
   "meta": {
-    "period": "Apr 2 – Apr 9, 2026",
-    "run_date": "April 9, 2026",
-    "run_note": "SFDC via Hubble (restricted_sfdc_pii) + Slack MCP",
+    "period": "Apr 3 – Apr 10, 2026",
+    "run_date": "April 10, 2026",
+    "run_note": "Slack MCP only (Hubble SFDC query unavailable this run)",
     "w1": {
-      "label": "Mar 26–Apr 1",
-      "start": "2026-03-26",
-      "end": "2026-04-01"
+      "label": "Mar 27–Apr 2",
+      "start": "2026-03-27",
+      "end": "2026-04-02"
     },
     "w2": {
-      "label": "Apr 2–Apr 9",
-      "start": "2026-04-02",
-      "end": "2026-04-09"
+      "label": "Apr 3–Apr 10",
+      "start": "2026-04-03",
+      "end": "2026-04-10"
     }
   },
-  "bluf": "**DC volume remains the dominant driver** — 28 issues in W2 with save errors, ONR miscalculations, bucket tier bugs, and the cross-opp data contamination (DC_SUPPORT-8277) still open. **Ironclad confusion is persisting** despite last week’s resolution: two AEs (nigep, chrismc) reported this week they can’t find Ironclad in SFDC — the broadcast was not sent. **ACH Faster Settlement misbilling (GTMS-38895) remains in backlog** with 26 merchants accumulating at sticker and $2M+ already confirmed. **One positive signal**: Stratus is gaining pull — shafrir proactively migrated two DC deals to Stratus today and was enabled within minutes.",
+  "bluf": "**DC had its most visible reliability incident this week** — ir-fold-pitch (ONR double-counting on CNP/CP) was patched same-day Apr 10, but a second ONR bug (RFFT price change ballooning from $605K to $4.95M, DC_SUPPORT-8357) remains open with the affected AE on PTO and an L4 to Eileen still blocked. **ACH Faster Settlement misbilling (GTMS-38895) now exceeds $2M confirmed** across HubSpot and Emburse — 26 merchants accumulating at sticker, and after Navin engaged viveky in-thread, the answer is the guardrail is not being built and needs product team ownership. **Gong access/hierarchy issues spiked this week** — at least 8 AEs reported Gong problems (hierarchy, access, SFDC sync), suggesting a systemic gap in team onboarding. One bright spot: Stratus Terminal was enabled same-day and AEs are actively migrating DC deals.",
   "pulse_cards": [
     {
-      "label": "DC save errors",
-      "value": "4 open",
-      "trend": "up",
-      "note": "yee/LPM Revenue Share unresolved 3+ days; joshford Non-Amex; sarahhunt; llloret opp-specific"
+      "label": "DC ONR incident",
+      "value": "FIXED today",
+      "trend": "positive",
+      "note": "ir-fold-pitch double-counting patched Apr 10; workaround: remove CNP products, save, re-add"
     },
     {
-      "label": "Ironclad broadcast",
-      "value": "not sent",
-      "trend": "warn",
-      "note": "nigep + chrismc blocked this week; second week of same issue"
+      "label": "RFFT ONR balloon",
+      "value": "open (DC_SUPPORT-8357)",
+      "trend": "crit",
+      "note": "$605K → $4.95M bug; AE on PTO; L4 to Eileen blocked; bot workaround failed"
     },
     {
       "label": "ACH FS guardrail",
       "value": "still backlog",
       "trend": "crit",
-      "note": "GTMS-38895 P2 overdue; 26 merchants at sticker; $2M+ confirmed"
+      "note": "GTMS-38895; $2M+ confirmed; viveky says not being built; needs product team owner"
     },
     {
-      "label": "Stratus adoption",
-      "value": "accelerating",
-      "trend": "positive",
-      "note": "shafrir migrated 2 deals same-day; DC→Stratus workflow question growing"
+      "label": "Gong access spike",
+      "value": "8 AEs this week",
+      "trend": "up",
+      "note": "Hierarchy, team rollup, SFDC sync, Zoom Rooms — systemic onboarding gap"
     }
   ],
   "categories": [
     {
       "name": "DC Bugs / Errors",
-      "w1": 41,
-      "w2": 28,
-      "severity": "high",
+      "w1": 28,
+      "w2": 40,
+      "severity": "crit",
       "link": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "note": "Save errors, ONR miscalculations, bucket tiers broken, cross-opp contamination, term length field missing."
+      "note": "ONR double-counting incident (FIXED). RFFT balloon $605K→$4.95M (open). Save errors, tiering, ONR not populating."
     },
     {
-      "name": "Contract / Signature",
-      "w1": 22,
-      "w2": 7,
+      "name": "Access / Provisioning",
+      "w1": 6,
+      "w2": 12,
       "severity": "high",
       "link": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "note": "Ironclad confusion persists (2 AEs can’t find it). SPA error after approval. DocuSign senders rights gap."
-    },
-    {
-      "name": "Access / Roles",
-      "w1": 16,
-      "w2": 6,
-      "severity": "low",
-      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "note": "SFDC access degraded (shackett). License required. ZoomInfo, Level 11, Gong hierarchy."
-    },
-    {
-      "name": "Pricing / ACH",
-      "w1": 4,
-      "w2": 5,
-      "severity": "high",
-      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "note": "ACH FS sticker 1.5% bug persists. GTMS-38895 guardrail backlog. GR wrong at 0.85 on sticker deals."
+      "note": "Gong hierarchy/access (8 AEs). SFDC access degraded. Stratus button enablement requests."
     },
     {
       "name": "Approvals / Workflow",
-      "w1": 4,
-      "w2": 2,
-      "severity": "low",
+      "w1": 2,
+      "w2": 10,
+      "severity": "high",
       "link": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "note": "No approval level on negative ONR deals. Stage completion blocked. Volume declining."
+      "note": "L0 pending unexplained. L4 blocked by RFFT bug. Recall failed. Deal not priced errors."
+    },
+    {
+      "name": "Product / Geo Gaps",
+      "w1": 5,
+      "w2": 8,
+      "severity": "med",
+      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
+      "note": "SDP subscription pricing not available Singapore. Klarna HK gap. CAU Thailand. APM bulk entry (20+)."
+    },
+    {
+      "name": "Contract / Signature",
+      "w1": 7,
+      "w2": 6,
+      "severity": "med",
+      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
+      "note": "DocuSign voiding on send. Opp-to-onboarding stage errors. Auto-renewal process confusion."
     },
     {
       "name": "Misbilling / ACH",
-      "w1": 1,
+      "w1": 2,
       "w2": 2,
       "severity": "crit",
-      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "note": "SMP ONR $0 on Stripe Managed Payments (new variant). ACH FS misbilling accumulating."
+      "link": "https://stripe.slack.com/archives/C0AEUHR9UC8",
+      "note": "GTMS-38895 still backlog. $2M+ confirmed (HubSpot ir-allege-verdict, Emburse ir-hydrogen-base). 26 merchants at sticker."
     }
   ],
   "stratus_categories": [
     {
-      "name": "Terminal / Card Present",
-      "w1": 3,
-      "w2": 4,
-      "note": "Manual per-team enablement. shafrir enabled same-day. katiedeaney asked again."
+      "name": "ACH FS validation",
+      "w1": 1,
+      "w2": 2,
+      "note": "GTMS-38895 now escalated by arunima with full misbilling data. viveky says not being built — needs product team."
     },
     {
-      "name": "LPM/iDeal ONR $0",
-      "w1": 2,
+      "name": "Terminal / Card Present",
+      "w1": 4,
       "w2": 2,
-      "note": "GTMS-42934 root cause found (INTRA_EEA + CZ). Fix timeline TBD."
+      "note": "katiedeaney enabled same-day. Stratus Terminal now available but not self-serve."
+    },
+    {
+      "name": "APM bulk pricing",
+      "w1": 0,
+      "w2": 1,
+      "note": "New: shafrir working global deal with 20+ APMs — line-by-line only. No efficient path."
     },
     {
       "name": "DC→Stratus migration",
+      "w1": 3,
+      "w2": 1,
+      "note": "shafrir asked about using Stratus for counter-offer on DC deal. Resolved — can do, with save-to-opp caveat."
+    },
+    {
+      "name": "FX usage confusion",
       "w1": 0,
-      "w2": 3,
-      "note": "New this week: AEs asking how to use Stratus for counter-offers on DC deals."
-    },
-    {
-      "name": "ACH FS validation",
-      "w1": 1,
       "w2": 1,
-      "note": "GTMS-38895 validation rule not in Stratus build."
-    },
-    {
-      "name": "Overlapping pricing config",
-      "w1": 1,
-      "w2": 1,
-      "note": "DC allows overlapping config that breaks onboarding."
+      "note": "katiedeaney: FX required at 100% — resolved. IC+ vs Blended territory mode confusion."
     }
   ],
   "stratus_deep_dive": {
-    "w1_count": 7,
-    "w2_count": 11,
+    "w1_count": 11,
+    "w2_count": 8,
     "sentiment": "Mixed",
     "bugs": [
       {
-        "desc": "LPM/iDeal ONR $0 (INTRA_EEA + CZ territory conflict)",
+        "desc": "ACH Faster Settlement validation rule missing",
         "count": 2,
-        "quote": "iDeal but no revenue is showing as flowing through",
-        "status": "Root cause found; fix timeline TBD (GTMS-42934)"
+        "quote": "26 merchants currently accumulating at sticker — the new contract overrides Fortuna pricing",
+        "status": "GTMS-38895 in backlog (P2). viveky says not being built — needs product team involvement. Overdue since Mar 9."
       },
       {
-        "desc": "Terminal / Card Present not available in Stratus",
-        "count": 4,
-        "quote": "any way I can get access to use Stratus for Stripe Terminal?",
-        "status": "Manual per-team enablement by viveky"
-      },
-      {
-        "desc": "ACH FS validation rule missing",
+        "desc": "DC overlapping pricing/location config causing post-signature misbilling",
         "count": 1,
-        "quote": "26 merchants currently accumulating at sticker",
-        "status": "GTMS-38895 in backlog (P2, rlotun). Overdue since Mar 9."
+        "quote": "4 weeks post signature, the rates are not onboarded and the chances of misbilling increase",
+        "status": "Flagged by levi. No Stratus fix planned. CC’d to eng/lorishyu."
+      },
+      {
+        "desc": "FX usage % required at 100% confusion (IC+ vs Blended)",
+        "count": 1,
+        "quote": "why is FX required to be at 100%? I don’t expect any x-border costs here",
+        "status": "Resolved — Vivek explained IC+ vs Blended territory mode."
       }
     ],
     "adoption_friction": [
-      "No self-serve Stratus access — AEs must request per-deal enablement from viveky/williams",
-      "DC→Stratus migration has no documented workflow — AEs unsure if they can move mid-deal",
-      "Adaptive pricing not yet in Stratus — forces DC fallback for complex deals",
-      "Product coverage gaps not visible to AEs — Terminal confirmed supported but AEs don’t know"
+      "APM bulk pricing — no efficient path for 20+ APMs, line-by-line only",
+      "Stratus button still requires manual enablement per deal by viveky/williams",
+      "DC→Stratus migration save-to-opp caveat not well documented — cancels active approvals"
     ],
     "feature_gaps": [
-      "Adaptive pricing — available in DC, not yet in Stratus",
-      "Overlapping location/pricing validation — DC allows invalid configs; Stratus should block",
-      "Counter-offer workflow — AEs want to open Stratus for deals that started in DC"
+      "APM bulk pricing — no batch input for global deals with many APMs",
+      "ACH FS validation guardrail — not in Stratus build plan",
+      "Overlapping pricing/location validation — DC allows configs that break onboarding"
     ],
     "priorities": [
-      "Ship self-serve Stratus access or team-level enablement — viveky is the manual bottleneck",
-      "Document DC→Stratus migration workflow and publish to #stratus-support",
-      "Fix GTMS-42934 LPM/iDeal INTRA_EEA + CZ conflict — needs timeline from viveky",
-      "Get GTMS-38895 ACH FS validation rule into Q2 build plan"
+      "Escalate GTMS-38895 to product team for ownership — $2M+ misbilling, viveky confirmed CPQ layer alone won’t fix it",
+      "Build APM bulk pricing input — critical gap for global deals",
+      "Document and pin DC→Stratus migration guide in #stratus-support"
     ]
   },
   "approvals_deep_dive": {
-    "w1_count": 4,
-    "w2_count": 2,
+    "w1_count": 2,
+    "w2_count": 10,
     "blockers": [
       {
-        "desc": "No Approval Level on negative ONR deals",
+        "desc": "L4 approval to Eileen blocked by RFFT ONR balloon bug",
         "count": 1,
         "tool": "DC",
-        "note": "rafaelnavarrogomez — negative ONR causing retention trigger with no approval level displayed"
+        "note": "tkarlen — ONR ballooned $605K→$4.95M after RFFT price update. DC_SUPPORT-8357 open. AE on PTO. Bot workaround failed."
       },
       {
-        "desc": "Stage completion blocked despite filled required fields",
+        "desc": "L0 approval stuck in pending with no explanation",
+        "count": 1,
+        "tool": "DC",
+        "note": "shumpei — submitted L0, status pending despite it being lowest level. Unexplained."
+      },
+      {
+        "desc": "Recall approval not working",
         "count": 1,
         "tool": "SFDC",
-        "note": "kaushick — SFDC rejecting stage complete with all fields filled"
+        "note": "dannysupernaw — tried to recall approval, system not allowing it."
+      },
+      {
+        "desc": "Deal not priced / can’t submit for approval",
+        "count": 5,
+        "tool": "DC",
+        "note": "Multiple AEs (mquinlan $0 opp, mburke PS-only, dfortune, mdaml) blocked at approval stage due to DC pricing errors."
       }
     ],
     "friction": [
-      "Negative ONR deals surface approval edge cases DC doesn’t handle cleanly",
-      "SFDC stage validation errors don’t surface the exact missing field"
+      "ONR calculation bugs are cascading into approval blockage — root cause is DC reliability",
+      "Support team cannot edit DC on behalf of AEs — AE must fix themselves even when blocked"
     ],
-    "exception_note": "Approval volume down 50% WoW — post-Q1 normalization. No below-floor escalations this week.",
+    "exception_note": "Approval volume up significantly WoW — driven by ONR incident and RFFT bug cascading into submission failures.",
     "auto_approve_fail": null,
     "priorities": [
-      "Clarify DC behavior for negative-ONR deals — approval level display broken in this edge case",
-      "SFDC stage completion validation — surface exact missing field to AE instead of generic error"
+      "Fix DC_SUPPORT-8357 RFFT bug — support team should make the edit directly; AE is on PTO and L4 is blocked",
+      "Investigate L0 approval stuck in pending — unclear if systemic or one-off"
     ]
   },
   "actions": [
     {
-      "body": "**Send Ironclad broadcast NOW** — nigep and chrismc both couldn’t find Ironclad this week. Second week of same issue. One Slack note in #seller-systems-support with the correct Contracting tab location will stop this immediately.",
-      "owner": "Owner: Seller Systems Ops · Due: Apr 9 (today)"
+      "body": "**Fix DC_SUPPORT-8357 RFFT ONR balloon — make the edit directly** — tkarlen is on PTO, L4 to Eileen is blocked. Bot workaround failed. Support team needs to apply the $0.065→$0.06 RFFT change and save to opp.",
+      "owner": "Owner: DC Support (sashaik-c) · Due: Apr 10 (today)"
     },
     {
-      "body": "**Get DRI + Q2 commit for GTMS-38895 ACH FS guardrail** — 26 merchants accumulating at sticker, $2M+ confirmed. Overdue P2 assigned to rlotun since Mar 9. Need a timeline or explicit deprioritization decision.",
-      "owner": "Owner: Stratus PM (lorishyu) · Due: Apr 11"
+      "body": "**Escalate GTMS-38895 to product team for ownership** — viveky confirmed the ACH FS guardrail is not being built at the CPQ layer. $2M+ misbilled, 26 merchants at sticker. Needs a named product DRI and Q2 commit.",
+      "owner": "Owner: Navin / lorishyu · Due: Apr 13"
     },
     {
-      "body": "**Resolve DC_SUPPORT-8229 yee save error** — LPM Revenue Share save error open 3+ days. Support claimed fixed but AE reproduced with detailed repro. Customer presentation Friday Apr 11.",
-      "owner": "Owner: jperez-c / DC Eng · Due: Apr 10"
+      "body": "**Investigate Gong onboarding gap** — 8 AEs this week couldn’t access Gong or had hierarchy/SFDC sync issues. Suggests new hire or team-change workflow is missing a Gong step. Needs ops audit.",
+      "owner": "Owner: Seller Systems Ops · Due: Apr 14"
     },
     {
-      "body": "**Fix ACH Faster Settlement sticker (1.5% → 0.60%)** — calliewalsh hit this again this week. Three prior tickets, one $1.2M misbilling incident. Incorrectly routing deals to Deal Pricing review.",
-      "owner": "Owner: DC Eng · Due: Apr 11"
+      "body": "**Get APM bulk pricing on Stratus roadmap** — shafrir has a global deal with 20+ APMs and no efficient path. Line-by-line is not scalable. Needs a product decision.",
+      "owner": "Owner: Stratus PM · Due: Apr 14"
     },
     {
-      "body": "**Publish DC→Stratus migration guide** — shafrir asked today about using Stratus for a counter-offer on a DC-originated deal. Growing question as adoption increases. Trailhead doc or #stratus-support pinned message.",
-      "owner": "Owner: Stratus PM / Enablement · Due: Apr 14"
-    },
-    {
-      "body": "**Investigate DC_SUPPORT-8277 cross-opp contamination** — austinjohnson reported DC mapping countries/pricing across opps when both are open. viv-c could not reproduce. Needs eng investigation before deal data loss occurs.",
-      "owner": "Owner: DC Eng · Due: Apr 11"
+      "body": "**Investigate SDP subscription pricing gap in Singapore** — margaret flagged subscription pricing not available for SDP in SG despite support being announced. Needs product or ops confirmation.",
+      "owner": "Owner: Stratus / SDP PM · Due: Apr 14"
     }
   ],
   "watchlist": [
     {
       "severity": "red",
-      "text": "**ACH FS misbilling (GTMS-38895) — still backlog** — 26 merchants at sticker (1.2% uncapped), $2M+ confirmed. Overdue P2. Each week without a guardrail adds accumulation."
+      "text": "**ACH FS misbilling (GTMS-38895) — needs product owner** — 26 merchants at sticker (1.2% uncapped), $2M+ confirmed. viveky confirmed CPQ layer alone won't fix it. Product team must own this."
     },
     {
       "severity": "red",
-      "text": "**Ironclad broadcast not sent** — second week of AEs unable to find it. 5-minute fix (one Slack message) preventing ~5 support tickets/week."
+      "text": "**DC_SUPPORT-8357 RFFT ONR balloon** — AE on PTO, L4 to Eileen blocked. Support must make the edit directly. If unresolved by EOD, deal is blocked through weekend."
     },
     {
       "severity": "orange",
-      "text": "**DC save errors — 4 open cases** — yee/LPM Revenue Share (deadline Friday), joshford/Non-Amex Card Mix, sarahhunt/subscription, llloret/opp-specific. Different root causes, all unresolved."
+      "text": "**DC ONR double-counting (ir-fold-pitch) — patched but fragile** — fix requires AEs to remove CNP products, save, re-add. Not self-evident. Watch for recurrence next week."
     },
     {
       "severity": "orange",
-      "text": "**LPM/iDeal GTMS-42934** — root cause confirmed (INTRA_EEA + CZ). viveky investigating, no fix timeline yet."
+      "text": "**Gong access/hierarchy spike** — 8 AEs this week. Likely tied to Q2 team changes and new hires. Ops should audit onboarding checklist."
     },
     {
       "severity": "yellow",
-      "text": "**Stratus adoption accelerating** — shafrir migrated 2 deals today, asking about DC→Stratus workflow. Self-serve path needed before volume overwhelms viveky."
+      "text": "**SDP subscription pricing Singapore** — margaret flagged this week. If a gap in announced support, other AEs will hit it. Needs quick product/ops confirmation."
     },
     {
       "severity": "yellow",
-      "text": "**SFDC queue volumes declining** — W2 total 1,144 vs W1 2,036 (-44%). Post-Q1 flush. Watch whether Q2 ramp reverses in 2 weeks."
+      "text": "**APM bulk pricing in Stratus** — global deals with 20+ APMs are line-by-line. Will become louder as Stratus adoption grows."
     }
   ],
   "quotes": {
     "kudos": [
       {
-        "quote": "awesome, thank you!",
-        "author": "AE (shafrir)",
+        "quote": "Got it thanks Vivek! That makes total sense. Have adjusted the Territory inputs.",
+        "author": "AE",
         "channel": "stratus-support",
-        "theme": "Stratus same-day access",
-        "context": "viveky enabled Stratus for two deals within minutes of request. LPMs confirmed supported."
+        "theme": "FX usage confusion resolved",
+        "context": "Vivek explained IC+ vs Blended territory FX behaviour same-day. AE unblocked immediately."
       },
       {
-        "quote": "works now. thank you!",
-        "author": "AE (huan)",
+        "quote": "The issue has been fixed! … Can you please try that and let us know if the issue persists?",
+        "author": "Support (mmathew-c)",
         "channel": "seller-systems-support",
-        "theme": "SFDC license fix",
-        "context": "License blocker on SFDC opportunities resolved same-day after support team routed correctly."
+        "theme": "ONR double-counting patched",
+        "context": "ir-fold-pitch incident resolved same-day. Workaround: remove CNP products, save, re-add."
       }
     ],
     "opportunity_areas": [
       {
-        "quote": "I need to present pricing to the user on Friday so if this could please be resolved quickly. I just tried saving again and am still receiving the same errors.",
-        "author": "AE (yee)",
+        "quote": "I tried following the directions and deleting the line items — at first it seemed like it would work, but then I kept running into errors. Any chance your team can create it since I have tried and can’t? I am supposed to be on PTO today.",
+        "author": "AE (tkarlen)",
         "channel": "seller-systems-support",
-        "theme": "DC save error — 3 days open",
-        "context": "LPM Revenue Share save error since Apr 6. Support claimed fixed; AE reproduced. Customer deadline Friday."
-      },
-      {
-        "quote": "this user needs pricing today - we are in a hyper competitive RFP vs Adyen and have already been granted an exception/extension to today, since this has been going on since Friday - we can’t afford any delay",
-        "author": "AE (joostvandermersch)",
-        "channel": "seller-systems-support",
-        "theme": "Competitive deal blocked",
-        "context": "DC issue stalled live Adyen competitive deal 3+ days; AE had already received one deadline extension."
+        "theme": "RFFT ONR bug — AE on PTO, L4 blocked",
+        "context": "RFFT price update caused ONR to balloon $605K→$4.95M. DC_SUPPORT-8357. Bot workaround failed. AE can’t fix it themselves."
       },
       {
         "quote": "26 merchants currently accumulating at sticker — the new contract overrides Fortuna pricing and the merchant is charged the sticker rate of 1.2% uncapped instead of their negotiated rate",
         "author": "Ops (arunima)",
         "channel": "stratus-support",
         "theme": "ACH FS misbilling — $2M+",
-        "context": "No validation rule in Stratus/DC. $2M+ misbilled (HubSpot, Emburse). GTMS-38895 overdue since Mar 9."
+        "context": "$2M+ misbilled (HubSpot, Emburse). GTMS-38895 overdue since Mar 9. viveky says not being built — needs product team."
       },
       {
-        "quote": "Hey team - has something changed in SFDC? I am unable to generate a contract/SPA from opportunities in SFDC anymore, and Ironclad isn’t even showing within the opp as an option?",
-        "author": "AE (nigep)",
-        "channel": "seller-systems-support",
-        "theme": "Ironclad — still missing",
-        "context": "Second AE this week blocked from generating contracts. Broadcast about Contracting tab move not sent."
+        "quote": "We are now 4 weeks post signature for this user, meaning the rates are not onboarded and the chances of misbilling also increase, because the DC output and contract does not consider the requirements of onboarding",
+        "author": "AE (levi)",
+        "channel": "stratus-support",
+        "theme": "DC overlapping pricing — post-signature misbilling risk",
+        "context": "DC allowed overlapping location/pricing config that blocked onboarding. 4 weeks post-signature, rates still not applied."
       },
       {
-        "quote": "if I used deal composer for original pricing on an opp can I use Stratus to price a counter offer? would prefer to use Stratus going forward",
+        "quote": "with APMs, is there any trick to entering custom pricing faster? Working on a global deal with 20+ APMs and still needing to go line by line.",
         "author": "AE (shafrir)",
         "channel": "stratus-support",
-        "theme": "DC→Stratus migration",
-        "context": "AE proactively wants to move to Stratus mid-deal. No documented workflow for this transition."
+        "theme": "APM bulk pricing gap",
+        "context": "No efficient path for global deals with many APMs. Vivek acknowledged but no solution available."
       }
     ]
   },
   "sfdc": {
-    "w1_total": 2036,
-    "w2_total": 1144,
-    "note": "SFDC data from Hubble (restricted_sfdc_pii.case_pii). W1=Mar 26–Apr 1, W2=Apr 2–Apr 9.",
+    "w1_total": 0,
+    "w2_total": 0,
+    "note": "SFDC data unavailable this run — Hubble query requires restricted_sfdc_pii access. Showing prior week data for reference.",
     "queues": [
       {
         "name": "Data Operations",
