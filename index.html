@@ -1051,7 +1051,33 @@ const INLINE_DATA = {
         "jira_link": "https://jira.corp.stripe.com/browse/GTMS-38895",
         "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
       }
-    ]
+    ],
+    "pain_analysis": {
+      "headline": "Approvals are breaking at every handoff — and AEs have no visibility when they do",
+      "insights": [
+        {
+          "signal": "Stratus saves cancel approvals silently",
+          "so_what": "AEs don't know their approval was voided until a deal stalls. No error, no notification. They only find out when they chase the deal days later. This is eroding AE trust in Stratus as a tool.",
+          "pattern": "Structural — happens on every Stratus save-to-opp that touches an in-flight approval"
+        },
+        {
+          "signal": "W2 approvals issues doubled WoW (4 → 8)",
+          "so_what": "This isn't noise — it's the start of Q2 deal cycle. As AEs ramp pipeline, every approval friction point compounds. If this isn't fixed before Q2 peak, support volume will 2–3x.",
+          "pattern": "Seasonal amplifier — structural bugs get worse at quarter open"
+        },
+        {
+          "signal": "3 different tools breaking in the same week (Ironclad, DocuSign, SFDC/DC)",
+          "so_what": "The approval chain has no resilience — a failure in any single handoff kills the deal. AEs are forced to be their own integration debuggers across tools they don't control.",
+          "pattern": "No end-to-end owner — each tool team owns their piece but nobody owns the AE experience"
+        },
+        {
+          "signal": "ACH FS misbilling has no approval guardrail",
+          "so_what": "$2M+ is accumulating because nobody checks ACH Faster Settlement eligibility at contract time. This is a validation gap that Stratus could close — and GTMS-38895 has been open since Dec 2025.",
+          "pattern": "Known risk, no owner — Jira ticket exists but no eng committed to Q2"
+        }
+      ],
+      "bottom_line": "The approval workflow is a sequence of brittle handoffs with no single owner and no AE visibility when something breaks. Fixing Stratus approval cancellation and adding the ACH FS guardrail would eliminate the two highest-impact pain points before Q2 peak."
+    }
   },
   "people": {
     "top_submitters": [
