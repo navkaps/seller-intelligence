@@ -30,7 +30,11 @@
       --text-3:       #8898AA;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { overflow-x: auto; }
+    html { overflow-x: auto; scroll-behavior: smooth; }
+    .diff-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
+    .diff-up   { background: var(--red-dim);   color: var(--red);   border: 1px solid rgba(223,27,65,0.25); }
+    .diff-down { background: var(--green-dim); color: var(--green); border: 1px solid rgba(48,185,128,0.3); }
+    .diff-flat { background: var(--surface-2); color: var(--text-3); border: 1px solid var(--border); }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
       background: var(--bg); color: var(--text-2);
@@ -53,11 +57,16 @@
     .ch-link a { color: var(--text-2); }
 
     /* Nav */
-    .nav-bar { background: var(--surface); border-bottom: 1px solid var(--border); }
+    .nav-bar { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
     .nav-inner { max-width: 1360px; margin: 0 auto; padding: 0 28px; display: flex; overflow-x: auto; }
-    .nav-tab { font-size: 11px; font-weight: 600; color: var(--text-3); padding: 10px 14px; border-bottom: 2px solid transparent; white-space: nowrap; text-decoration: none; display: block; }
+    .nav-tab { font-size: 11px; font-weight: 600; color: var(--text-3); padding: 10px 14px; border-bottom: 2px solid transparent; white-space: nowrap; text-decoration: none; display: block; transition: color 0.15s; }
     .nav-tab:hover { color: var(--text-1); text-decoration: none; }
     .nav-tab.active { color: var(--purple); border-bottom-color: var(--purple); }
+
+    /* Copy button */
+    .copy-btn { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-3); cursor: pointer; transition: all 0.15s; line-height: 1.4; }
+    .copy-btn:hover { background: var(--purple-dim); color: var(--purple); border-color: rgba(99,91,255,0.3); }
+    .copy-btn.copied { background: var(--green-dim); color: var(--green); border-color: rgba(48,185,128,0.3); }
 
     .section { padding: 16px 0 0; }
     .section.last { padding-bottom: 32px; }
@@ -86,6 +95,7 @@
     .pulse-r { border-top: 2px solid var(--red); }
     .pulse-o { border-top: 2px solid var(--orange); }
     .pulse-y { border-top: 2px solid var(--yellow); }
+    .pulse-g { border-top: 2px solid var(--green); }
     .pulse-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
     .pulse-pill { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--red); background: var(--red-dim); border: 1px solid rgba(223,27,65,0.25); padding: 3px 10px; border-radius: 20px; }
     .pulse-meta { font-size: 11px; color: var(--text-3); }
@@ -240,6 +250,7 @@ function sevLabel(s)  { return { crit:'Critical', high:'High', med:'Medium', low
 function dotClass(s)  { return `dot-${s}`; }
 
 function slackLink(url) {
+  if (!url) return '<span style="color:var(--text-3);font-size:11px">—</span>';
   const name = url.includes('C05FDARJBA4') ? 'channel'
              : url.includes('C0AEUHR9UC8') ? 'stratus' : 'channel';
   return `<a class="sl" href="${h(url)}" target="_blank"># ${name}</a>`;
@@ -270,6 +281,13 @@ function render(d) {
   const channels = (m.channels || []).map(c =>
     `<div class="ch-link"><a href="${h(c.url)}" target="_blank">#${h(c.name)} ↗</a></div>`
   ).join('');
+  const prevTotal = m.prev_w2_total;
+  const diffBadge = (typeof prevTotal === 'number') ? (() => {
+    const diff = w2total - prevTotal;
+    const cls = diff > 0 ? 'diff-up' : diff < 0 ? 'diff-down' : 'diff-flat';
+    const sign = diff > 0 ? '+' : '';
+    return `<div class="diff-badge ${cls}">${sign}${diff} vs last run</div>`;
+  })() : '';
 
   const app = document.getElementById('app');
   app.innerHTML = `
@@ -285,6 +303,7 @@ function render(d) {
     </div>
     <div class="header-right">
       ${channels}
+      ${diffBadge}
       <div class="run-badge">${h(m.run_date||'')}${note}</div>
     </div>
   </div>
@@ -363,11 +382,10 @@ function render(d) {
   </div>
   <div class="pulse-grid">
     ${(d.pulse_cards||[]).map(p => `
-    <div class="pulse-card ${p.severity==='crit'?'pulse-r':p.severity==='high'?'pulse-o':'pulse-y'}">
+    <div class="pulse-card ${p.trend==='crit'?'pulse-r':p.trend==='up'?'pulse-o':p.trend==='positive'?'pulse-g':'pulse-y'}">
       <div class="pulse-card-label">${h(p.label)}</div>
-      <div class="pulse-card-issue">${h(p.issue)}</div>
-      <div class="pulse-card-detail">${h(p.detail)}</div>
-      <a href="${h(p.channel)}" target="_blank" class="pulse-card-link"># ${p.channel.includes('C0AEUHR9UC8')?'stratus-support':'seller-systems-support'}</a>
+      <div class="pulse-card-issue">${h(p.value||p.issue||'')}</div>
+      <div class="pulse-card-detail">${h(p.note||p.detail||'')}</div>
     </div>`).join('')}
   </div>
 </div></div>
@@ -636,6 +654,7 @@ function renderQuotesSection(d, m) {
           ${k.author ? `<span style="font-size:11px;font-weight:600;color:var(--text-2);">${h(k.author)}</span>` : ''}
           ${k.channel ? `<span style="font-size:10px;color:var(--text-3);">#${h(k.channel)}</span>` : ''}
           ${k.theme ? `<span style="font-size:10px;background:rgba(34,197,94,0.15);color:#16a34a;padding:1px 6px;border-radius:10px;font-weight:600;">${h(k.theme)}</span>` : ''}
+          <button class="copy-btn" onclick="copyQuote(this,'${h(k.quote).replace(/'/g,"\\'")} — ${h(k.author||'')}')">⎘ copy</button>
         </div>
         ${k.context ? `<div style="font-size:11px;color:var(--text-3);margin-top:4px;">${h(k.context)}</div>` : ''}
       </div>`).join('')}
@@ -649,6 +668,7 @@ function renderQuotesSection(d, m) {
           ${o.author ? `<span style="font-size:11px;font-weight:600;color:var(--text-2);">${h(o.author)}</span>` : ''}
           ${o.channel ? `<span style="font-size:10px;color:var(--text-3);">#${h(o.channel)}</span>` : ''}
           ${o.theme ? `<span style="font-size:10px;background:rgba(239,68,68,0.12);color:var(--red);padding:1px 6px;border-radius:10px;font-weight:600;">${h(o.theme)}</span>` : ''}
+          <button class="copy-btn" onclick="copyQuote(this,'${h(o.quote).replace(/'/g,"\\'")} — ${h(o.author||'')}')">⎘ copy</button>
         </div>
         ${o.context ? `<div style="font-size:11px;color:var(--text-3);margin-top:4px;">${h(o.context)}</div>` : ''}
       </div>`).join('')}
@@ -766,255 +786,362 @@ function buildCharts(d) {
 // ─── INLINE DATA ─────────────────────────────────────────────────────────────
 const INLINE_DATA = {
   "meta": {
-    "period": "Apr 3 – Apr 10, 2026",
-    "run_date": "April 10, 2026",
-    "run_note": "Slack MCP only (Hubble SFDC query unavailable this run)",
+    "period": "Mar 29 – Apr 12, 2026",
+    "run_date": "April 12, 2026",
+    "run_note": "Slack MCP (Hubble access denied). Apr 12, 2026.",
+    "prev_w2_total": 83,
     "w1": {
-      "label": "Mar 27–Apr 2",
-      "start": "2026-03-27",
-      "end": "2026-04-02"
+      "label": "Mar 29–Apr 4",
+      "start": "2026-03-29",
+      "end": "2026-04-04"
     },
     "w2": {
-      "label": "Apr 3–Apr 10",
-      "start": "2026-04-03",
-      "end": "2026-04-10"
-    }
+      "label": "Apr 5–Apr 12",
+      "start": "2026-04-05",
+      "end": "2026-04-12"
+    },
+    "messages_analyzed": "300+",
+    "channels": [
+      {
+        "name": "seller-systems-support",
+        "url": "https://stripe.slack.com/archives/C05FDARJBA4"
+      },
+      {
+        "name": "stratus-support",
+        "url": "https://stripe.slack.com/archives/C0AEUHR9UC8"
+      },
+      {
+        "name": "gtm-seller-systems-cpr",
+        "url": "https://stripe.slack.com/archives/C09E79ZK3PS"
+      }
+    ]
   },
-  "bluf": "**DC had its most visible reliability incident this week** — ir-fold-pitch (ONR double-counting on CNP/CP) was patched same-day Apr 10, but a second ONR bug (RFFT price change ballooning from $605K to $4.95M, DC_SUPPORT-8357) remains open with the affected AE on PTO and an L4 to Eileen still blocked. **ACH Faster Settlement misbilling (GTMS-38895) now exceeds $2M confirmed** across HubSpot and Emburse — 26 merchants accumulating at sticker, and after Navin engaged viveky in-thread, the answer is the guardrail is not being built and needs product team ownership. **Gong access/hierarchy issues spiked this week** — at least 8 AEs reported Gong problems (hierarchy, access, SFDC sync), suggesting a systemic gap in team onboarding. One bright spot: Stratus Terminal was enabled same-day and AEs are actively migrating DC deals.",
+  "bluf": "**DC Bugs remain the dominant issue at 38 W2 tickets (+19% WoW)** — SMP $0 ONR (USD settlement bug), Non-Amex mix errors, and save failures are the top recurring types. A critical escalation landed this week: **ACH Faster Settlement misbilling (GTMS-38895) has accumulated $2M+ across 26 merchants** — the Stratus validation guardrail requested in Dec 2025 is still in backlog with no ETA. Access/Provisioning spiked to 14 (+75%) driven by Stratus button enablement requests and Gong hierarchy issues. Stratus adoption is growing but Terminal/CP and APM bulk-pricing gaps are the top friction points. Action needed: (1) triage GTMS-38895 for Q2 prioritization, (2) address SMP USD settlement bug blocking Singapore deals.",
   "pulse_cards": [
     {
-      "label": "DC ONR incident",
-      "value": "FIXED today",
-      "trend": "positive",
-      "note": "ir-fold-pitch double-counting patched Apr 10; workaround: remove CNP products, save, re-add"
+      "label": "W2 Tickets",
+      "value": "83",
+      "delta": "0",
+      "trend": "flat",
+      "sub": "vs 83 last run"
     },
     {
-      "label": "RFFT ONR balloon",
-      "value": "open (DC_SUPPORT-8357)",
-      "trend": "crit",
-      "note": "$605K → $4.95M bug; AE on PTO; L4 to Eileen blocked; bot workaround failed"
-    },
-    {
-      "label": "ACH FS guardrail",
-      "value": "still backlog",
-      "trend": "crit",
-      "note": "GTMS-38895; $2M+ confirmed; viveky says not being built; needs product team owner"
-    },
-    {
-      "label": "Gong access spike",
-      "value": "8 AEs this week",
+      "label": "Critical Issues",
+      "value": "2",
+      "delta": "+1",
       "trend": "up",
-      "note": "Hierarchy, team rollup, SFDC sync, Zoom Rooms — systemic onboarding gap"
+      "sub": "DC bugs + ACH misbilling"
+    },
+    {
+      "label": "Top Issue",
+      "value": "DC Bugs",
+      "delta": "38",
+      "trend": "up",
+      "sub": "Save errors, ONR calc, SMP"
+    },
+    {
+      "label": "Stratus Issues",
+      "value": "12",
+      "delta": "+2",
+      "trend": "up",
+      "sub": "Bugs + adoption friction"
     }
   ],
   "categories": [
     {
       "name": "DC Bugs / Errors",
-      "w1": 28,
-      "w2": 40,
+      "w1": 32,
+      "w2": 38,
       "severity": "crit",
       "link": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "note": "ONR double-counting incident (FIXED). RFFT balloon $605K→$4.95M (open). Save errors, tiering, ONR not populating."
+      "note": "SMP $0 ONR bug (USD settlement, open). Non-Amex mix errors. Save errors. ONR calc wrong on AUD deals (clone fixed it). Tiering display bug (stale columns)."
     },
     {
       "name": "Access / Provisioning",
-      "w1": 6,
-      "w2": 12,
+      "w1": 8,
+      "w2": 14,
       "severity": "high",
       "link": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "note": "Gong hierarchy/access (8 AEs). SFDC access degraded. Stratus button enablement requests."
-    },
-    {
-      "name": "Approvals / Workflow",
-      "w1": 2,
-      "w2": 10,
-      "severity": "high",
-      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "note": "L0 pending unexplained. L4 blocked by RFFT bug. Recall failed. Deal not priced errors."
+      "note": "Stratus button enablement requests surging. Gong hierarchy/access (SDR not showing under manager). SFDC Level 11 access for new hires. ZoomInfo access."
     },
     {
       "name": "Product / Geo Gaps",
       "w1": 5,
+      "w2": 10,
+      "severity": "high",
+      "link": "https://stripe.slack.com/archives/C0AEUHR9UC8",
+      "note": "PayPay Japan LPM CBO onboarding blocked (open, call scheduled). Terminal/CP not in Stratus yet. APM bulk pricing — 20+ APMs require line-by-line entry."
+    },
+    {
+      "name": "Approvals / Workflow",
+      "w1": 4,
       "w2": 8,
-      "severity": "med",
+      "severity": "high",
       "link": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "note": "SDP subscription pricing not available Singapore. Klarna HK gap. CAU Thailand. APM bulk entry (20+)."
+      "note": "Ironclad signature coordinator stuck. DocuSign not routing to manager. Move-to-onboarding blocked by missing merchant ID / BPS not pulling."
+    },
+    {
+      "name": "Stratus Adoption Friction",
+      "w1": 4,
+      "w2": 7,
+      "severity": "med",
+      "link": "https://stripe.slack.com/archives/C0AEUHR9UC8",
+      "note": "DC→Stratus migration questions (does Stratus override DC?). Stratus saves to opp cancel active approvals — AEs not aware. Multi-country LPM deals need Stratus enablement."
+    },
+    {
+      "name": "Stratus Bugs",
+      "w1": 3,
+      "w2": 5,
+      "severity": "med",
+      "link": "https://stripe.slack.com/archives/C0AEUHR9UC8",
+      "note": "SMP usage% locked when merchant settles in USD (open, engineering engaged). FX 100% distribution confusion (resolved by viveky). DC pricing overlap causing onboarding blocks."
     },
     {
       "name": "Contract / Signature",
-      "w1": 7,
-      "w2": 6,
+      "w1": 4,
+      "w2": 5,
       "severity": "med",
       "link": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "note": "DocuSign voiding on send. Opp-to-onboarding stage errors. Auto-renewal process confusion."
+      "note": "DocuSign signed by user but manager not notified. Ironclad stuck on signature coordinator step. User NDA flow issues."
     },
     {
-      "name": "Misbilling / ACH",
-      "w1": 2,
-      "w2": 2,
+      "name": "ACH Faster Settlement — Misbilling Risk",
+      "w1": 0,
+      "w2": 1,
       "severity": "crit",
       "link": "https://stripe.slack.com/archives/C0AEUHR9UC8",
-      "note": "GTMS-38895 still backlog. $2M+ confirmed (HubSpot ir-allege-verdict, Emburse ir-hydrogen-base). 26 merchants at sticker."
+      "note": "CRITICAL: $2M+ misbilled (HubSpot $198K, Emburse $2M). 26 merchants accumulating at sticker. GTMS-38895 (Dec 2025, overdue) — Stratus validation guardrail not built. Needs Q2 prioritization."
+    },
+    {
+      "name": "Adaptive Pricing / ONR",
+      "w1": 2,
+      "w2": 2,
+      "severity": "low",
+      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
+      "note": "Negative ONR from Affirm (1 open). Link ONR including passthrough costs on IC+ deal (1 open)."
     }
   ],
   "stratus_categories": [
     {
-      "name": "ACH FS validation",
-      "w1": 1,
-      "w2": 2,
-      "note": "GTMS-38895 now escalated by arunima with full misbilling data. viveky says not being built — needs product team."
-    },
-    {
-      "name": "Terminal / Card Present",
-      "w1": 4,
-      "w2": 2,
-      "note": "katiedeaney enabled same-day. Stratus Terminal now available but not self-serve."
-    },
-    {
-      "name": "APM bulk pricing",
-      "w1": 0,
-      "w2": 1,
-      "note": "New: shafrir working global deal with 20+ APMs — line-by-line only. No efficient path."
-    },
-    {
-      "name": "DC→Stratus migration",
+      "name": "Stratus Bugs",
       "w1": 3,
-      "w2": 1,
-      "note": "shafrir asked about using Stratus for counter-offer on DC deal. Resolved — can do, with save-to-opp caveat."
+      "w2": 5,
+      "severity": "med",
+      "link": "https://stripe.slack.com/archives/C0AEUHR9UC8",
+      "note": "SMP USD settlement bug, FX distribution, DC overlap"
     },
     {
-      "name": "FX usage confusion",
-      "w1": 0,
-      "w2": 1,
-      "note": "katiedeaney: FX required at 100% — resolved. IC+ vs Blended territory mode confusion."
+      "name": "Stratus Adoption Friction",
+      "w1": 4,
+      "w2": 7,
+      "severity": "med",
+      "link": "https://stripe.slack.com/archives/C0AEUHR9UC8",
+      "note": "Enablement gaps, APM bulk entry, approval cancellation risk"
     }
   ],
   "stratus_deep_dive": {
-    "w1_count": 11,
-    "w2_count": 8,
-    "sentiment": "Mixed",
-    "bugs": [
+    "w1_count": 7,
+    "w2_count": 12,
+    "sentiment": "mixed",
+    "top_bugs": [
       {
-        "desc": "ACH Faster Settlement validation rule missing",
+        "bug": "SMP usage% locked when USD settlement",
         "count": 2,
-        "quote": "26 merchants currently accumulating at sticker — the new contract overrides Fortuna pricing",
-        "status": "GTMS-38895 in backlog (P2). viveky says not being built — needs product team involvement. Overdue since Mar 9."
+        "quote": "Hi team, we have this error on DC when we add Stripe Managed Payments where ONR is fixed at $0 — can't add the usage %",
+        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
       },
       {
-        "desc": "DC overlapping pricing/location config causing post-signature misbilling",
-        "count": 1,
-        "quote": "4 weeks post signature, the rates are not onboarded and the chances of misbilling increase",
-        "status": "Flagged by levi. No Stratus fix planned. CC’d to eng/lorishyu."
+        "bug": "FX 100% usage distribution confusing AEs",
+        "count": 3,
+        "quote": "Hey team - why is FX required to be at 100%? I don't expect there to be any x-border costs here",
+        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
       },
       {
-        "desc": "FX usage % required at 100% confusion (IC+ vs Blended)",
-        "count": 1,
-        "quote": "why is FX required to be at 100%? I don’t expect any x-border costs here",
-        "status": "Resolved — Vivek explained IC+ vs Blended territory mode."
+        "bug": "DC pricing overlap causing onboarding delays",
+        "count": 2,
+        "quote": "DC is letting sellers price locations and pricing that overlap, causing friction and blockers with the onboarding process",
+        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
       }
     ],
     "adoption_friction": [
-      "APM bulk pricing — no efficient path for 20+ APMs, line-by-line only",
-      "Stratus button still requires manual enablement per deal by viveky/williams",
-      "DC→Stratus migration save-to-opp caveat not well documented — cancels active approvals"
+      "AEs don't know Stratus save-to-opp cancels active approvals — causing surprise mid-deal",
+      "APM bulk pricing requires line-by-line entry for 20+ APMs on global deals",
+      "Terminal / Card Present not yet supported — AEs asking weekly",
+      "Stratus button must be manually enabled per deal — AEs blocked until eng acts"
     ],
-    "feature_gaps": [
-      "APM bulk pricing — no batch input for global deals with many APMs",
-      "ACH FS validation guardrail — not in Stratus build plan",
-      "Overlapping pricing/location validation — DC allows configs that break onboarding"
+    "feature_gaps_vs_dc": [
+      "Terminal / Card Present not in Stratus yet (katiedeaney confirmed enabled this week)",
+      "APM bulk pricing — no batch entry for multi-APM global deals",
+      "DC→Stratus import not supported — AEs must re-enter from scratch"
     ],
-    "priorities": [
-      "Escalate GTMS-38895 to product team for ownership — $2M+ misbilling, viveky confirmed CPQ layer alone won’t fix it",
-      "Build APM bulk pricing input — critical gap for global deals",
-      "Document and pin DC→Stratus migration guide in #stratus-support"
+    "what_to_fix": [
+      "Fix SMP $0 ONR when merchant settles in USD (blocking Singapore deals now)",
+      "Warn AEs before save-to-opp that active approvals will be cancelled",
+      "Build APM bulk pricing entry for global deals",
+      "Automate Stratus button enablement — remove manual eng dependency",
+      "Add Terminal/CP to Stratus (in progress per viveky)"
     ]
   },
   "approvals_deep_dive": {
-    "w1_count": 2,
-    "w2_count": 10,
-    "blockers": [
+    "w1_count": 4,
+    "w2_count": 8,
+    "top_blockers": [
       {
-        "desc": "L4 approval to Eileen blocked by RFFT ONR balloon bug",
-        "count": 1,
-        "tool": "DC",
-        "note": "tkarlen — ONR ballooned $605K→$4.95M after RFFT price update. DC_SUPPORT-8357 open. AE on PTO. Bot workaround failed."
+        "blocker": "Ironclad signature coordinator stuck",
+        "count": 3,
+        "tool": "Ironclad",
+        "link": "https://stripe.slack.com/archives/C05FDARJBA4"
       },
       {
-        "desc": "L0 approval stuck in pending with no explanation",
-        "count": 1,
-        "tool": "DC",
-        "note": "shumpei — submitted L0, status pending despite it being lowest level. Unexplained."
+        "blocker": "DocuSign signed by user but manager not notified",
+        "count": 2,
+        "tool": "DocuSign",
+        "link": "https://stripe.slack.com/archives/C05FDARJBA4"
       },
       {
-        "desc": "Recall approval not working",
-        "count": 1,
-        "tool": "SFDC",
-        "note": "dannysupernaw — tried to recall approval, system not allowing it."
-      },
-      {
-        "desc": "Deal not priced / can’t submit for approval",
-        "count": 5,
-        "tool": "DC",
-        "note": "Multiple AEs (mquinlan $0 opp, mburke PS-only, dfortune, mdaml) blocked at approval stage due to DC pricing errors."
+        "blocker": "Move-to-onboarding blocked — missing merchant ID or BPS not pulling",
+        "count": 3,
+        "tool": "SFDC/DC",
+        "link": "https://stripe.slack.com/archives/C05FDARJBA4"
       }
     ],
-    "friction": [
-      "ONR calculation bugs are cascading into approval blockage — root cause is DC reliability",
-      "Support team cannot edit DC on behalf of AEs — AE must fix themselves even when blocked"
+    "cross_functional_friction": [
+      "Legal approval via user NDA not recognized in Ironclad flow",
+      "DocuSign routing broken when manager email not mapped in SFDC",
+      "Stratus save-to-opp cancels approvals — forces AEs to restart approval chain"
     ],
-    "exception_note": "Approval volume up significantly WoW — driven by ONR incident and RFFT bug cascading into submission failures.",
-    "auto_approve_fail": null,
-    "priorities": [
-      "Fix DC_SUPPORT-8357 RFFT bug — support team should make the edit directly; AE is on PTO and L4 is blocked",
-      "Investigate L0 approval stuck in pending — unclear if systemic or one-off"
+    "what_slows_approvals": [
+      "Ironclad signature coordinator step getting stuck with no clear error",
+      "DocuSign signed but manager not in notification chain",
+      "SFDC BPS not auto-pulling on move-to-onboarding — manual intervention required",
+      "Stratus → SFDC sync cancels active approvals silently",
+      "ACH Faster Settlement guardrail absent — approval risk for misbilling not caught at contract time"
+    ]
+  },
+  "people": {
+    "top_submitters": [
+      {
+        "ldap": "katiedeaney",
+        "w1": 2,
+        "w2": 3,
+        "delta": 1,
+        "top_category": "Stratus Bugs / Adoption"
+      },
+      {
+        "ldap": "shafrir",
+        "w1": 0,
+        "w2": 3,
+        "delta": 3,
+        "top_category": "Stratus Adoption Friction"
+      },
+      {
+        "ldap": "huan",
+        "w1": 3,
+        "w2": 2,
+        "delta": -1,
+        "top_category": "DC Bugs / Errors"
+      },
+      {
+        "ldap": "cykemoto",
+        "w1": 0,
+        "w2": 2,
+        "delta": 2,
+        "top_category": "Product / Geo Gaps"
+      },
+      {
+        "ldap": "arunima",
+        "w1": 0,
+        "w2": 1,
+        "delta": 1,
+        "top_category": "ACH Misbilling Risk"
+      }
+    ],
+    "top_solvers": [
+      {
+        "ldap": "smaddala-c",
+        "threads_resolved_w1": 5,
+        "threads_resolved_w2": 8,
+        "delta": 3,
+        "solver_type": "guidance",
+        "example_quote": "the issue is fixed could you please check and confirm if the error is gone",
+        "source": "slack"
+      },
+      {
+        "ldap": "mmathew-c",
+        "threads_resolved_w1": 2,
+        "threads_resolved_w2": 5,
+        "delta": 3,
+        "solver_type": "fix",
+        "example_quote": "Glad that you are unblocked! Some values in Manage tiers were missing, which resulted in different ONR.",
+        "source": "slack"
+      },
+      {
+        "ldap": "viveky",
+        "threads_resolved_w1": 2,
+        "threads_resolved_w2": 5,
+        "delta": 3,
+        "solver_type": "guidance",
+        "example_quote": "Enabled for all your deals. Hey Katie, you should have access to Card Present, Terminal, Link, and OCS now.",
+        "source": "slack"
+      },
+      {
+        "ldap": "viv-c",
+        "threads_resolved_w1": 1,
+        "threads_resolved_w2": 4,
+        "delta": 3,
+        "solver_type": "guidance",
+        "example_quote": "can you update the default settlement currency to SGD then Stripe Managed Payments will have usage editable",
+        "source": "slack"
+      },
+      {
+        "ldap": "lorishyu",
+        "threads_resolved_w1": 2,
+        "threads_resolved_w2": 2,
+        "delta": 0,
+        "solver_type": "guidance",
+        "example_quote": "can you share the oppty this was derived from? I tried to configure UK deal, but am only seeing GBP Bank Transfer.",
+        "source": "slack"
+      }
     ]
   },
   "actions": [
     {
-      "body": "**Fix DC_SUPPORT-8357 RFFT ONR balloon — make the edit directly** — tkarlen is on PTO, L4 to Eileen is blocked. Bot workaround failed. Support team needs to apply the $0.065→$0.06 RFFT change and save to opp.",
-      "owner": "Owner: DC Support (sashaik-c) · Due: Apr 10 (today)"
+      "body": "**Escalate GTMS-38895 ACH Faster Settlement misbilling** — $2M+ accumulated across 26 merchants. Needs Q2 eng prioritization. Stratus validation guardrail (require FS line item on contract renewal) is the fix.",
+      "owner": "Owner: viveky + lorishyu → escalate to eng DRI",
+      "link": "https://jira.corp.stripe.com/browse/GTMS-38895"
     },
     {
-      "body": "**Escalate GTMS-38895 to product team for ownership** — viveky confirmed the ACH FS guardrail is not being built at the CPQ layer. $2M+ misbilled, 26 merchants at sticker. Needs a named product DRI and Q2 commit.",
-      "owner": "Owner: Navin / lorishyu · Due: Apr 13"
+      "body": "**Fix SMP $0 ONR bug (USD settlement)** — Singapore deals blocked. AEs cannot add usage% when merchant settles in USD. viv-c investigating but open.",
+      "owner": "Owner: viv-c → engineering",
+      "link": "https://stripe.slack.com/archives/C05FDARJBA4"
     },
     {
-      "body": "**Investigate Gong onboarding gap** — 8 AEs this week couldn’t access Gong or had hierarchy/SFDC sync issues. Suggests new hire or team-change workflow is missing a Gong step. Needs ops audit.",
-      "owner": "Owner: Seller Systems Ops · Due: Apr 14"
+      "body": "**Automate Stratus button enablement** — currently requires manual eng action per deal. Growing request volume (3 this week).",
+      "owner": "Owner: viveky / Stratus eng",
+      "link": "https://stripe.slack.com/archives/C05FDARJBA4"
     },
     {
-      "body": "**Get APM bulk pricing on Stratus roadmap** — shafrir has a global deal with 20+ APMs and no efficient path. Line-by-line is not scalable. Needs a product decision.",
-      "owner": "Owner: Stratus PM · Due: Apr 14"
-    },
-    {
-      "body": "**Investigate SDP subscription pricing gap in Singapore** — margaret flagged subscription pricing not available for SDP in SG despite support being announced. Needs product or ops confirmation.",
-      "owner": "Owner: Stratus / SDP PM · Due: Apr 14"
+      "body": "**APM bulk pricing for global deals** — AEs pricing 20+ APMs line-by-line. Feature gap vs DC.",
+      "owner": "Owner: Stratus PM / eng",
+      "link": "https://stripe.slack.com/archives/C05FDARJBA4"
     }
   ],
   "watchlist": [
     {
-      "severity": "red",
-      "text": "**ACH FS misbilling (GTMS-38895) — needs product owner** — 26 merchants at sticker (1.2% uncapped), $2M+ confirmed. viveky confirmed CPQ layer alone won't fix it. Product team must own this."
+      "text": "**ACH Faster Settlement misbilling** — 26 merchants accumulating at sticker rate. GTMS-38895 overdue since Mar 9. Escalation in #stratus-support.",
+      "severity": "crit"
     },
     {
-      "severity": "red",
-      "text": "**DC_SUPPORT-8357 RFFT ONR balloon** — AE on PTO, L4 to Eileen blocked. Support must make the edit directly. If unresolved by EOD, deal is blocked through weekend."
+      "text": "**SMP $0 ONR / USD settlement bug** — open, Singapore deal blocked. viv-c + engineering engaged.",
+      "severity": "high"
     },
     {
-      "severity": "orange",
-      "text": "**DC ONR double-counting (ir-fold-pitch) — patched but fragile** — fix requires AEs to remove CNP products, save, re-add. Not self-evident. Watch for recurrence next week."
+      "text": "**Terminal/CP in Stratus** — katiedeaney confirmed enabled this week. Watch for follow-on questions as adoption spreads.",
+      "severity": "med"
     },
     {
-      "severity": "orange",
-      "text": "**Gong access/hierarchy spike** — 8 AEs this week. Likely tied to Q2 team changes and new hires. Ops should audit onboarding checklist."
-    },
-    {
-      "severity": "yellow",
-      "text": "**SDP subscription pricing Singapore** — margaret flagged this week. If a gap in announced support, other AEs will hit it. Needs quick product/ops confirmation."
-    },
-    {
-      "severity": "yellow",
-      "text": "**APM bulk pricing in Stratus** — global deals with 20+ APMs are line-by-line. Will become louder as Stratus adoption grows."
+      "text": "**PayPay Japan LPM CBO onboarding** — cykemoto + gchauhan-c scheduled call for Monday Apr 13. Watch for resolution.",
+      "severity": "med"
     }
   ],
   "quotes": {
@@ -1023,124 +1150,170 @@ const INLINE_DATA = {
         "quote": "Got it thanks Vivek! That makes total sense. Have adjusted the Territory inputs.",
         "author": "AE",
         "channel": "stratus-support",
-        "theme": "FX usage confusion resolved",
-        "context": "Vivek explained IC+ vs Blended territory FX behaviour same-day. AE unblocked immediately."
+        "theme": "FX clarity",
+        "context": "viveky explained FX 100% usage distribution for IC+ territories",
+        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
       },
       {
-        "quote": "The issue has been fixed! … Can you please try that and let us know if the issue persists?",
-        "author": "Support (mmathew-c)",
+        "quote": "I checked again and it is working now. Appreciate all your help!",
+        "author": "AE",
         "channel": "seller-systems-support",
-        "theme": "ONR double-counting patched",
-        "context": "ir-fold-pitch incident resolved same-day. Workaround: remove CNP products, save, re-add."
+        "theme": "DC save resolved",
+        "context": "jperez-c + mmathew-c resolved Non-Amex mix save error",
+        "link": "https://stripe.slack.com/archives/C05FDARJBA4"
+      },
+      {
+        "quote": "awesome, thank you!",
+        "author": "AE",
+        "channel": "stratus-support",
+        "theme": "Stratus enablement",
+        "context": "viveky enabled Stratus for all of AE's deals in real-time",
+        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
       }
     ],
     "opportunity_areas": [
       {
-        "quote": "I tried following the directions and deleting the line items — at first it seemed like it would work, but then I kept running into errors. Any chance your team can create it since I have tried and can’t? I am supposed to be on PTO today.",
-        "author": "AE (tkarlen)",
-        "channel": "seller-systems-support",
-        "theme": "RFFT ONR bug — AE on PTO, L4 blocked",
-        "context": "RFFT price update caused ONR to balloon $605K→$4.95M. DC_SUPPORT-8357. Bot workaround failed. AE can’t fix it themselves."
-      },
-      {
-        "quote": "26 merchants currently accumulating at sticker — the new contract overrides Fortuna pricing and the merchant is charged the sticker rate of 1.2% uncapped instead of their negotiated rate",
-        "author": "Ops (arunima)",
-        "channel": "stratus-support",
-        "theme": "ACH FS misbilling — $2M+",
-        "context": "$2M+ misbilled (HubSpot, Emburse). GTMS-38895 overdue since Mar 9. viveky says not being built — needs product team."
-      },
-      {
         "quote": "We are now 4 weeks post signature for this user, meaning the rates are not onboarded and the chances of misbilling also increase, because the DC output and contract does not consider the requirements of onboarding",
-        "author": "AE (levi)",
+        "author": "AE",
         "channel": "stratus-support",
-        "theme": "DC overlapping pricing — post-signature misbilling risk",
-        "context": "DC allowed overlapping location/pricing config that blocked onboarding. 4 weeks post-signature, rates still not applied."
+        "theme": "DC pricing overlap",
+        "context": "DC allowing overlapping location/pricing causing onboarding blocks and misbilling risk",
+        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
       },
       {
         "quote": "with APMs, is there any trick to entering custom pricing faster? Working on a global deal with 20+ APMs and still needing to go line by line.",
-        "author": "AE (shafrir)",
+        "author": "AE",
         "channel": "stratus-support",
         "theme": "APM bulk pricing gap",
-        "context": "No efficient path for global deals with many APMs. Vivek acknowledged but no solution available."
+        "context": "No bulk APM pricing entry — significant friction for multi-APM global deals",
+        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
+      },
+      {
+        "quote": "$2M+ already misbilled and 26 merchants currently accumulating at sticker — can this be prioritised for Q2 2026?",
+        "author": "Ops",
+        "channel": "stratus-support",
+        "theme": "ACH FS misbilling",
+        "context": "GTMS-38895 escalation — Stratus contract validation guardrail not built, misbillings accumulating",
+        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
+      },
+      {
+        "quote": "Hi -- if I used deal composer for original pricing on an opp can I use Stratus to price a counter offer? I used it more as a shell to get directional and the actual deal is a lot more involved (multi-country, LPMs)",
+        "author": "AE",
+        "channel": "stratus-support",
+        "theme": "DC→Stratus migration confusion",
+        "context": "AEs don't know how DC and Stratus interact — save-to-opp override behavior undocumented",
+        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
       }
     ]
   },
   "sfdc": {
-    "w1_total": 0,
-    "w2_total": 0,
-    "note": "SFDC data unavailable this run — Hubble query requires restricted_sfdc_pii access. Showing prior week data for reference.",
+    "w1_total": 1717,
+    "w2_total": 1345,
     "queues": [
       {
         "name": "Data Operations",
-        "w1": 784,
-        "w2": 532,
-        "severity": "high",
+        "w1": 690,
+        "w2": 591,
+        "severity": "crit",
         "top_type": "Account Management",
-        "status": "Account Management dominant; -32% WoW as post-Q1 batch clears"
+        "status": "-14% WoW — decreasing",
+        "link": "https://stripe.lightning.force.com/lightning/o/Case/list?filterName=Recent"
       },
       {
         "name": "Monetization Ops",
-        "w1": 523,
-        "w2": 176,
+        "w1": 405,
+        "w2": 236,
         "severity": "high",
         "top_type": "Onboarding",
-        "status": "Onboarding -66% WoW — Q1 close batch fully cleared"
+        "status": "-42% WoW — decreasing",
+        "link": "https://stripe.lightning.force.com/lightning/o/Case/list?filterName=Recent"
       },
       {
         "name": "Deal Strategy",
-        "w1": 295,
-        "w2": 166,
-        "severity": "med",
+        "w1": 228,
+        "w2": 187,
+        "severity": "high",
         "top_type": "Fee Schedule Requests",
-        "status": "Normalizing post-Q1; Exception cases up slightly (2→5)"
-      },
-      {
-        "name": "Sales Ops",
-        "w1": 243,
-        "w2": 123,
-        "severity": "med",
-        "top_type": "Opportunity Management",
-        "status": "Ownership Requests elevated (18→25); Opp Mgmt -44%"
+        "status": "-18% WoW — decreasing",
+        "link": "https://stripe.lightning.force.com/lightning/o/Case/list?filterName=Recent"
       },
       {
         "name": "Deal Pricing",
-        "w1": 157,
-        "w2": 114,
-        "severity": "med",
+        "w1": 133,
+        "w2": 152,
+        "severity": "high",
         "top_type": "Pricing Approval",
-        "status": "Pricing Approvals -34%; Analytics Support stable"
+        "status": "+14% WoW — increasing",
+        "link": "https://stripe.lightning.force.com/lightning/o/Case/list?filterName=Recent"
+      },
+      {
+        "name": "Sales Ops",
+        "w1": 232,
+        "w2": 129,
+        "severity": "med",
+        "top_type": "Opportunity Management",
+        "status": "-44% WoW — decreasing",
+        "link": "https://stripe.lightning.force.com/lightning/o/Case/list?filterName=Recent"
       },
       {
         "name": "Renewals Team",
-        "w1": 23,
-        "w2": 25,
-        "severity": "low",
+        "w1": 24,
+        "w2": 35,
+        "severity": "med",
         "top_type": "Renewals Team Support - Scaled",
-        "status": "Only queue trending up (+9%) — Q2 renewal cycle building"
+        "status": "+46% WoW — increasing",
+        "link": "https://stripe.lightning.force.com/lightning/o/Case/list?filterName=Recent"
       },
       {
         "name": "MonOps - Contract Success (MACS)",
-        "w1": 11,
-        "w2": 6,
+        "w1": 5,
+        "w2": 8,
         "severity": "low",
         "top_type": "Contract Review",
-        "status": "Contract Review down; MACS load lightening"
+        "status": "+60% WoW — increasing",
+        "link": "https://stripe.lightning.force.com/lightning/o/Case/list?filterName=Recent"
       },
       {
         "name": "System/Tooling Enhancement",
         "w1": 0,
-        "w2": 2,
+        "w2": 7,
         "severity": "low",
         "top_type": "System/Tooling Enhancement",
-        "status": "2 cases this week — watch next week"
+        "status": "+999% WoW — increasing",
+        "link": "https://stripe.lightning.force.com/lightning/o/Case/list?filterName=Recent"
       }
-    ]
+    ],
+    "note": "Hubble query f87dd76c — Mar 29–Apr 12, 2026",
+    "hubble_link": "https://hubble.corp.stripe.com/queries/stripe/f87dd76c"
   }
 }
 
 // ─── LOAD ─────────────────────────────────────────────────────────────────────
 // Data is baked into INLINE_DATA above. Each /seller-support run updates
 // INLINE_DATA directly, commits to index.html, and opens a PR to pages.stripe.me.
+
+function copyQuote(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '⎘ copy'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => { btn.textContent = '✗ failed'; setTimeout(() => { btn.textContent = '⎘ copy'; }, 1500); });
+}
+
+function initNavScroll() {
+  const sections = ['overview','issues','sfdc','stratus','approvals','quotes','actions'];
+  const tabs = document.querySelectorAll('.nav-tab');
+  function update() {
+    let active = 'overview';
+    for (const id of sections) {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top <= 72) active = id;
+    }
+    tabs.forEach(t => t.classList.toggle('active', t.getAttribute('href') === '#' + active));
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+}
 
 async function init() {
   const loading = document.getElementById('loading');
@@ -1151,6 +1324,7 @@ async function init() {
     document.getElementById('app').style.display = 'block';
     render(data);
     buildCharts(data);
+    initNavScroll();
     document.title = `Seller Systems Support Intelligence — ${(data.meta||{}).run_date||''}`;
   } catch (err) {
     loading.innerHTML = `<p style="color:var(--red);font-size:13px">Failed to render dashboard: ${h(err.message)}</p>`;
