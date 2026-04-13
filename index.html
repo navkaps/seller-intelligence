@@ -980,7 +980,33 @@ const INLINE_DATA = {
       "Build APM bulk pricing entry for global deals",
       "Automate Stratus button enablement — remove manual eng dependency",
       "Add Terminal/CP to Stratus (in progress per viveky)"
-    ]
+    ],
+    "pain_analysis": {
+      "headline": "Stratus is shipping AEs into deals before it's ready — and the gaps are costing real money",
+      "insights": [
+        {
+          "signal": "Stratus issue volume up +71% WoW (7 → 12)",
+          "so_what": "Post-launch usage is accelerating but Stratus bugs aren't being resolved at the same pace. Every new AE onboarding to Stratus hits the same walls — SMP usage lock, FX 100% confusion, DC pricing overlap. The backlog is widening, not shrinking.",
+          "pattern": "Adoption outpacing bug fixes — classic launch debt accumulation"
+        },
+        {
+          "signal": "SMP usage% locks when merchant settles in USD",
+          "so_what": "Singapore deals specifically are blocked at pricing time. AEs can't complete the deal in Stratus and either abandon it mid-flow or fall back to DC — which then creates DC/Stratus dual-entry confusion downstream. This is a blocker for APAC expansion.",
+          "pattern": "Currency-specific bug — only surfaces on USD settlement + SMP combo; easy to miss in testing"
+        },
+        {
+          "signal": "DC pricing overlap causing onboarding delays",
+          "so_what": "AEs price in DC, then migrate to Stratus — but Stratus can't parse or resolve the DC structure cleanly. This is the single biggest source of 'why is my Stratus deal broken' tickets and it points to a missing DC→Stratus import workflow.",
+          "pattern": "Migration gap — DC and Stratus were never designed to coexist mid-deal"
+        },
+        {
+          "signal": "Stratus button must be manually enabled per deal by eng",
+          "so_what": "Access provisioning is the #1 Stratus-related support request this week (14 W2 tickets). AEs ready to use Stratus are blocked waiting for manual enablement. This kills adoption velocity and creates unnecessary eng toil.",
+          "pattern": "Ops bottleneck — self-service enablement never built at launch"
+        }
+      ],
+      "bottom_line": "Stratus is winning AE mindshare but losing AE trust on execution. The SMP USD bug, DC overlap issues, and manual enablement process are the three fixes that would unblock the most deals right now. Without them, AEs will vote with their feet and go back to DC."
+    }
   },
   "approvals_deep_dive": {
     "w1_count": 4,
