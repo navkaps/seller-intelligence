@@ -788,7 +788,7 @@ const INLINE_DATA = {
   "meta": {
     "period": "Mar 29 – Apr 12, 2026",
     "run_date": "April 12, 2026",
-    "run_note": "Slack MCP (Hubble access denied). Apr 12, 2026.",
+    "run_note": null,
     "prev_w2_total": 83,
     "w1": {
       "label": "Mar 29–Apr 4",
@@ -985,37 +985,72 @@ const INLINE_DATA = {
   "approvals_deep_dive": {
     "w1_count": 4,
     "w2_count": 8,
-    "top_blockers": [
+    "hubble_dashboard": "https://hubble.corp.stripe.com/viz/dashboards/57597",
+    "hubble_note": "E2E time, bounce rate, stage dwell — access-redshift-communia-sales required",
+    "apex_metrics": {
+      "e2e_avg_days": null,
+      "e2e_p50_days": null,
+      "bounce_avg": null,
+      "sla_pct": null,
+      "note": "Pending access to restricted_sfdc.approval_history + communia_sales.dim_opportunity"
+    },
+    "issues": [
       {
-        "blocker": "Ironclad signature coordinator stuck",
-        "count": 3,
+        "issue": "Stratus save-to-opp silently cancels active approvals",
+        "tool": "Stratus",
+        "owner": "Stratus eng",
+        "w1": 1,
+        "w2": 3,
+        "impact": "Every Stratus deal — AEs forced to restart approval chain",
+        "fix_type": "Bug fix",
+        "fix_now": false,
+        "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
+      },
+      {
+        "issue": "Move-to-onboarding blocked — BPS not auto-pulling merchant ID",
+        "tool": "DC / SFDC",
+        "owner": "DC eng",
+        "w1": 1,
+        "w2": 3,
+        "impact": "3+ deals/wk manually unblocked by support",
+        "fix_type": "Bug fix",
+        "fix_now": false,
+        "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4"
+      },
+      {
+        "issue": "Ironclad signature coordinator step stuck — no error shown to AE",
         "tool": "Ironclad",
-        "link": "https://stripe.slack.com/archives/C05FDARJBA4"
+        "owner": "Ironclad admin",
+        "w1": 1,
+        "w2": 2,
+        "impact": "3 deals/wk stalled with no self-service path",
+        "fix_type": "Config fix",
+        "fix_now": true,
+        "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4"
       },
       {
-        "blocker": "DocuSign signed by user but manager not notified",
-        "count": 2,
-        "tool": "DocuSign",
-        "link": "https://stripe.slack.com/archives/C05FDARJBA4"
+        "issue": "DocuSign not routing to manager — email missing in SFDC",
+        "tool": "SFDC / DocuSign",
+        "owner": "SFDC admin",
+        "w1": 1,
+        "w2": 2,
+        "impact": "2 deals/wk — manager never gets signature request",
+        "fix_type": "Data quality",
+        "fix_now": true,
+        "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4"
       },
       {
-        "blocker": "Move-to-onboarding blocked — missing merchant ID or BPS not pulling",
-        "count": 3,
-        "tool": "SFDC/DC",
-        "link": "https://stripe.slack.com/archives/C05FDARJBA4"
+        "issue": "ACH Faster Settlement — no guardrail at contract time",
+        "tool": "Stratus",
+        "owner": "Stratus eng / PM",
+        "w1": 0,
+        "w2": 1,
+        "impact": "$2M+ misbilled across 26 merchants — accumulating weekly",
+        "fix_type": "New validation",
+        "fix_now": false,
+        "jira_link": "https://jira.corp.stripe.com/browse/GTMS-38895",
+        "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
       }
-    ],
-    "cross_functional_friction": [
-      "Legal approval via user NDA not recognized in Ironclad flow",
-      "DocuSign routing broken when manager email not mapped in SFDC",
-      "Stratus save-to-opp cancels approvals — forces AEs to restart approval chain"
-    ],
-    "what_slows_approvals": [
-      "Ironclad signature coordinator step getting stuck with no clear error",
-      "DocuSign signed but manager not in notification chain",
-      "SFDC BPS not auto-pulling on move-to-onboarding — manual intervention required",
-      "Stratus → SFDC sync cancels active approvals silently",
-      "ACH Faster Settlement guardrail absent — approval risk for misbilling not caught at contract time"
     ]
   },
   "people": {
