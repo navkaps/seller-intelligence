@@ -74,8 +74,10 @@
     /* BLUF */
     .bluf { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--purple); border-radius: 0 6px 6px 0; padding: 16px 20px; }
     .bluf-label { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--purple); margin-bottom: 6px; }
-    .bluf p { font-size: 12.5px; line-height: 1.75; color: var(--text-2); }
-    .bluf strong { color: var(--text-1); }
+    .bluf p { font-size: 13px; line-height: 1.8; color: var(--text-2); margin: 0 0 12px; }
+    .bluf p:last-child { margin-bottom: 0; }
+    .bluf strong { color: var(--text-1); font-weight: 700; }
+    .bluf p .bluf-head { color: var(--purple); font-weight: 700; font-size: 13px; }
 
     /* KPIs */
     .kpi-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
@@ -251,9 +253,12 @@ function dotClass(s)  { return `dot-${s}`; }
 
 function slackLink(url) {
   if (!url) return '<span style="color:var(--text-3);font-size:11px">—</span>';
-  const name = url.includes('C05FDARJBA4') ? 'channel'
-             : url.includes('C0AEUHR9UC8') ? 'stratus' : 'channel';
-  return `<a class="sl" href="${h(url)}" target="_blank"># ${name}</a>`;
+  const isMsg = /\/p\d{10,}/.test(url);
+  const chName = url.includes('C05FDARJBA4') ? '#seller-systems'
+               : url.includes('C0AEUHR9UC8') ? '#stratus'
+               : '#channel';
+  const label = isMsg ? '→ thread ↗' : `${chName} ↗`;
+  return `<a class="sl" href="${h(url)}" target="_blank">${label}</a>`;
 }
 
 // ─── RENDER ──────────────────────────────────────────────────────────────────
@@ -326,7 +331,12 @@ function render(d) {
 <div class="section" id="overview"><div class="page">
   <div class="bluf">
     <div class="bluf-label">BLUF — ${h(m.run_date||'')}${note}</div>
-    <p>${bold(d.bluf||'')}</p>
+    ${(d.bluf||'').split('\n\n').map(para => {
+      const rendered = String(para).split(/\*\*([^*]+)\*\*/g)
+        .map((p, i) => i % 2 === 0 ? h(p) : `<span class="bluf-head">${h(p)}</span>`)
+        .join('');
+      return `<p>${rendered}</p>`;
+    }).join('')}
   </div>
 </div></div>
 
@@ -481,31 +491,88 @@ function categoryRow(c) {
   const delta = wowPct(c.w1, c.w2);
   const arrow = wowArrow(c.w1, c.w2);
   const cls   = wowClass(c.w1, c.w2);
-  return `<tr>
-    <td class="label" style="padding-left:10px">${h(c.name)}${flags}</td>
+  const resolvedBadge = c.resolved
+    ? `<span style="font-size:10px;color:#16a34a;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);padding:1px 7px;border-radius:10px;font-weight:600;margin-left:6px;">✓ Resolved</span>`
+    : '';
+  const threads = c.threads || [];
+  const hasThreads = threads.length > 0;
+  const expandIcon = hasThreads ? `<span style="font-size:10px;color:var(--text-3);margin-left:6px;opacity:0.6;">▶</span>` : '';
+  const rowId = 'row-' + encodeURIComponent(c.name).replace(/%/g,'_');
+  const detailId = 'detail-' + encodeURIComponent(c.name).replace(/%/g,'_');
+
+  const threadCards = threads.map(t => {
+    const resIcon = t.resolved
+      ? `<span style="font-size:10px;color:#16a34a;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);padding:1px 6px;border-radius:8px;font-weight:600;white-space:nowrap;">✓ resolved</span>`
+      : `<span style="font-size:10px;color:var(--orange);background:rgba(251,146,60,0.1);border:1px solid rgba(251,146,60,0.3);padding:1px 6px;border-radius:8px;font-weight:600;white-space:nowrap;">open</span>`;
+    const slk = t.slack_link
+      ? `<a href="${h(t.slack_link)}" target="_blank" style="font-size:10px;color:var(--purple);font-weight:500;text-decoration:none;white-space:nowrap;">→ thread ↗</a>`
+      : '';
+    const note = t.resolution_note
+      ? `<div style="font-size:11px;color:#16a34a;margin-top:4px;font-style:italic;">${h(t.resolution_note)}</div>`
+      : '';
+    return `<div style="background:var(--bg-2,#f8f8f8);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
+        <span style="font-size:11px;font-weight:700;color:var(--text-1);">${h(t.author||'')}</span>
+        ${resIcon}
+        ${slk}
+      </div>
+      <div style="font-size:12px;color:var(--text-2);font-style:italic;line-height:1.5;">"${h(t.quote||'')}"</div>
+      ${note}
+    </div>`;
+  }).join('');
+
+  const detailRow = hasThreads ? `<tr id="${detailId}" style="display:none;">
+    <td colspan="7" style="padding:0;border-bottom:2px solid var(--border);">
+      <div style="padding:12px 16px;background:linear-gradient(to bottom,rgba(99,102,241,0.04),transparent);">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.7px;text-transform:uppercase;color:var(--text-3);margin-bottom:10px;">Threads this week</div>
+        ${threadCards}
+      </div>
+    </td>
+  </tr>` : '';
+
+  const mainRow = `<tr id="${rowId}" ${hasThreads ? `onclick="toggleDetail('${detailId}','${rowId}')" style="cursor:pointer;"` : ''}>
+    <td class="label" style="padding-left:10px">${h(c.name)}${flags}${resolvedBadge}${expandIcon}</td>
     <td class="c">${c.w1}</td>
     <td class="c">${c.w2}</td>
     <td class="c ${cls}">${arrow} ${delta}</td>
     <td><span class="badge ${sevClass(c.severity)}">${sevLabel(c.severity)}</span></td>
-    <td style="font-size:11px;color:var(--text-3)">${h(c.status)}</td>
-    <td>${slackLink(c.channel)}</td>
+    <td style="font-size:11px;color:var(--text-3)">${h(c.note || c.status || '')}</td>
+    <td>${slackLink(c.link)}</td>
   </tr>`;
+
+  return mainRow + detailRow;
+}
+
+function toggleDetail(detailId, rowId) {
+  const detail = document.getElementById(detailId);
+  const row = document.getElementById(rowId);
+  if (!detail) return;
+  const isOpen = detail.style.display !== 'none';
+  detail.style.display = isOpen ? 'none' : 'table-row';
+  const icon = row ? row.querySelector('span[style*="▶"], span[style*="▼"]') : null;
+  if (icon) icon.textContent = isOpen ? '▶' : '▼';
 }
 
 function renderStratusDeepDive(d, m) {
   const s = d.stratus_deep_dive;
   if (!s) return '';
-  const badgeCls = wowBadgeClass(s.w1_total, s.w2_total);
-  const arrow    = wowArrow(s.w1_total, s.w2_total);
-  const pct      = wowPct(s.w1_total, s.w2_total);
+  const w1 = s.w1_count || s.w1_total || 0;
+  const w2 = s.w2_count || s.w2_total || 0;
+  const badgeCls = wowBadgeClass(w1, w2);
+  const arrow    = wowArrow(w1, w2);
+  const pct      = wowPct(w1, w2);
+  const bugs     = s.top_bugs || s.bugs || [];
+  const friction = s.adoption_friction || [];
+  const priorities = s.what_to_fix || s.priorities || [];
+  const sentimentNote = (s.pain_analysis||{}).bottom_line || s.sentiment_note || '';
   return `
 <div class="section" id="stratus"><div class="page">
   <div class="card" style="border-top:3px solid var(--purple-dark);">
     <div class="deep-dive-header">
       <div class="deep-dive-pill dp-stratus">Stratus Deep Dive</div>
       <div class="deep-dive-meta">
-        <strong>W1: ${s.w1_total} issues → W2: ${s.w2_total} issues</strong> &nbsp;·&nbsp;
-        <span class="wow-badge ${badgeCls}">${arrow} ${pct} · ${h(s.wow_note)}</span>
+        <strong>W1: ${w1} issues → W2: ${w2} issues</strong> &nbsp;·&nbsp;
+        <span class="wow-badge ${badgeCls}">${arrow} ${pct} · ${h(s.wow_note||'')}</span>
         &nbsp;·&nbsp; Sentiment: <span class="sentiment-pill s-${h(s.sentiment)}">${h(s.sentiment)}</span>
         &nbsp;·&nbsp; <a href="https://stripe.slack.com/archives/C0AEUHR9UC8" target="_blank">#stratus-support</a>
       </div>
@@ -513,84 +580,180 @@ function renderStratusDeepDive(d, m) {
     <div class="deep-dive-grid">
       <div>
         <div class="deep-dive-col-title">Top Bugs &amp; Errors</div>
-        ${(s.bugs||[]).map(b => `
+        ${bugs.map(b => {
+          const isResolved = b.resolved === true;
+          const statusBadge = isResolved
+            ? `<span style="font-size:10px;color:#16a34a;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);padding:1px 7px;border-radius:10px;font-weight:600;">✓ Resolved</span>`
+            : '';
+          const resolutionNote = isResolved && b.resolution_note
+            ? `<div style="font-size:11px;color:#16a34a;margin-top:3px;font-style:italic;">${h(b.resolution_note)}</div>`
+            : '';
+          const threadLink = b.link
+            ? `<a href="${h(b.link)}" target="_blank" style="font-size:10px;color:var(--purple);font-weight:500;white-space:nowrap;text-decoration:none;">→ thread ↗</a>`
+            : '';
+          return `
         <div class="dd-item">
           <div class="dd-count">${b.count||'—'}</div>
-          <div>
-            <div class="dd-label">${h(b.title)}</div>
-            <div class="dd-detail">${h(b.detail)}</div>
+          <div style="flex:1;min-width:0;">
+            <div class="dd-label" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+              <span>${h(b.bug||b.title||'')}</span>${statusBadge}${threadLink}
+            </div>
+            ${!isResolved && b.status ? `<div class="dd-detail">${h(b.status)}</div>` : ''}
+            ${resolutionNote}
             ${b.quote ? `<div class="dd-quote">${h(b.quote)}</div>` : ''}
           </div>
-        </div>`).join('')}
+        </div>`;
+        }).join('')}
         <div style="margin-top:16px;">
           <div class="deep-dive-col-title">Adoption Friction</div>
-          ${(s.adoption_friction||[]).map(f => `
+          ${friction.map(f => {
+            const title  = typeof f === 'string' ? f : (f.text||f.title||'');
+            const detail = typeof f === 'string' ? '' : (f.detail||'');
+            const link   = typeof f === 'string' ? '' : (f.link||'');
+            const linkEl = link ? `<a href="${h(link)}" target="_blank" style="font-size:10px;color:var(--purple);font-weight:500;white-space:nowrap;text-decoration:none;margin-left:6px;">→ thread ↗</a>` : '';
+            return `
           <div class="dd-item">
             <div class="dd-count">—</div>
-            <div>
-              <div class="dd-label">${h(f.title)}</div>
-              <div class="dd-detail">${h(f.detail)}</div>
+            <div style="flex:1;min-width:0;">
+              <div class="dd-label" style="display:flex;align-items:flex-start;gap:4px;flex-wrap:wrap;">${h(title)}${linkEl}</div>
+              ${detail ? `<div class="dd-detail">${h(detail)}</div>` : ''}
             </div>
-          </div>`).join('')}
+          </div>`;
+          }).join('')}
         </div>
       </div>
       <div>
+        ${(s.missing_products||[]).length ? `
         <div class="deep-dive-col-title">Products Missing from Stratus</div>
         <div style="margin-bottom:14px;">
-          ${(s.missing_products||[]).map(p => `<span class="product-tag tag-${h(p.status)}">${h(p.name)}</span>`).join('')}
+          ${s.missing_products.map(p => `<span class="product-tag tag-${h(p.status)}">${h(p.name)}</span>`).join('')}
         </div>
         <div style="font-size:10.5px;color:var(--text-3);margin-bottom:16px;line-height:1.6;">
           <strong style="color:var(--text-2);">Red</strong> = missing &nbsp;·&nbsp;
           <strong style="color:var(--text-2);">Orange</strong> = broken &nbsp;·&nbsp;
           <strong style="color:var(--text-2);">Yellow</strong> = gap vs DC
-        </div>
+        </div>` : ''}
+        ${priorities.length ? `
         <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-bottom:16px;">
           <div class="deep-dive-col-title" style="margin-bottom:10px;">What Stratus Needs to Fix</div>
           <ul class="priority-list">
-            ${(s.priorities||[]).map((p,i) => `<li><div class="pn">${i+1}</div><div>${bold(p)}</div></li>`).join('')}
+            ${priorities.map((p,i) => `<li><div class="pn">${i+1}</div><div>${bold(p)}</div></li>`).join('')}
           </ul>
-        </div>
+        </div>` : ''}
+        ${sentimentNote ? `
         <div style="background:var(--purple-dim);border:1px solid rgba(99,91,255,0.2);border-radius:6px;padding:12px 14px;">
           <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--purple-dark);margin-bottom:6px;">Sentiment Signal</div>
-          <div style="font-size:12px;color:var(--text-2);line-height:1.6;">${h(s.sentiment_note)}</div>
-        </div>
+          <div style="font-size:12px;color:var(--text-2);line-height:1.6;">${h(sentimentNote)}</div>
+        </div>` : ''}
       </div>
     </div>
+    ${renderStratusFeedback(s.feedback)}
   </div>
 </div></div>`;
+}
+
+function renderStratusFeedback(fb) {
+  if (!fb) return '';
+  const thumbUp = (fb.rating_dist || {})['5'] || 0;
+  const thumbDown = (fb.rating_dist || {})['1'] || 0;
+  const total = (fb.w1_count||0) + (fb.w2_count||0);
+  const verbatim = (fb.verbatim || []).filter(v => v.comment);
+  return `
+<div style="border-top:1px solid var(--border);margin:16px 28px 0;padding:16px 0 4px;">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-3);">In-Product Feedback</div>
+    <span style="font-size:10px;background:var(--green-dim);color:var(--green);border:1px solid rgba(48,185,128,0.3);padding:2px 8px;border-radius:10px;font-weight:600;">${fb.w2_count} responses this week</span>
+    ${fb.w1_count > 0 ? `<span style="font-size:10px;color:var(--text-3);">W1: ${fb.w1_count}</span>` : ''}
+    <span style="font-size:10px;color:var(--text-3);">(in-tool widget: 👍 / 👎)</span>
+  </div>
+  <div style="display:flex;gap:24px;flex-wrap:wrap;">
+    <div style="min-width:160px;">
+      <div style="display:flex;gap:20px;align-items:flex-end;margin-bottom:8px;">
+        <div style="text-align:center;">
+          <div style="font-size:28px;font-weight:700;color:#30B980;line-height:1;">${thumbUp}</div>
+          <div style="font-size:18px;margin:2px 0 2px;">👍</div>
+          <div style="font-size:10px;color:var(--text-3);">positive</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:28px;font-weight:700;color:#E5484D;line-height:1;">${thumbDown}</div>
+          <div style="font-size:18px;margin:2px 0 2px;">👎</div>
+          <div style="font-size:10px;color:var(--text-3);">negative</div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--text-3);">${total} total responses</div>
+    </div>
+    <div style="flex:1;min-width:200px;">
+      ${(fb.top_tags||[]).length ? `
+      <div style="margin-bottom:10px;">
+        ${fb.top_tags.map(t => `<span style="display:inline-block;font-size:10px;font-weight:600;background:var(--purple-dim);color:var(--purple-dark);border:1px solid rgba(99,91,255,0.2);border-radius:10px;padding:2px 9px;margin:2px 3px 2px 0;">${h(t)}</span>`).join('')}
+      </div>` : ''}
+      ${verbatim.length ? `
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-3);margin-bottom:8px;">Verbatim</div>
+      ${verbatim.map(v => `
+      <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:8px;">
+        <div style="font-size:12px;color:var(--text-1);line-height:1.5;margin-bottom:6px;">"${h(v.comment)}"</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:10px;font-weight:600;color:var(--text-2);">${h(v.reviewer)}</span>
+          <span style="font-size:14px;">${v.rating >= 4 ? '👍' : '👎'}</span>
+          <span style="font-size:10px;color:var(--text-3);">${h(v.date)}</span>
+        </div>
+      </div>`).join('')}` : ''}
+    </div>
+  </div>
+</div>`;
 }
 
 function renderApprovalsDeepDive(d, m) {
   const a = d.approvals_deep_dive;
   if (!a) return '';
-  const badgeCls = wowBadgeClass(a.w1_total, a.w2_total);
-  const arrow    = wowArrow(a.w1_total, a.w2_total);
-  const pct      = wowPct(a.w1_total, a.w2_total);
-  const ex       = a.exception_stats || {};
+  const w1 = a.w1_count || a.w1_total || 0;
+  const w2 = a.w2_count || a.w2_total || 0;
+  const badgeCls = wowBadgeClass(w1, w2);
+  const arrow    = wowArrow(w1, w2);
+  const pct      = wowPct(w1, w2);
+  const issues   = a.issues || a.blockers || [];
+  const priorities = a.priorities || ((a.pain_analysis||{}).insights||[]).map(i => i.signal);
+  const summaryNote = (a.pain_analysis||{}).bottom_line || '';
   return `
 <div class="section" id="approvals"><div class="page">
   <div class="card" style="border-top:3px solid var(--teal);">
     <div class="deep-dive-header">
       <div class="deep-dive-pill dp-approvals">Approvals Deep Dive</div>
       <div class="deep-dive-meta">
-        <strong>W1: ${a.w1_total} issues → W2: ${a.w2_total} issues</strong> &nbsp;·&nbsp;
-        <span class="wow-badge ${badgeCls}">${arrow} ${pct} · ${h(a.wow_note)}</span>
-        &nbsp;·&nbsp; Tool: ${h(a.tool||'')}
+        <strong>W1: ${w1} issues → W2: ${w2} issues</strong> &nbsp;·&nbsp;
+        <span class="wow-badge ${badgeCls}">${arrow} ${pct}</span>
         &nbsp;·&nbsp; <a href="https://stripe.slack.com/archives/C05FDARJBA4" target="_blank">#seller-systems-support</a>
       </div>
     </div>
     <div class="deep-dive-grid">
       <div>
         <div class="deep-dive-col-title">Top Approval Blockers (W2)</div>
-        ${(a.blockers||[]).map(b => `
+        ${issues.map(i => {
+          const isResolved = i.resolved === true;
+          const resolvedBadge = isResolved
+            ? `<span style="font-size:10px;color:#16a34a;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);padding:1px 7px;border-radius:10px;font-weight:600;">✓ Resolved</span>`
+            : (i.fix_now ? `<span style="font-size:10px;color:var(--orange);background:var(--orange-dim);border:1px solid rgba(255,123,0,0.3);padding:1px 7px;border-radius:10px;font-weight:600;">Fix Now</span>` : '');
+          const links = [
+            i.slack_link ? `<a href="${h(i.slack_link)}" target="_blank" style="font-size:10px;color:var(--purple);font-weight:500;text-decoration:none;">→ Slack ↗</a>` : '',
+            i.jira_link  ? `<a href="${h(i.jira_link)}"  target="_blank" style="font-size:10px;color:var(--teal);font-weight:500;text-decoration:none;">→ Jira ↗</a>`   : '',
+          ].filter(Boolean).join(' ');
+          const resNote = isResolved && i.resolution_note
+            ? `<div style="font-size:11px;color:#16a34a;margin-top:3px;font-style:italic;">${h(i.resolution_note)}</div>`
+            : '';
+          return `
         <div class="dd-item">
-          <div class="dd-count">${b.count||'—'}</div>
-          <div>
-            <div class="dd-label">${h(b.title)}</div>
-            <div class="dd-detail">${h(b.detail)}</div>
-            ${b.quote ? `<div class="dd-quote">${h(b.quote)}</div>` : ''}
+          <div class="dd-count">${(i.w2 !== undefined ? i.w2 : (i.count||'—'))}</div>
+          <div style="flex:1;min-width:0;">
+            <div class="dd-label" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+              <span>${h(i.issue||i.title||'')}</span>${resolvedBadge}
+              ${i.tool ? `<span style="font-size:10px;color:var(--text-3);background:var(--surface-2);border:1px solid var(--border);padding:1px 6px;border-radius:10px;">${h(i.tool)}</span>` : ''}
+            </div>
+            <div class="dd-detail">${h(i.impact||i.detail||'')}</div>
+            ${resNote}
+            ${links ? `<div style="margin-top:4px;">${links}</div>` : ''}
           </div>
-        </div>`).join('')}
+        </div>`;
+        }).join('')}
         ${a.carryover_note ? `
         <div class="dd-item">
           <div class="dd-count">—</div>
@@ -598,38 +761,18 @@ function renderApprovalsDeepDive(d, m) {
         </div>` : ''}
       </div>
       <div>
-        <div class="deep-dive-col-title">Cross-Functional Friction</div>
-        ${(a.cross_functional||[]).map(f => `
-        <div class="dd-item">
-          <div class="dd-count">—</div>
-          <div>
-            <div class="dd-label">${h(f.title)}</div>
-            <div class="dd-detail">${h(f.detail)}</div>
-          </div>
-        </div>`).join('')}
-        ${ex.wrong_level || ex.auto_approve_fail ? `
-        <div style="margin-top:14px;">
-          <div class="deep-dive-col-title">Exception vs Standard (W2)</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
-            ${ex.wrong_level ? `<div style="background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:12px;text-align:center;">
-              <div style="font-size:20px;font-weight:700;color:var(--text-1);">${ex.wrong_level.count}</div>
-              <div style="font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px;margin-top:3px;">${h(ex.wrong_level.label)}</div>
-              <div style="font-size:10.5px;color:var(--text-3);margin-top:4px;">${h(ex.wrong_level.detail)}</div>
-            </div>` : ''}
-            ${ex.auto_approve_fail ? `<div style="background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:12px;text-align:center;">
-              <div style="font-size:20px;font-weight:700;color:var(--text-1);">${ex.auto_approve_fail.count}</div>
-              <div style="font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px;margin-top:3px;">${h(ex.auto_approve_fail.label)}</div>
-              <div style="font-size:10.5px;color:var(--text-3);margin-top:4px;">${h(ex.auto_approve_fail.detail)}</div>
-            </div>` : ''}
-          </div>
-          ${a.exception_note ? `<div style="font-size:11px;color:var(--text-3);line-height:1.6;">${h(a.exception_note)}</div>` : ''}
+        ${summaryNote ? `
+        <div style="background:rgba(0,150,165,0.06);border:1px solid rgba(0,150,165,0.2);border-radius:6px;padding:12px 14px;margin-bottom:16px;">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--teal);margin-bottom:8px;">Bottom Line</div>
+          <div style="font-size:12px;color:var(--text-2);line-height:1.6;">${h(summaryNote)}</div>
         </div>` : ''}
-        <div style="background:rgba(0,150,165,0.06);border:1px solid rgba(0,150,165,0.2);border-radius:6px;padding:12px 14px;margin-top:14px;">
-          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--teal);margin-bottom:8px;">What's Slowing the Approval Workflow</div>
+        ${priorities.length ? `
+        <div style="background:rgba(0,150,165,0.06);border:1px solid rgba(0,150,165,0.2);border-radius:6px;padding:12px 14px;">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--teal);margin-bottom:8px;">Key Signals</div>
           <ul class="priority-list">
-            ${(a.priorities||[]).map((p,i) => `<li><div class="pn-teal">${i+1}</div><div>${bold(p)}</div></li>`).join('')}
+            ${priorities.map((p,idx) => `<li><div class="pn-teal">${idx+1}</div><div>${bold(p)}</div></li>`).join('')}
           </ul>
-        </div>
+        </div>` : ''}
       </div>
     </div>
   </div>
@@ -657,6 +800,7 @@ function renderQuotesSection(d, m) {
           <button class="copy-btn" onclick="copyQuote(this,'${h(k.quote).replace(/'/g,"\\'")} — ${h(k.author||'')}')">⎘ copy</button>
         </div>
         ${k.context ? `<div style="font-size:11px;color:var(--text-3);margin-top:4px;">${h(k.context)}</div>` : ''}
+        ${k.link ? `<a href="${h(k.link)}" target="_blank" style="font-size:10px;color:var(--purple);font-weight:500;text-decoration:none;margin-top:4px;display:inline-block;">→ thread ↗</a>` : ''}
       </div>`).join('')}
     </div>
     <div class="card" style="border-top:3px solid var(--red);">
@@ -671,6 +815,7 @@ function renderQuotesSection(d, m) {
           <button class="copy-btn" onclick="copyQuote(this,'${h(o.quote).replace(/'/g,"\\'")} — ${h(o.author||'')}')">⎘ copy</button>
         </div>
         ${o.context ? `<div style="font-size:11px;color:var(--text-3);margin-top:4px;">${h(o.context)}</div>` : ''}
+        ${o.link ? `<a href="${h(o.link)}" target="_blank" style="font-size:10px;color:var(--purple);font-weight:500;text-decoration:none;margin-top:4px;display:inline-block;">→ thread ↗</a>` : ''}
       </div>`).join('')}
     </div>
   </div>
@@ -784,641 +929,8 @@ function buildCharts(d) {
 }
 
 // ─── INLINE DATA ─────────────────────────────────────────────────────────────
-const INLINE_DATA = {
-  "meta": {
-    "period": "Mar 29 – Apr 12, 2026",
-    "run_date": "April 12, 2026",
-    "run_note": null,
-    "prev_w2_total": 83,
-    "w1": {
-      "label": "Mar 29–Apr 4",
-      "start": "2026-03-29",
-      "end": "2026-04-04"
-    },
-    "w2": {
-      "label": "Apr 5–Apr 12",
-      "start": "2026-04-05",
-      "end": "2026-04-12"
-    },
-    "messages_analyzed": "300+",
-    "channels": [
-      {
-        "name": "seller-systems-support",
-        "url": "https://stripe.slack.com/archives/C05FDARJBA4"
-      },
-      {
-        "name": "stratus-support",
-        "url": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-      },
-      {
-        "name": "gtm-seller-systems-cpr",
-        "url": "https://stripe.slack.com/archives/C09E79ZK3PS"
-      }
-    ]
-  },
-  "bluf": "**DC Bugs remain the dominant issue at 38 W2 tickets (+19% WoW)** — SMP $0 ONR (USD settlement bug), Non-Amex mix errors, and save failures are the top recurring types. A critical escalation landed this week: **ACH Faster Settlement misbilling (GTMS-38895) has accumulated $2M+ across 26 merchants** — the Stratus validation guardrail requested in Dec 2025 is still in backlog with no ETA. Access/Provisioning spiked to 14 (+75%) driven by Stratus button enablement requests and Gong hierarchy issues. Stratus adoption is growing but Terminal/CP and APM bulk-pricing gaps are the top friction points. Action needed: (1) triage GTMS-38895 for Q2 prioritization, (2) address SMP USD settlement bug blocking Singapore deals.",
-  "pulse_cards": [
-    {
-      "label": "W2 Tickets",
-      "value": "83",
-      "delta": "0",
-      "trend": "flat",
-      "sub": "vs 83 last run"
-    },
-    {
-      "label": "Critical Issues",
-      "value": "2",
-      "delta": "+1",
-      "trend": "up",
-      "sub": "DC bugs + ACH misbilling"
-    },
-    {
-      "label": "Top Issue",
-      "value": "DC Bugs",
-      "delta": "38",
-      "trend": "up",
-      "sub": "Save errors, ONR calc, SMP"
-    },
-    {
-      "label": "Stratus Issues",
-      "value": "12",
-      "delta": "+2",
-      "trend": "up",
-      "sub": "Bugs + adoption friction"
-    }
-  ],
-  "categories": [
-    {
-      "name": "DC Bugs / Errors",
-      "w1": 32,
-      "w2": 38,
-      "severity": "crit",
-      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "note": "SMP $0 ONR bug (USD settlement, open). Non-Amex mix errors. Save errors. ONR calc wrong on AUD deals (clone fixed it). Tiering display bug (stale columns)."
-    },
-    {
-      "name": "Access / Provisioning",
-      "w1": 8,
-      "w2": 14,
-      "severity": "high",
-      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "note": "Stratus button enablement requests surging. Gong hierarchy/access (SDR not showing under manager). SFDC Level 11 access for new hires. ZoomInfo access."
-    },
-    {
-      "name": "Product / Geo Gaps",
-      "w1": 5,
-      "w2": 10,
-      "severity": "high",
-      "link": "https://stripe.slack.com/archives/C0AEUHR9UC8",
-      "note": "PayPay Japan LPM CBO onboarding blocked (open, call scheduled). Terminal/CP not in Stratus yet. APM bulk pricing — 20+ APMs require line-by-line entry."
-    },
-    {
-      "name": "Approvals / Workflow",
-      "w1": 4,
-      "w2": 8,
-      "severity": "high",
-      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "note": "Ironclad signature coordinator stuck. DocuSign not routing to manager. Move-to-onboarding blocked by missing merchant ID / BPS not pulling."
-    },
-    {
-      "name": "Stratus Adoption Friction",
-      "w1": 4,
-      "w2": 7,
-      "severity": "med",
-      "link": "https://stripe.slack.com/archives/C0AEUHR9UC8",
-      "note": "DC→Stratus migration questions (does Stratus override DC?). Stratus saves to opp cancel active approvals — AEs not aware. Multi-country LPM deals need Stratus enablement."
-    },
-    {
-      "name": "Stratus Bugs",
-      "w1": 3,
-      "w2": 5,
-      "severity": "med",
-      "link": "https://stripe.slack.com/archives/C0AEUHR9UC8",
-      "note": "SMP usage% locked when merchant settles in USD (open, engineering engaged). FX 100% distribution confusion (resolved by viveky). DC pricing overlap causing onboarding blocks."
-    },
-    {
-      "name": "Contract / Signature",
-      "w1": 4,
-      "w2": 5,
-      "severity": "med",
-      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "note": "DocuSign signed by user but manager not notified. Ironclad stuck on signature coordinator step. User NDA flow issues."
-    },
-    {
-      "name": "ACH Faster Settlement — Misbilling Risk",
-      "w1": 0,
-      "w2": 1,
-      "severity": "crit",
-      "link": "https://stripe.slack.com/archives/C0AEUHR9UC8",
-      "note": "CRITICAL: $2M+ misbilled (HubSpot $198K, Emburse $2M). 26 merchants accumulating at sticker. GTMS-38895 (Dec 2025, overdue) — Stratus validation guardrail not built. Needs Q2 prioritization."
-    },
-    {
-      "name": "Adaptive Pricing / ONR",
-      "w1": 2,
-      "w2": 2,
-      "severity": "low",
-      "link": "https://stripe.slack.com/archives/C05FDARJBA4",
-      "note": "Negative ONR from Affirm (1 open). Link ONR including passthrough costs on IC+ deal (1 open)."
-    }
-  ],
-  "stratus_categories": [
-    {
-      "name": "Stratus Bugs",
-      "w1": 3,
-      "w2": 5,
-      "severity": "med",
-      "link": "https://stripe.slack.com/archives/C0AEUHR9UC8",
-      "note": "SMP USD settlement bug, FX distribution, DC overlap"
-    },
-    {
-      "name": "Stratus Adoption Friction",
-      "w1": 4,
-      "w2": 7,
-      "severity": "med",
-      "link": "https://stripe.slack.com/archives/C0AEUHR9UC8",
-      "note": "Enablement gaps, APM bulk entry, approval cancellation risk"
-    }
-  ],
-  "stratus_deep_dive": {
-    "w1_count": 7,
-    "w2_count": 12,
-    "sentiment": "mixed",
-    "top_bugs": [
-      {
-        "bug": "SMP usage% locked when USD settlement",
-        "count": 2,
-        "quote": "Hi team, we have this error on DC when we add Stripe Managed Payments where ONR is fixed at $0 — can't add the usage %",
-        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-      },
-      {
-        "bug": "FX 100% usage distribution confusing AEs",
-        "count": 3,
-        "quote": "Hey team - why is FX required to be at 100%? I don't expect there to be any x-border costs here",
-        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-      },
-      {
-        "bug": "DC pricing overlap causing onboarding delays",
-        "count": 2,
-        "quote": "DC is letting sellers price locations and pricing that overlap, causing friction and blockers with the onboarding process",
-        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-      }
-    ],
-    "adoption_friction": [
-      "AEs don't know Stratus save-to-opp cancels active approvals — causing surprise mid-deal",
-      "APM bulk pricing requires line-by-line entry for 20+ APMs on global deals",
-      "Terminal / Card Present not yet supported — AEs asking weekly",
-      "Stratus button must be manually enabled per deal — AEs blocked until eng acts"
-    ],
-    "feature_gaps_vs_dc": [
-      "Terminal / Card Present not in Stratus yet (katiedeaney confirmed enabled this week)",
-      "APM bulk pricing — no batch entry for multi-APM global deals",
-      "DC→Stratus import not supported — AEs must re-enter from scratch"
-    ],
-    "what_to_fix": [
-      "Fix SMP $0 ONR when merchant settles in USD (blocking Singapore deals now)",
-      "Warn AEs before save-to-opp that active approvals will be cancelled",
-      "Build APM bulk pricing entry for global deals",
-      "Automate Stratus button enablement — remove manual eng dependency",
-      "Add Terminal/CP to Stratus (in progress per viveky)"
-    ],
-    "pain_analysis": {
-      "headline": "Stratus is shipping AEs into deals before it's ready — and the gaps are costing real money",
-      "insights": [
-        {
-          "signal": "Stratus issue volume up +71% WoW (7 → 12)",
-          "so_what": "Post-launch usage is accelerating but Stratus bugs aren't being resolved at the same pace. Every new AE onboarding to Stratus hits the same walls — SMP usage lock, FX 100% confusion, DC pricing overlap. The backlog is widening, not shrinking.",
-          "pattern": "Adoption outpacing bug fixes — classic launch debt accumulation"
-        },
-        {
-          "signal": "SMP usage% locks when merchant settles in USD",
-          "so_what": "Singapore deals specifically are blocked at pricing time. AEs can't complete the deal in Stratus and either abandon it mid-flow or fall back to DC — which then creates DC/Stratus dual-entry confusion downstream. This is a blocker for APAC expansion.",
-          "pattern": "Currency-specific bug — only surfaces on USD settlement + SMP combo; easy to miss in testing"
-        },
-        {
-          "signal": "DC pricing overlap causing onboarding delays",
-          "so_what": "AEs price in DC, then migrate to Stratus — but Stratus can't parse or resolve the DC structure cleanly. This is the single biggest source of 'why is my Stratus deal broken' tickets and it points to a missing DC→Stratus import workflow.",
-          "pattern": "Migration gap — DC and Stratus were never designed to coexist mid-deal"
-        },
-        {
-          "signal": "Stratus button must be manually enabled per deal by eng",
-          "so_what": "Access provisioning is the #1 Stratus-related support request this week (14 W2 tickets). AEs ready to use Stratus are blocked waiting for manual enablement. This kills adoption velocity and creates unnecessary eng toil.",
-          "pattern": "Ops bottleneck — self-service enablement never built at launch"
-        }
-      ],
-      "bottom_line": "Stratus is winning AE mindshare but losing AE trust on execution. The SMP USD bug, DC overlap issues, and manual enablement process are the three fixes that would unblock the most deals right now. Without them, AEs will vote with their feet and go back to DC."
-    }
-  },
-  "approvals_deep_dive": {
-    "w1_count": 4,
-    "w2_count": 8,
-    "hubble_dashboard": "https://hubble.corp.stripe.com/viz/dashboards/57597",
-    "hubble_note": "E2E time, bounce rate, stage dwell — access-redshift-communia-sales required",
-    "apex_metrics": {
-      "e2e_avg_days": null,
-      "e2e_p50_days": null,
-      "bounce_avg": null,
-      "sla_pct": null,
-      "note": "Pending access to restricted_sfdc.approval_history + communia_sales.dim_opportunity"
-    },
-    "issues": [
-      {
-        "issue": "Stratus save-to-opp silently cancels active approvals",
-        "tool": "Stratus",
-        "owner": "Stratus eng",
-        "w1": 1,
-        "w2": 3,
-        "impact": "Every Stratus deal — AEs forced to restart approval chain",
-        "fix_type": "Bug fix",
-        "fix_now": false,
-        "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-      },
-      {
-        "issue": "Move-to-onboarding blocked — BPS not auto-pulling merchant ID",
-        "tool": "DC / SFDC",
-        "owner": "DC eng",
-        "w1": 1,
-        "w2": 3,
-        "impact": "3+ deals/wk manually unblocked by support",
-        "fix_type": "Bug fix",
-        "fix_now": false,
-        "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4"
-      },
-      {
-        "issue": "Ironclad signature coordinator step stuck — no error shown to AE",
-        "tool": "Ironclad",
-        "owner": "Ironclad admin",
-        "w1": 1,
-        "w2": 2,
-        "impact": "3 deals/wk stalled with no self-service path",
-        "fix_type": "Config fix",
-        "fix_now": true,
-        "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4"
-      },
-      {
-        "issue": "DocuSign not routing to manager — email missing in SFDC",
-        "tool": "SFDC / DocuSign",
-        "owner": "SFDC admin",
-        "w1": 1,
-        "w2": 2,
-        "impact": "2 deals/wk — manager never gets signature request",
-        "fix_type": "Data quality",
-        "fix_now": true,
-        "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4"
-      },
-      {
-        "issue": "ACH Faster Settlement — no guardrail at contract time",
-        "tool": "Stratus",
-        "owner": "Stratus eng / PM",
-        "w1": 0,
-        "w2": 1,
-        "impact": "$2M+ misbilled across 26 merchants — accumulating weekly",
-        "fix_type": "New validation",
-        "fix_now": false,
-        "jira_link": "https://jira.corp.stripe.com/browse/GTMS-38895",
-        "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-      }
-    ],
-    "pain_analysis": {
-      "headline": "Approvals are breaking at every handoff — and AEs have no visibility when they do",
-      "insights": [
-        {
-          "signal": "Stratus saves cancel approvals silently",
-          "so_what": "AEs don't know their approval was voided until a deal stalls. No error, no notification. They only find out when they chase the deal days later. This is eroding AE trust in Stratus as a tool.",
-          "pattern": "Structural — happens on every Stratus save-to-opp that touches an in-flight approval"
-        },
-        {
-          "signal": "W2 approvals issues doubled WoW (4 → 8)",
-          "so_what": "This isn't noise — it's the start of Q2 deal cycle. As AEs ramp pipeline, every approval friction point compounds. If this isn't fixed before Q2 peak, support volume will 2–3x.",
-          "pattern": "Seasonal amplifier — structural bugs get worse at quarter open"
-        },
-        {
-          "signal": "3 different tools breaking in the same week (Ironclad, DocuSign, SFDC/DC)",
-          "so_what": "The approval chain has no resilience — a failure in any single handoff kills the deal. AEs are forced to be their own integration debuggers across tools they don't control.",
-          "pattern": "No end-to-end owner — each tool team owns their piece but nobody owns the AE experience"
-        },
-        {
-          "signal": "ACH FS misbilling has no approval guardrail",
-          "so_what": "$2M+ is accumulating because nobody checks ACH Faster Settlement eligibility at contract time. This is a validation gap that Stratus could close — and GTMS-38895 has been open since Dec 2025.",
-          "pattern": "Known risk, no owner — Jira ticket exists but no eng committed to Q2"
-        }
-      ],
-      "bottom_line": "The approval workflow is a sequence of brittle handoffs with no single owner and no AE visibility when something breaks. Fixing Stratus approval cancellation and adding the ACH FS guardrail would eliminate the two highest-impact pain points before Q2 peak."
-    }
-  },
-  "people": {
-    "top_submitters": [
-      {
-        "ldap": "katiedeaney",
-        "w1": 2,
-        "w2": 3,
-        "delta": 1,
-        "top_category": "Stratus Bugs / Adoption"
-      },
-      {
-        "ldap": "shafrir",
-        "w1": 0,
-        "w2": 3,
-        "delta": 3,
-        "top_category": "Stratus Adoption Friction"
-      },
-      {
-        "ldap": "huan",
-        "w1": 3,
-        "w2": 2,
-        "delta": -1,
-        "top_category": "DC Bugs / Errors"
-      },
-      {
-        "ldap": "cykemoto",
-        "w1": 0,
-        "w2": 2,
-        "delta": 2,
-        "top_category": "Product / Geo Gaps"
-      },
-      {
-        "ldap": "arunima",
-        "w1": 0,
-        "w2": 1,
-        "delta": 1,
-        "top_category": "ACH Misbilling Risk"
-      }
-    ],
-    "top_solvers": [
-      {
-        "ldap": "smaddala-c",
-        "threads_resolved_w1": 5,
-        "threads_resolved_w2": 8,
-        "delta": 3,
-        "solver_type": "guidance",
-        "example_quote": "the issue is fixed could you please check and confirm if the error is gone",
-        "source": "slack"
-      },
-      {
-        "ldap": "mmathew-c",
-        "threads_resolved_w1": 2,
-        "threads_resolved_w2": 5,
-        "delta": 3,
-        "solver_type": "fix",
-        "example_quote": "Glad that you are unblocked! Some values in Manage tiers were missing, which resulted in different ONR.",
-        "source": "slack"
-      },
-      {
-        "ldap": "viveky",
-        "threads_resolved_w1": 2,
-        "threads_resolved_w2": 5,
-        "delta": 3,
-        "solver_type": "guidance",
-        "example_quote": "Enabled for all your deals. Hey Katie, you should have access to Card Present, Terminal, Link, and OCS now.",
-        "source": "slack"
-      },
-      {
-        "ldap": "viv-c",
-        "threads_resolved_w1": 1,
-        "threads_resolved_w2": 4,
-        "delta": 3,
-        "solver_type": "guidance",
-        "example_quote": "can you update the default settlement currency to SGD then Stripe Managed Payments will have usage editable",
-        "source": "slack"
-      },
-      {
-        "ldap": "lorishyu",
-        "threads_resolved_w1": 2,
-        "threads_resolved_w2": 2,
-        "delta": 0,
-        "solver_type": "guidance",
-        "example_quote": "can you share the oppty this was derived from? I tried to configure UK deal, but am only seeing GBP Bank Transfer.",
-        "source": "slack"
-      }
-    ]
-  },
-  "actions": [
-    {
-      "body": "**Escalate GTMS-38895 ACH Faster Settlement misbilling** — $2M+ accumulated across 26 merchants. Needs Q2 eng prioritization. Stratus validation guardrail (require FS line item on contract renewal) is the fix.",
-      "owner": "Owner: viveky + lorishyu → escalate to eng DRI",
-      "link": "https://jira.corp.stripe.com/browse/GTMS-38895"
-    },
-    {
-      "body": "**Fix SMP $0 ONR bug (USD settlement)** — Singapore deals blocked. AEs cannot add usage% when merchant settles in USD. viv-c investigating but open.",
-      "owner": "Owner: viv-c → engineering",
-      "link": "https://stripe.slack.com/archives/C05FDARJBA4"
-    },
-    {
-      "body": "**Automate Stratus button enablement** — currently requires manual eng action per deal. Growing request volume (3 this week).",
-      "owner": "Owner: viveky / Stratus eng",
-      "link": "https://stripe.slack.com/archives/C05FDARJBA4"
-    },
-    {
-      "body": "**APM bulk pricing for global deals** — AEs pricing 20+ APMs line-by-line. Feature gap vs DC.",
-      "owner": "Owner: Stratus PM / eng",
-      "link": "https://stripe.slack.com/archives/C05FDARJBA4"
-    }
-  ],
-  "watchlist": [
-    {
-      "text": "**ACH Faster Settlement misbilling** — 26 merchants accumulating at sticker rate. GTMS-38895 overdue since Mar 9. Escalation in #stratus-support.",
-      "severity": "crit"
-    },
-    {
-      "text": "**SMP $0 ONR / USD settlement bug** — open, Singapore deal blocked. viv-c + engineering engaged.",
-      "severity": "high"
-    },
-    {
-      "text": "**Terminal/CP in Stratus** — katiedeaney confirmed enabled this week. Watch for follow-on questions as adoption spreads.",
-      "severity": "med"
-    },
-    {
-      "text": "**PayPay Japan LPM CBO onboarding** — cykemoto + gchauhan-c scheduled call for Monday Apr 13. Watch for resolution.",
-      "severity": "med"
-    }
-  ],
-  "quotes": {
-    "kudos": [
-      {
-        "quote": "Got it thanks Vivek! That makes total sense. Have adjusted the Territory inputs.",
-        "author": "AE",
-        "channel": "stratus-support",
-        "theme": "FX clarity",
-        "context": "viveky explained FX 100% usage distribution for IC+ territories",
-        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-      },
-      {
-        "quote": "I checked again and it is working now. Appreciate all your help!",
-        "author": "AE",
-        "channel": "seller-systems-support",
-        "theme": "DC save resolved",
-        "context": "jperez-c + mmathew-c resolved Non-Amex mix save error",
-        "link": "https://stripe.slack.com/archives/C05FDARJBA4"
-      },
-      {
-        "quote": "awesome, thank you!",
-        "author": "AE",
-        "channel": "stratus-support",
-        "theme": "Stratus enablement",
-        "context": "viveky enabled Stratus for all of AE's deals in real-time",
-        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-      }
-    ],
-    "opportunity_areas": [
-      {
-        "quote": "We are now 4 weeks post signature for this user, meaning the rates are not onboarded and the chances of misbilling also increase, because the DC output and contract does not consider the requirements of onboarding",
-        "author": "AE",
-        "channel": "stratus-support",
-        "theme": "DC pricing overlap",
-        "context": "DC allowing overlapping location/pricing causing onboarding blocks and misbilling risk",
-        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-      },
-      {
-        "quote": "with APMs, is there any trick to entering custom pricing faster? Working on a global deal with 20+ APMs and still needing to go line by line.",
-        "author": "AE",
-        "channel": "stratus-support",
-        "theme": "APM bulk pricing gap",
-        "context": "No bulk APM pricing entry — significant friction for multi-APM global deals",
-        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-      },
-      {
-        "quote": "$2M+ already misbilled and 26 merchants currently accumulating at sticker — can this be prioritised for Q2 2026?",
-        "author": "Ops",
-        "channel": "stratus-support",
-        "theme": "ACH FS misbilling",
-        "context": "GTMS-38895 escalation — Stratus contract validation guardrail not built, misbillings accumulating",
-        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-      },
-      {
-        "quote": "Hi -- if I used deal composer for original pricing on an opp can I use Stratus to price a counter offer? I used it more as a shell to get directional and the actual deal is a lot more involved (multi-country, LPMs)",
-        "author": "AE",
-        "channel": "stratus-support",
-        "theme": "DC→Stratus migration confusion",
-        "context": "AEs don't know how DC and Stratus interact — save-to-opp override behavior undocumented",
-        "link": "https://stripe.slack.com/archives/C0AEUHR9UC8"
-      }
-    ]
-  },
-  "sfdc": {
-    "w1_total": 1717,
-    "w2_total": 1345,
-    "queues": [
-      {
-        "name": "Data Operations",
-        "w1": 690,
-        "w2": 591,
-        "severity": "crit",
-        "top_type": "Account Management",
-        "status": "-14% WoW — decreasing",
-        "link": "https://stripe.lightning.force.com/lightning/o/Case/list?filterName=Recent"
-      },
-      {
-        "name": "Monetization Ops",
-        "w1": 405,
-        "w2": 236,
-        "severity": "high",
-        "top_type": "Onboarding",
-        "status": "-42% WoW — decreasing",
-        "link": "https://stripe.lightning.force.com/lightning/o/Case/list?filterName=Recent"
-      },
-      {
-        "name": "Deal Strategy",
-        "w1": 228,
-        "w2": 187,
-        "severity": "high",
-        "top_type": "Fee Schedule Requests",
-        "status": "-18% WoW — decreasing",
-        "link": "https://stripe.lightning.force.com/lightning/o/Case/list?filterName=Recent"
-      },
-      {
-        "name": "Deal Pricing",
-        "w1": 133,
-        "w2": 152,
-        "severity": "high",
-        "top_type": "Pricing Approval",
-        "status": "+14% WoW — increasing",
-        "link": "https://stripe.lightning.force.com/lightning/o/Case/list?filterName=Recent"
-      },
-      {
-        "name": "Sales Ops",
-        "w1": 232,
-        "w2": 129,
-        "severity": "med",
-        "top_type": "Opportunity Management",
-        "status": "-44% WoW — decreasing",
-        "link": "https://stripe.lightning.force.com/lightning/o/Case/list?filterName=Recent"
-      },
-      {
-        "name": "Renewals Team",
-        "w1": 24,
-        "w2": 35,
-        "severity": "med",
-        "top_type": "Renewals Team Support - Scaled",
-        "status": "+46% WoW — increasing",
-        "link": "https://stripe.lightning.force.com/lightning/o/Case/list?filterName=Recent"
-      },
-      {
-        "name": "MonOps - Contract Success (MACS)",
-        "w1": 5,
-        "w2": 8,
-        "severity": "low",
-        "top_type": "Contract Review",
-        "status": "+60% WoW — increasing",
-        "link": "https://stripe.lightning.force.com/lightning/o/Case/list?filterName=Recent"
-      },
-      {
-        "name": "System/Tooling Enhancement",
-        "w1": 0,
-        "w2": 7,
-        "severity": "low",
-        "top_type": "System/Tooling Enhancement",
-        "status": "+999% WoW — increasing",
-        "link": "https://stripe.lightning.force.com/lightning/o/Case/list?filterName=Recent"
-      }
-    ],
-    "note": "Hubble query f87dd76c — Mar 29–Apr 12, 2026",
-    "hubble_link": "https://hubble.corp.stripe.com/queries/stripe/f87dd76c"
-  }
-}
+const INLINE_DATA = {"meta": {"run_date": "2026-05-04", "period": "Apr 27 \u2013 May 4, 2026", "w1_label": "Apr 20\u201327", "w2_label": "Apr 27\u2013May 4", "prev_w2_total": 100}, "bluf": "SFDC case volume fell 18% WoW (1,617\u21921,329), but DC save errors enter their 8th consecutive week with no root-cause fix \u2014 Too Many SQL Queries is still blocking daily AE workflows. Gibraltar\u2192SPEL fix resolved same day: jmcgrath's EMEA signing issue was isolated to one deal (Liquidity Trading - Pay-ins) \u2014 root cause was a missing Gibraltar\u2192SPEL country mapping in contract service code. Fixed same day by amulmehta (DC_SUPPORT-8850, closed). Data Integrity remains ownerless for week 2: APM historical usage mapping incident (#ir-visiting-superior) and EUD/OneClick discrepancy both without confirmed owners. NEW: kailarson flagged DC is defaulting 75% Dispute Loss for all deals \u2014 skewing ONR on every quote it affects.\n\nStratus is accelerating: deal volume up 14.7% WoW (95\u2192109 created), and time-to-save (7.77 min) is now faster than DC Q1 baseline (7.81 min) for the first time. All 7 real in-product feedback responses are 5-star. Organic first-time inquiries increasing: andymak proactively asked how to use Stratus for a Kraken deal.\n\nApprovals improving \u2014 Rich Counts routing: zero new reports in W2, likely resolved after 5 weeks. SFDC-wide volume down 18% is a positive signal but may reflect a lighter work week.", "pulse_cards": [{"label": "W2 Slack Issues", "value": "118", "delta": "+18%", "trend": "up"}, {"label": "SFDC Cases W2", "value": "1329", "delta": "-10.9%", "trend": "down"}, {"label": "Stratus Feedback", "value": "7 (5\u2605 avg)", "delta": "2 new this week", "trend": "positive"}, {"label": "Open Same-Day Actions", "value": "3", "delta": "Data Integrity + DC 75% Loss + BPS sync", "trend": "neutral"}], "categories": [{"name": "DC Bugs / Save Errors", "w1": 28, "w2": 30, "severity": "crit", "status": "open", "summary": "8th consecutive week. Too Many SQL Queries save error widespread: dfortune, amandas, catzhang, cbrady, souc, mathias, gpalacio, lenny, maylisbernier, nicop, ddwyer. Tier resets to 0.30%+$0.30 after save (ddwyer). NEW: kailarson flagged DC defaulting to 75% Dispute Loss on all deals \u2014 skewing ONR systematically.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777641058297959", "recurrence": 8, "resolved": false, "threads": [{"author": "dfortune", "resolved": true, "status_label": "Resolved for dfortune (feature flag). Root cause unfixed.", "jira": "DC_SUPPORT-8924", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8924", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777641058297959", "resolution_note": "zwhip added dfortune to a feature flag that reduces this error \u2014 not 100% rolled out yet. Underlying SQL query bug still unresolved for others.", "quote": "We're getting errors again saving this DC to opty \u2014 'too many sql queries' is the error message.", "messages": [{"author": "dfortune", "type": "reporter", "text": "Hey team, We're getting errors again saving this DC to opty \u2014 \"too many sql queries\" is the error message. Can you save to opty on our behalf please?", "ts": "May 1 12:17 PM"}, {"author": "dfortune", "type": "reporter", "text": "Hey @zwhip \u2014 Wondering if you can help us here? Similar issue we've had before \u2014 we needed to make changes to the DC and require an Engineer to Save to Opty for us.", "ts": "May 1 12:33 PM"}, {"author": "zwhip", "type": "resolver", "text": "@dfortune please try again, I added you to a feature flag to reduce chance of this error happening. We haven't done 100% testing to roll it out to everyone yet.", "ts": "May 1 12:36 PM"}, {"author": "dfortune", "type": "reporter", "text": "Perfect, it worked, thanks @zwhip!", "ts": "May 1 12:38 PM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8924", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8924"}]}, {"author": "kailarson", "resolved": false, "status_label": "Investigating \u2014 awaiting opp link", "jira": "DC_SUPPORT-8940", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8940", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777842809546719", "resolution_note": null, "quote": "It seems like DC is defaulting to 75% for Dispute Loss. I don't think this is right, as it is skewing the ONR on quotes.", "messages": [{"author": "kailarson", "type": "reporter", "text": "It seems like DC is defaulting to 75% for Dispute Loss. I don't think this is right, as it is skewing the ONR on quotes: @maddy", "ts": "May 3"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8940", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8940"}, {"author": "sashaik-c", "type": "responder", "text": "Hi @kailarson can you share the opp link and also what value do you want in dispute loss", "ts": "May 3"}]}, {"author": "ddwyer", "quote": "I saved this deal but it reset the tier to 0.30%+$0.30. Now the whole deal is back to default pricing.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777489388940799", "resolved": false, "resolution_note": null}, {"author": "souc", "quote": "When I'm trying to enable tier pricing for all region \u2014 end up with this error. The problem has persisted for days.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777527407803459", "resolved": false, "resolution_note": null}]}, {"name": "ONR Calculation Errors", "w1": 9, "w2": 12, "severity": "high", "status": "open", "summary": "ejdunne: SEPA DD Dispute Fee showing $2,605,159 (massively inflated). meaghan: $426k ONR in DC but $0 in SFDC. kssanchez: ONR missing FX/Link revenue (~50% undercounted). NEW: kailarson \u2014 DC defaulting 75% Dispute Loss skewing all quotes. schwartzstein: card ONR counting twice. ddwyer: CNP ONR wrong. smiller: UK Card ONR inflated. nas: Bizum not generating ONR.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777561408129009", "recurrence": 7, "resolved": false, "threads": [{"author": "ejdunne", "resolved": true, "status_label": "Resolved (hard refresh). Broader incident mitigated.", "jira": "DC_SUPPORT-8905", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8905", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777561408129009", "resolution_note": "Hard refresh fixed ejdunne's view. Broader LPM historical usage incident (#ir-visiting-superior) mitigated by mmathew-c \u2014 Austria SEPA DD inflated ONR was stale cache.", "quote": "There seems to be a bug on SEPA Direct Debit Dispute Fee \u2014 providing ONR at a value of 2,605,159.", "messages": [{"author": "ejdunne", "type": "reporter", "text": "Hi Team, can you please review this DC. There seems to be a bug on SEPA Direct Debit Dispute Fee - providing ONR at a value of 2,605,159. Austria deal.", "ts": "Apr 30 8:10 PM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8905", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8905"}, {"author": "araut-c", "type": "responder", "text": "@ejdunne I can see the ONR for SEPA Direct Debit Dispute Fee is 125,373. This is for Austria, right? Can you please hard refresh it once and then try?", "ts": "Apr 30 8:15 PM"}, {"author": "ejdunne", "type": "reporter", "text": "Just did and it looks like it has changed for me now. Thank you for your help", "ts": "Apr 30 8:16 PM"}, {"author": "araut-c", "type": "resolver", "text": "Great \ud83d\udc4d Thread resolved. Note: broader incident #ir-visiting-superior for LPM historical usage mapping was separately mitigated by mmathew-c.", "ts": "Apr 30 8:17 PM"}]}, {"author": "ashleydombalis", "quote": "Do you know why its showing $9.6M ONR in this deal? It should be much much much smaller (closer to $50K ONR).", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777664844087209", "resolved": false, "resolution_note": null}, {"author": "meaghan", "quote": "I have an opportunity with $426k ONR in deal composer but it's reading as $0 in the opportunity itself.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777473609216069", "resolved": false, "resolution_note": null}, {"author": "kssanchez", "quote": "The ONR calculation is missing around half of the FX revenue. The line item doesn't appear to be accounting for Link volume or FX.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777483876230639", "resolved": false, "resolution_note": null}, {"author": "schwartzstein", "quote": "Card ONR is counting twice (CP and CNP). I made a clone and it looks like card ONR is counting twice.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777577761627069", "resolved": false, "resolution_note": null}]}, {"name": "Contract / DocuSign", "w1": 7, "w2": 10, "severity": "high", "status": "open", "summary": "RESOLVED: jmcgrath \u2014 Gibraltar\u2192SPEL mapping missing in contract service caused one deal (Liquidity Trading - Pay-ins) to fail signing; amulmehta fixed same day (DC_SUPPORT-8850). esmithson: DocuSign amendment send error. elisehw: CLM upload access blocked. annetunda: no DocuSign access. mvierck: Ironclad signer left Stripe.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777410860807749", "recurrence": 8, "resolved": false, "threads": [{"author": "jmcgrath", "resolved": true, "status_label": "Resolved \u2014 DC_SUPPORT-8850", "jira": "DC_SUPPORT-8850", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8850", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777410860807749", "resolution_note": "amulmehta fixed: contract service code was missing Gibraltar\u2192SPEL country mapping. Signing group now visible.", "quote": "I am unable to add 'Stripe Signing Group Europe' as the Stripe signatories \u2014 it only shows US individuals.", "messages": [{"author": "jmcgrath", "type": "reporter", "text": "Hi Team, I am trying to send the contract for eSignature but I am unable to add \"Stripe Signing Group Europe\" as the Stripe signatories, it seems to only be US individuals. Liquidity Trading - Pay-ins.", "ts": "Apr 28"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8850", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8850"}, {"author": "amulmehta", "type": "resolver", "text": "@jmcgrath can you try now please? It shows \"Stripe Europe Signing Group\"", "ts": "Apr 29"}, {"author": "jmcgrath", "type": "reporter", "text": "that sorted it thank you!", "ts": "Apr 29"}, {"author": "amulmehta", "type": "resolver", "text": "The contract was showing Stripe LLC as stripe signing group \u2014 caused SPEL not to show up. Contract service code was missing mapping for `Gibraltar` country to SPEL. Fixing the mapping fixed the issue.", "ts": "Apr 30"}]}, {"author": "esmithson", "quote": "I tried sending an amendment via DocuSign twice and got error messages as soon as I pressed send.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777487410659489", "resolved": false, "resolution_note": null}, {"author": "elisehw", "quote": "I don't have the right access to open envelopes and upload to CLM.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777480490621849", "resolved": false, "resolution_note": null}, {"author": "annetunda", "quote": "I don't seem to have access to DocuSign and I am currently blocked from sending an amendment.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777402293826439", "resolved": false, "resolution_note": null}]}, {"name": "Data Integrity", "w1": 2, "w2": 3, "severity": "crit", "status": "open", "summary": "WEEK 2 \u2014 still no owner. APM historical usage mapping incident (#ir-visiting-superior, mmathew-c). EUD vs OneClick vs third tool discrepancy: calvinmc + samanthaciscomani conflicting ONR on same deals. dbeare: EUD vs Panorama AOV variance on repriced merchants.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777565049432419", "recurrence": 2, "resolved": false, "threads": [{"author": "mmathew-c", "resolved": true, "status_label": "Incident mitigated", "jira": null, "jira_url": null, "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777565049432419", "resolution_note": "#ir-visiting-superior mitigated. Workaround: fresh retrieval of historicals on cloned deal (uncheck \"Import deal metrics only\" toggle on Retrieve Renewals).", "quote": "We have an on-going incident #ir-visiting-superior to track the issue where there is an issue with historical usage mapping for certain LPMs, including SEPA Direct Debit, where the dispute fee and failed transaction fee line items have inflated ONR.", "messages": [{"author": "mmathew-c", "type": "reporter", "text": "Hi all, we have an on-going incident #ir-visiting-superior to track the issue where there is an issue with historical usage mapping for certain LPMs, including SEPA Direct Debit, where the dispute fee and failed transaction fee line items have inflated ONR and usage %s. Team is working on this.", "ts": "Apr 30 8:17 PM"}, {"author": "mmathew-c", "type": "resolver", "text": "Hi all, #ir-visiting-superior incident is mitigated. Please try a fresh retrieval of historicals on a cloned deal (You may need to uncheck the Import deal metrics only toggle when you do \"Retrieve Renewals\").", "ts": "May 4 10:06 AM"}]}, {"author": "dbeare", "quote": "I wanted to flag an issue regarding the variance between EUD and Panorama AOV for merchants. I repriced a user in October and EUD is still showing the old AOV.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777644327046379", "resolved": false, "resolution_note": null}]}, {"name": "Access / Provisioning", "w1": 9, "w2": 10, "severity": "high", "status": "open", "summary": "Gong login fails post-provisioning (leiwang, raphaela, alexanderg). Highspot external sharing (gyousling). DocuSign CLM access (elisehw, annetunda). LinkedIn Sales Nav for new SDR (rossvdd). SFDC campaign creation blocked (tejavadlamani). SalesLoft chrome extension (ames). Stratus access request (paigey/kevintholke).", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777482703588229", "recurrence": 8, "resolved": false, "threads": [{"author": "leiwang", "quote": "I got Gong access provisioned, when logging in via Salesforce, got login failed.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777482703588229", "resolved": false, "resolution_note": null}, {"author": "ames", "quote": "We have a vendor who's unable to access their SalesLoft chrome extension, even though they seem to have the correct LDAP group.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777641295421399", "resolved": false, "resolution_note": null}, {"author": "rossvdd", "quote": "I am a new SDR. I have not received my LinkedIn Sales Nav cert yet. Can someone please advise?", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777545174141959", "resolved": false, "resolution_note": null}, {"author": "tejavadlamani", "quote": "I have access to SFDC but I can't create campaigns. I need to create campaigns as part of my role in the Startup partners team.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777542606813739", "resolved": false, "resolution_note": null}]}, {"name": "Stratus Bugs", "w1": 9, "w2": 10, "severity": "high", "status": "open", "summary": "AI GR not updating after pricing changes (dalil, week 2). AI wrong currency: UK GBP entity built in JPY (chillick, week 2). CP Amex floor inconsistency (ldomange). Sticker bundle non-amex 2.20% vs correct 2.90% (williams). Italian AMEX floor (alessandramazzocchi). NEW: Klarna Unblended deselect bug (lorishyu). NEW: Terminal S710 missing Intra-EEA (lorishyu). NEW: BPS margin not syncing to SFDC (taylormcgavisk). Smart Disputes below floor when not in use (dsantamarina).", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777383901371809", "recurrence": 8, "resolved": false, "threads": [{"author": "dalil", "quote": "I have tried to use the AI tool in order to have a GR close to 1. The AI seems to be updating the pricing fee but doesn't update the global GR for the deal.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777383901371809", "resolved": false, "resolution_note": null}, {"author": "chillick", "quote": "I tried using the AI to build a deal. It's a UK entity, GBP with multi-currency settlement for USD, EUR and JPY. The deal built it with UK entity and had the fixed fee in JPY as currency.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777320565611859", "resolved": false, "resolution_note": null}, {"author": "taylormcgavisk", "quote": "I used Stratus to complete the pricing for my user but the BPS Margin has not passed over to the Salesforce Opp and I cannot close the opp as won until this is done.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777647051446499", "resolved": false, "resolution_note": null}, {"author": "lorishyu", "quote": "I am unable to deselect Klarna Unblended \u2014 Central Europe (and other unblended as well).", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777577673135409", "resolved": false, "resolution_note": null}, {"author": "lorishyu", "quote": "Terminal is missing S710 in Intra-EEA.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777567196012429", "resolved": false, "resolution_note": null}, {"author": "ldomange", "quote": "Working on a deal with Payment + Terminal \u2014 CP Amex is below floor at 2.9%+10c and for CNP at 2.5%+20c is not. Is there a specific reason?", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777362932969269", "resolved": false, "resolution_note": null}]}, {"name": "Stratus Adoption Friction", "w1": 5, "w2": 6, "severity": "med", "status": "open", "summary": "3PI platform rev share not in Stratus (aaz). Merchant ID field missing at opp level (dsantamarina). IC+ vs blended rate on buy rate not supported (darbysween). AMEX/Smart Disputes require manual input (alessandramazzocchi). NEW: First-time user blocked by action error on pricing screen (jesscusack \u2014 Action id: production_peoplefe.cmh).", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777452967850259", "recurrence": 8, "resolved": false, "threads": [{"author": "aaz", "quote": "I'm trying to add the platform rev share for a 3PI deal \u2014 is that not available in Stratus?", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777482080411869", "resolved": false, "resolution_note": null}, {"author": "dsantamarina", "quote": "I keep getting below floor on Smart Disputes. It shouldn't be below floor if I am not using it.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777492537235259", "resolved": false, "resolution_note": null}, {"author": "jesscusack", "quote": "I am currently working on pricing for a startup. Could someone support me with this first attempt at Stratus and also this error message please? Action id: production_peoplefe.cmh", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777452967850259", "resolved": false, "resolution_note": null}, {"author": "andymak", "quote": "I am likely to attempt to use Stratus instead of DC to price out a US-only CNP deal for Kraken. I assume it makes sense to use Stratus instead of DC?", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777648421084319", "resolved": false, "resolution_note": "Healthy adoption signal \u2014 organic first-time inquiry."}]}, {"name": "Approvals / Workflow", "w1": 8, "w2": 10, "severity": "high", "status": "monitoring", "summary": "Rich Counts routing: ZERO new reports \u2014 likely resolved after 5+ weeks (monitor one more week). L4 trigger issues: alexwilliams (unexpected L4), cvr (Rakuten clone rate change triggered L4 and appears broken), mburke (error post-approval submission with no changes). Move-to-onboarding/close blocked: navyak (at sticker, no revert icon), maggiehunt (onboarding error), schenay (Onboarding to Go Live blocked), jeannemalrieu (opp selection blocked), evanrooney (Enter Primary Contact error on valid opps). NEW: laivers flagged GTMS-42435 new opp layout causing downstream effects. Approval Level not auto-populating (dannysupernaw). L2 stuck after RGL approver approved (shreshtg).", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777571774818419", "recurrence": 8, "resolved": false, "resolution_note": "Rich Counts stale approver likely resolved \u2014 zero new reports W2 after 5 weeks of escalation.", "threads": [{"author": "cvr", "resolved": false, "status_label": "Open \u2014 Smart Disputes bug confirmed, awaiting catalog-runner", "jira": "DC_SUPPORT-8930", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8930", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777655880817299", "resolution_note": null, "quote": "We had an approved deal, worked with GBS on redlines, then had a rate change. When I cloned the deal and changed the rates it triggered L4 approval and it appears to be broken.", "messages": [{"author": "cvr", "type": "reporter", "text": "Hello team! hoping you can assist with my Rakuten opp \u2014 we had an approved deal, worked with GBS on redlines, then had a rate change. When I cloned the deal and changed the rates it triggered L4 and it appears to be broken.", "ts": "May 1 10:18 AM"}, {"author": "cvr", "type": "reporter", "text": "Committed GR is 1.2, Approval Level 0, and smart disputes is being flagged below floor (even though it is listed at sticker price).", "ts": "May 1 10:19 AM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8930", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8930"}, {"author": "smaddala-c", "type": "responder", "text": "@cvr it is with Deal Pricing team as the deal has 1 below floor item and all below floor items will have to go for Deal Pricing review.", "ts": "May 1 11:41 AM"}, {"author": "cvr", "type": "reporter", "text": "@nickspin has noted that the below floor item is the smart disputes, which is at sticker - and not below floor. I believe this is a bug.", "ts": "May 1 11:43 AM"}, {"author": "smaddala-c", "type": "responder", "text": "@catalog-runner could you please confirm if this is a bug \u2014 Expected ONR = 0 is < ONR at Floor ($167.09). [Awaiting response \u2014 gentle reminder sent May 4]", "ts": "May 4"}]}, {"author": "alexwilliams", "resolved": true, "status_label": "Resolved \u2014 expected behavior", "jira": "DC_SUPPORT-8938", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8938", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777668853352479", "resolution_note": "Renewals deal: Standard Matrix (GR=0.89, ONR $1.87M) triggers L4. Explained by smaddala-c. Not a bug.", "quote": "Can you please let me know why this deal requires L4 approval?", "messages": [{"author": "alexwilliams", "type": "reporter", "text": "Hi Team, can you please let me know why this deal requires L4 approval?", "ts": "May 1 1:54 PM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8938", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8938"}, {"author": "smaddala-c", "type": "resolver", "text": "@alexwilliams This is a renewals deal \u2014 it compares both matrices and picks the highest escalation. Standard Matrix: Deal ONR = $1,869,541, Guidance Ratio = 0.89 \u2192 L4. Renewal Matrix: ONR Retention = 252% \u2192 L2/L3. L4 wins.", "ts": "May 1 2:12 PM"}, {"author": "alexwilliams", "type": "reporter", "text": "you can close! Thank you @smaddala-c", "ts": "May 1 2:29 PM"}]}, {"author": "navyak", "resolved": false, "status_label": "Still open as of May 4", "jira": "DC_SUPPORT-8934", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8934", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777657965133179", "resolution_note": null, "quote": "I am trying to move this opportunity to close and onboarding but when I do so it gives me the error below. Everything is at sticker and I am not able to see any icon to revert back to sticker.", "messages": [{"author": "navyak", "type": "reporter", "text": "Hi team, I am trying to move this opportunity to close and onboarding but when I do so it gives me the error below. Everything is at sticker and I am not able to see any icon to revert back to sticker.", "ts": "May 1 10:52 AM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8934", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8934"}, {"author": "smaddala-c", "type": "responder", "text": "@navyak SFDC will not allow you to move to Onboarding stage unless DocuSign has been completed or an agreement object has been created by Deal Strategy. Upload an executed contract or submit a case with Deal Strategy.", "ts": "May 1 11:36 AM"}, {"author": "navyak", "type": "reporter", "text": "Okay perfect. I have created the case. Thank you!", "ts": "May 1 1:43 PM"}, {"author": "navyak", "type": "reporter", "text": "Hi Sathya, it's still showing me this error [as of May 4, 8:06 PM]", "ts": "May 4 8:06 PM"}]}, {"author": "laivers", "quote": "A new opp layout was pushed to prod today (GTMS-42435) and it is having downstream effects on workflows.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777571774818419", "resolved": false, "resolution_note": null}, {"author": "mburke", "quote": "What does this error mean? I haven't made any changes to the DC since submitting for approval.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777475767248729", "resolved": false, "resolution_note": null}]}, {"name": "Product / Geo Gaps", "w1": 7, "w2": 7, "severity": "med", "status": "open", "summary": "SaaS Billing not in DC (jmglz). Stablecoin MX/HK/CH not in DC (nicoladunne). Invoicing not in Stratus for Startup opp (evanrooney). IC+ Japan/Thailand pricing (mbumanlag-c). AuthBoost/3DS usage entry blocked. 3PI platform rev share unsupported in Stratus (aaz). MFC not supporting non-USD currencies (jporfilio).", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777416934091219", "recurrence": 8, "resolved": false, "threads": [{"author": "jmglz", "quote": "Any idea why I don't have SaaS Billing available for my deal composer?", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777416934091219", "resolved": false, "resolution_note": null}, {"author": "mbumanlag-c", "quote": "We've received a case from a customer concerning IC+ pricing for Japan and Thailand. Could you please look into this?", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777449198562909", "resolved": false, "resolution_note": null}, {"author": "evanrooney", "quote": "Can Invoicing be added to this Startup opp? It's not available as a product option.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777469558993399", "resolved": false, "resolution_note": null}]}, {"name": "Gong / Tooling", "w1": 7, "w2": 8, "severity": "med", "status": "open", "summary": "Gong not auto-recording for new hires (claudiadavino). Gong SFDC/Zoom alignment broken (alexanderg). SDR Mgr library missing (ueberschaer). New opp layout GTMS-42435 causing downstream effects (laivers). SFDC Forecast view blank (emmayy). Territory plan no results (valen). SalesLoft chrome extension (ames).", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777367334774659", "recurrence": 8, "resolved": false, "threads": [{"author": "laivers", "resolved": true, "status_label": "Resolved \u2014 PR #24841 deployed", "jira": "DC_SUPPORT-8911", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8911", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777571774818419", "resolution_note": "btollefson (Sales Ops) added custom permission to all Sales Vendor profiles \u2014 \"Schedule Meeting\" button restored. PR #24841. Root cause: GTMS-42435 removed Bookit_Handoff from default flexipage for vendors.", "quote": "A new opp layout was pushed to prod today (GTMS-42435) and it is having downstream effects on Vendor. Vendor teams have lost access to \"schedule meeting\" button.", "messages": [{"author": "laivers", "type": "reporter", "text": "Hi! I believe a new opp layout was pushed to prod today (GTMS-42435) and it is having downstream effects on Vendor. Vendor teams have lost access to buttons \u2014 \"schedule meeting\" has been removed and this is a required button for AE handoff.", "ts": "Apr 30"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8911", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8911"}, {"author": "zwhip", "type": "responder", "text": "Found root cause: PR #24646 removed Bookit_Handoff button. Visibility changed from custom permission to profile names \u2014 not added back for vendor profile.", "ts": "Apr 30"}, {"author": "btollefson", "type": "resolver", "text": "@zwhip figured it out \u2014 adding the custom permission to all Sales Vendors so they can see the Schedule Meeting button again. PR #24841.", "ts": "Apr 30"}, {"author": "poojaraju", "type": "responder", "text": "Anyways I think the issue seems sorted now. Thanks Zack and Bruce for helping sort it.", "ts": "Apr 30"}, {"author": "laivers", "type": "reporter", "text": "I believe this is resolved", "ts": "May 4"}]}, {"author": "leiwang", "quote": "I got Gong access provisioned, when logging in via Salesforce, got login failed.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777482703588229", "resolved": false, "resolution_note": null}, {"author": "alexanderg", "quote": "My manager is saying that my Gong account is not correctly set up to SFDC and Zoom. I've followed all the relevant steps but the issue persists.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777537828508109", "resolved": false, "resolution_note": null}, {"author": "jweber", "quote": "Are there known issues with Gong today? My invite included it but I don't see it in my dashboard.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777406982457559", "resolved": false, "resolution_note": null}]}, {"name": "Pricing Questions", "w1": 5, "w2": 6, "severity": "med", "status": "open", "summary": "leon: progressive tiers not available on IC+ deal. cbrady: CHF pricing showing as separate line unexpectedly. dmarsland: tiered IC+ pricing confusion. dtsiganovski: Smart Disputes proposal language + Terminal CZK. eloise: how to identify revshare platform in EUD. joeg: Stratus for platforms query.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777659975811749", "recurrence": 6, "resolved": false, "threads": [{"author": "dtsiganovski", "quote": "What would it mean from a technical side if we rejected a user for payouts but kept their Radar and Tax products? Is that technically possible?", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777651914934179", "resolved": false, "resolution_note": null}, {"author": "leon", "quote": "Hi team, does anyone know why I can't do progressive tiers in this IC+ deal?", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777659975811749", "resolved": false, "resolution_note": null}, {"author": "cbrady", "quote": "I'm doing progressive tiers for this opp and I don't understand why there is a separate line for CHF pricing. Their platform is in Switzerland.", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777591420727369", "resolved": false, "resolution_note": null}, {"author": "eloise", "quote": "In EUD what is the best way to tell what platform the revshare is going to?", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777540533559559", "resolved": false, "resolution_note": null}, {"author": "joeg", "quote": "Wondering if anyone can answer this \u2014 is Stratus available for platform deals?", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777499814483529", "resolved": false, "resolution_note": null}]}], "stratus_categories": [{"name": "Stratus Bugs", "w1": 9, "w2": 10, "severity": "high", "status": "open", "summary": "AI GR not updating (dalil, week 2). AI wrong currency JPY for GBP entity (chillick, week 2). CP Amex floor inconsistency (ldomange). Sticker bundle non-amex 2.20% vs 2.90% (williams). Italian AMEX floor (alessandramazzocchi). NEW: Klarna Unblended deselect (lorishyu). NEW: Terminal S710 missing Intra-EEA (lorishyu). NEW: BPS margin not syncing to SFDC (taylormcgavisk). Smart Disputes below floor when not using (dsantamarina).", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777492537235259", "recurrence": 8, "resolved": false, "threads": [{"author": "dalil", "resolved": true, "status_label": "Resolved", "jira": "RUN_STRATUS-55", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-55", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777383901371809", "resolution_note": "stevenz synced offline with dalil \u2014 IC+ GR propagation issue fixed. RUN_STRATUS-55 filed.", "quote": "I have tried to use the AI tool in order to have a GR close to 1. The AI seems to be updating the pricing fee but doesn't update the global GR for the deal.", "messages": [{"author": "dalil", "type": "reporter", "text": "Hi team, I'm currently working on a pricing for a customer who is new to Stripe. I have tried to use the AI tool in order to have a GR close to 1. The AI seems to be updating the pricing fee but doesn't update the global GR for the deal. Do you know what would be the reason?", "ts": "Apr 28 2:18 PM"}, {"author": "stevenz", "type": "responder", "text": "Hey @dalil, thanks for using our AI chat feature, we're still working on improvements. From the screenshot, it looks like the IC+ line item is priced with GR 2.30, which likely increased the global GR for the deal?", "ts": "Apr 28 2:23 PM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "RUN_STRATUS-55", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-55"}, {"author": "dalil", "type": "reporter", "text": "Hey @stevenz, thanks for your answer. When I'm changing the IC+ line item it doesn't change the global GR while it should.", "ts": "Apr 28 2:24 PM"}, {"author": "williams", "type": "responder", "text": "cc @crhird", "ts": "Apr 28 3:17 PM"}, {"author": "stevenz", "type": "resolver", "text": "Oh, my bad, we've synced offline and it's now resolved. @williams", "ts": "Apr 28 3:22 PM"}]}, {"author": "chillick", "resolved": false, "status_label": "Workaround provided \u2014 bug open", "jira": "RUN_STRATUS-53", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-53", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777320565611859", "resolution_note": "Williams provided workaround: update currency from territory page. Underlying AI bug still open (RUN_STRATUS-53).", "quote": "I tried using the AI to build a deal. It's a UK entity, GBP with multi-currency settlement for USD, EUR and JPY. The deal built it with UK entity and had the fixed fee in JPY as currency.", "messages": [{"author": "chillick", "type": "reporter", "text": "Hi Team, I tried using the AI to build a deal. It's a UK entity, GBP with multi currency settlement for USD, EUR and JPY. The deal built it with UK entity and had the fixed fee in JPY as currency. See screenshot.", "ts": "Apr 27 7:56 AM"}, {"author": "williams", "type": "responder", "text": "Thanks for reaching out @chillick - can you share deal link plz?", "ts": "Apr 27 7:59 AM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "RUN_STRATUS-53", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-53"}, {"author": "williams", "type": "responder", "text": "Baby AI still learning cc @crhird \u2014 he put JPY as default currency for the deal. You can update this and add missing currencies from the territory page.", "ts": "Apr 27 8:02 AM"}, {"author": "williams", "type": "responder", "text": "Please keep that feedback coming @chillick", "ts": "Apr 27 8:02 AM"}]}, {"author": "taylormcgavisk", "resolved": false, "status_label": "Open \u2014 no response yet", "jira": null, "jira_url": null, "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777647051446499", "resolution_note": null, "quote": "I used Stratus to complete the pricing for my user but the BPS Margin has not passed over to the Salesforce Opp and I cannot close the opp as won until this is done.", "messages": [{"author": "taylormcgavisk", "type": "reporter", "text": "I used Stratus to complete the pricing for my user but the BPS Margin has not passed over to the Salesforce Opp and I cannot close the opp as won until this is done.", "ts": "May 1 4:30 PM"}]}, {"author": "lorishyu", "resolved": false, "status_label": "Fix in progress \u2014 early next week", "jira": "RUN_STRATUS-64", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-64", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777577673135409", "resolution_note": "sahiln committed fix \u2014 deploying early next week (May 5-6). Fix is not straightforward.", "quote": "I am unable to deselect Klarna Unblended \u2014 Central Europe (and other unblended as well).", "messages": [{"author": "lorishyu", "type": "reporter", "text": "@stratus-runner \u2014 I am unable to deselect Klarna Unblended - Central Europe (and other unblended as well).", "ts": "Apr 30 3:33 PM"}, {"author": "lorishyu", "type": "reporter", "text": "cc @williams", "ts": "Apr 30 3:33 PM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "RUN_STRATUS-64", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-64"}, {"author": "sahiln", "type": "responder", "text": "Ack @lorishyu! Let me fix this.", "ts": "Apr 30 4:50 PM"}, {"author": "sahiln", "type": "responder", "text": "@lorishyu How urgent is this one? The fix would require time as it's not straight forward.", "ts": "Apr 30 7:01 PM"}, {"author": "lorishyu", "type": "reporter", "text": "@sahiln I would say semi-urgent, as it may block users from removing products they no longer want to include in their contract.", "ts": "May 1 11:01 AM"}, {"author": "sahiln", "type": "resolver", "text": "On it @lorishyu! Should have this one deployed over the weekend or by early next week.", "ts": "May 1 11:02 AM"}]}, {"author": "ldomange", "quote": "Working on a deal with Payment + Terminal \u2014 CP Amex is below floor at 2.9%+10c and for CNP at 2.5%+20c is not. Is there a specific reason?", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777362932969269", "resolved": false, "resolution_note": null}]}, {"name": "Stratus Adoption Friction", "w1": 5, "w2": 6, "severity": "med", "status": "open", "summary": "3PI platform rev share not in Stratus (aaz). Merchant ID field missing at opp level (dsantamarina). IC+ vs blended rate gap (darbysween). AMEX/Smart Disputes require manual input (alessandramazzocchi). First-use error blocking new AE (jesscusack). Organic first-time inquiry from andymak (Kraken deal \u2014 healthy adoption signal).", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777482080411869", "recurrence": 8, "resolved": false, "threads": [{"author": "jesscusack", "resolved": true, "status_label": "Resolved", "jira": "RUN_STRATUS-60", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-60", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777452967850259", "resolution_note": "sahiln resolved \u2014 sticker prices not available for product. jesscusack was able to complete deal. RUN_STRATUS-60.", "quote": "I am currently working on pricing for a startup. Could someone support me with this first attempt at Stratus and also this error message please? Action id: production_peoplefe.cmh", "messages": [{"author": "jesscusack", "type": "reporter", "text": "Hi team, I am currently working on pricing for a startup. Could someone support me with this first attempt at Stratus and also this error message please? Action id: production_peoplefe.cmh/DsVEejq3NV11FT6kaHq", "ts": "Apr 29 3:02 PM"}, {"author": "sahiln", "type": "responder", "text": "Hello @jesscusack \u2014 This seems to be related to Sticker Prices not available for the specific product. Looking into it. You can continue configuring the deal.", "ts": "Apr 29 3:13 PM"}, {"author": "williams", "type": "responder", "text": "Hey @jesscusack let me know if you need me to jump on a call to help you with your first attempt. Happy to support", "ts": "Apr 29 7:09 PM"}, {"author": "jesscusack", "type": "reporter", "text": "Thank you @williams I think I was able to do it but next time, I'll give you more notice, and perhaps you can walk me through that one please", "ts": "Apr 29 7:14 PM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "RUN_STRATUS-60", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-60"}, {"author": "sahiln", "type": "resolver", "text": "@jesscusack @williams This is also resolved. Do let us know if you see these again. Thank you!", "ts": "Apr 30 6:50 PM"}]}, {"author": "aaz", "quote": "I'm trying to add the platform rev share for a 3PI deal \u2014 is that not available in Stratus?", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777482080411869", "resolved": false, "resolution_note": null}, {"author": "dsantamarina", "quote": "I keep getting below floor on Smart Disputes. It shouldn't be below floor if I am not using it.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777492537235259", "resolved": false, "resolution_note": null}, {"author": "andymak", "quote": "I am likely to attempt to use Stratus instead of DC to price out a US-only CNP deal for Kraken. I assume it makes sense to use Stratus instead of DC?", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777648421084319", "resolved": false, "resolution_note": "Healthy adoption signal \u2014 organic first-time inquiry."}]}, {"name": "Stratus Feature Requests", "w1": 6, "w2": 4, "severity": "low", "status": "open", "summary": "MFC currency for non-USD entities (jporfilio via williams \u2014 UK deals need GBP MFC). Invoicing for Startup opp type (evanrooney). Merchant ID at opp level (dsantamarina). Forecast page access (emmayy).", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777576535724669", "recurrence": 5, "resolved": false}], "stratus_deep_dive": {"w1_issues": 20, "w2_issues": 20, "wow_delta": "flat", "driver": "Volume flat WoW but quality shifting: more first-time users (andymak, jesscusack) = adoption expanding. AI bugs persisting into week 2 eroding trust. BPS margin sync failure (taylormcgavisk) is new SFDC integration blocker. Time-to-save (7.77 min) beats DC baseline (7.81 min) for first time.", "top_bugs": [{"issue": "AI GR not updating after pricing changes (dalil)", "jira": "RUN_STRATUS-55", "owner": "stratus-runner", "w1": 1, "w2": 1, "impact": "AE cannot trust AI output on critical deal metric", "status": "Resolved", "threads": [{"author": "dalil", "quote": "I have tried to use the AI tool in order to have a GR close to 1. The AI seems to be updating the pricing fee but doesn't update the global GR for the deal.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777383901371809", "resolved": false, "resolution_note": null}], "thread": {"author": "dalil", "resolved": true, "status_label": "Resolved", "jira": "RUN_STRATUS-55", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-55", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777383901371809", "resolution_note": "stevenz synced offline with dalil \u2014 IC+ GR propagation issue fixed. RUN_STRATUS-55 filed.", "quote": "I have tried to use the AI tool in order to have a GR close to 1. The AI seems to be updating the pricing fee but doesn't update the global GR for the deal.", "messages": [{"author": "dalil", "type": "reporter", "text": "Hi team, I'm currently working on a pricing for a customer who is new to Stripe. I have tried to use the AI tool in order to have a GR close to 1. The AI seems to be updating the pricing fee but doesn't update the global GR for the deal. Do you know what would be the reason?", "ts": "Apr 28 2:18 PM"}, {"author": "stevenz", "type": "responder", "text": "Hey @dalil, thanks for using our AI chat feature, we're still working on improvements. From the screenshot, it looks like the IC+ line item is priced with GR 2.30, which likely increased the global GR for the deal?", "ts": "Apr 28 2:23 PM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "RUN_STRATUS-55", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-55"}, {"author": "dalil", "type": "reporter", "text": "Hey @stevenz, thanks for your answer. When I'm changing the IC+ line item it doesn't change the global GR while it should.", "ts": "Apr 28 2:24 PM"}, {"author": "williams", "type": "responder", "text": "cc @crhird", "ts": "Apr 28 3:17 PM"}, {"author": "stevenz", "type": "resolver", "text": "Oh, my bad, we've synced offline and it's now resolved. @williams", "ts": "Apr 28 3:22 PM"}]}, "resolved": true, "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-55"}, {"issue": "AI wrong currency: UK GBP entity gets JPY fixed fee (chillick)", "jira": "RUN_STRATUS-53", "owner": "stratus-runner", "w1": 1, "w2": 1, "impact": "Wrong pricing output, erodes AI trust", "status": "Workaround provided \u2014 bug open", "threads": [{"author": "chillick", "quote": "I tried using the AI to build a deal. It's a UK entity, GBP with multi-currency settlement for USD, EUR and JPY. The deal built it with UK entity and had the fixed fee in JPY as currency.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777320565611859", "resolved": false, "resolution_note": null}], "thread": {"author": "chillick", "resolved": false, "status_label": "Workaround provided \u2014 bug open", "jira": "RUN_STRATUS-53", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-53", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777320565611859", "resolution_note": "Williams provided workaround: update currency from territory page. Underlying AI bug still open (RUN_STRATUS-53).", "quote": "I tried using the AI to build a deal. It's a UK entity, GBP with multi-currency settlement for USD, EUR and JPY. The deal built it with UK entity and had the fixed fee in JPY as currency.", "messages": [{"author": "chillick", "type": "reporter", "text": "Hi Team, I tried using the AI to build a deal. It's a UK entity, GBP with multi currency settlement for USD, EUR and JPY. The deal built it with UK entity and had the fixed fee in JPY as currency. See screenshot.", "ts": "Apr 27 7:56 AM"}, {"author": "williams", "type": "responder", "text": "Thanks for reaching out @chillick - can you share deal link plz?", "ts": "Apr 27 7:59 AM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "RUN_STRATUS-53", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-53"}, {"author": "williams", "type": "responder", "text": "Baby AI still learning cc @crhird \u2014 he put JPY as default currency for the deal. You can update this and add missing currencies from the territory page.", "ts": "Apr 27 8:02 AM"}, {"author": "williams", "type": "responder", "text": "Please keep that feedback coming @chillick", "ts": "Apr 27 8:02 AM"}]}, "resolved": false, "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-53"}, {"issue": "BPS Margin not syncing from Stratus to SFDC opp (taylormcgavisk)", "jira": null, "owner": "stratus-runner", "w1": 0, "w2": 1, "impact": "AE cannot close opp as won without BPS sync", "status": "Open \u2014 no response yet", "threads": [{"author": "taylormcgavisk", "quote": "I used Stratus to complete the pricing for my user but the BPS Margin has not passed over to the Salesforce Opp and I cannot close the opp as won until this is done.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777647051446499", "resolved": false, "resolution_note": null}], "thread": {"author": "taylormcgavisk", "resolved": false, "status_label": "Open \u2014 no response yet", "jira": null, "jira_url": null, "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777647051446499", "resolution_note": null, "quote": "I used Stratus to complete the pricing for my user but the BPS Margin has not passed over to the Salesforce Opp and I cannot close the opp as won until this is done.", "messages": [{"author": "taylormcgavisk", "type": "reporter", "text": "I used Stratus to complete the pricing for my user but the BPS Margin has not passed over to the Salesforce Opp and I cannot close the opp as won until this is done.", "ts": "May 1 4:30 PM"}]}, "resolved": false, "jira_url": null}, {"issue": "Klarna Unblended deselect bug \u2014 cannot remove Central Europe (lorishyu)", "jira": "RUN_STRATUS-64", "owner": "stratus-runner", "w1": 0, "w2": 1, "impact": "Deal stuck with wrong product selection", "status": "Fix in progress \u2014 early next week", "threads": [{"author": "lorishyu", "quote": "Terminal is missing S710 in Intra-EEA.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777567196012429", "resolved": false, "resolution_note": null}], "thread": {"author": "lorishyu", "resolved": false, "status_label": "Fix in progress \u2014 early next week", "jira": "RUN_STRATUS-64", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-64", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777577673135409", "resolution_note": "sahiln committed fix \u2014 deploying early next week (May 5-6). Fix is not straightforward.", "quote": "I am unable to deselect Klarna Unblended \u2014 Central Europe (and other unblended as well).", "messages": [{"author": "lorishyu", "type": "reporter", "text": "@stratus-runner \u2014 I am unable to deselect Klarna Unblended - Central Europe (and other unblended as well).", "ts": "Apr 30 3:33 PM"}, {"author": "lorishyu", "type": "reporter", "text": "cc @williams", "ts": "Apr 30 3:33 PM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "RUN_STRATUS-64", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-64"}, {"author": "sahiln", "type": "responder", "text": "Ack @lorishyu! Let me fix this.", "ts": "Apr 30 4:50 PM"}, {"author": "sahiln", "type": "responder", "text": "@lorishyu How urgent is this one? The fix would require time as it's not straight forward.", "ts": "Apr 30 7:01 PM"}, {"author": "lorishyu", "type": "reporter", "text": "@sahiln I would say semi-urgent, as it may block users from removing products they no longer want to include in their contract.", "ts": "May 1 11:01 AM"}, {"author": "sahiln", "type": "resolver", "text": "On it @lorishyu! Should have this one deployed over the weekend or by early next week.", "ts": "May 1 11:02 AM"}]}, "resolved": false, "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-64"}, {"issue": "Terminal S710 missing in Intra-EEA product list (lorishyu)", "jira": "RUN_STRATUS-64", "owner": "stratus-runner", "w1": 0, "w2": 1, "impact": "Terminal deals in Intra-EEA cannot use S710", "status": "Open", "threads": [{"author": "lorishyu", "quote": "Terminal is missing S710 in Intra-EEA.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777567196012429", "resolved": false, "resolution_note": null}], "thread": {"author": "lorishyu", "resolved": false, "status_label": "Open", "jira": "RUN_STRATUS-64", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-64", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777567196012429", "resolution_note": "Same fix as Klarna Unblended (sahiln, early next week).", "quote": "Terminal is missing S710 in Intra-EEA.", "messages": [{"author": "lorishyu", "type": "reporter", "text": "Terminal is missing S710 in Intra-EEA.", "ts": "Apr 30"}]}, "resolved": false, "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-64"}, {"issue": "CP Amex below floor, same CNP rate not flagged (ldomange)", "jira": null, "owner": "stratus-runner", "w1": 1, "w2": 1, "impact": "AE confusion on floor thresholds", "status": "Open", "threads": [{"author": "ldomange", "quote": "Working on a deal with Payment + Terminal \u2014 CP Amex is below floor at 2.9%+10c and for CNP at 2.5%+20c is not. Is there a specific reason?", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777362932969269", "resolved": false, "resolution_note": null}], "thread": {"author": "ldomange", "resolved": false, "status_label": "Open", "jira": null, "jira_url": null, "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777362932969269", "resolution_note": null, "quote": "Working on a deal with Payment + Terminal \u2014 CP Amex is below floor at 2.9%+10c and for CNP at 2.5%+20c is not. Is there a specific reason?", "messages": [{"author": "ldomange", "type": "reporter", "text": "Working on a deal with Payment + Terminal \u2014 CP Amex is below floor at 2.9%+10c and for CNP at 2.5%+20c is not. Is there a specific reason?", "ts": "Apr 27"}]}, "resolved": false, "jira_url": null}, {"issue": "Sticker bundle non-amex showing 2.20% vs correct 2.90%", "jira": null, "owner": "stratus-runner", "w1": 1, "w2": 1, "impact": "Wrong floor displayed, AE prices below correct threshold", "status": "Carry", "threads": []}, {"issue": "Italian AMEX 2.90% market: Radar/3DS/AB flagged below floor incorrectly (alessandramazzocchi)", "jira": null, "owner": "stratus-runner", "w1": 1, "w2": 1, "impact": "Blocks Italian AMEX deals at sticker", "status": "Carry", "threads": []}, {"issue": "Smart Disputes below floor applied when product not in use (dsantamarina)", "jira": null, "owner": "stratus-runner", "w1": 1, "w2": 1, "impact": "False below-floor on unused product", "status": "Carry", "threads": [{"author": "dsantamarina", "quote": "I keep getting below floor on Smart Disputes. It shouldn't be below floor if I am not using it.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777492537235259", "resolved": false, "resolution_note": null}]}, {"issue": "First-use error: Action id production_peoplefe blocks pricing screen (jesscusack)", "jira": "RUN_STRATUS-60", "owner": "stratus-runner", "w1": 0, "w2": 1, "impact": "New AEs blocked on first attempt", "status": "Resolved", "threads": [{"author": "jesscusack", "quote": "I am currently working on pricing for a startup. Could someone support me with this first attempt at Stratus and also this error message please? Action id: production_peoplefe.cmh", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777452967850259", "resolved": false, "resolution_note": null}], "thread": {"author": "jesscusack", "resolved": true, "status_label": "Resolved", "jira": "RUN_STRATUS-60", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-60", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777452967850259", "resolution_note": "sahiln resolved \u2014 sticker prices not available for product. jesscusack was able to complete deal. RUN_STRATUS-60.", "quote": "I am currently working on pricing for a startup. Could someone support me with this first attempt at Stratus and also this error message please? Action id: production_peoplefe.cmh", "messages": [{"author": "jesscusack", "type": "reporter", "text": "Hi team, I am currently working on pricing for a startup. Could someone support me with this first attempt at Stratus and also this error message please? Action id: production_peoplefe.cmh/DsVEejq3NV11FT6kaHq", "ts": "Apr 29 3:02 PM"}, {"author": "sahiln", "type": "responder", "text": "Hello @jesscusack \u2014 This seems to be related to Sticker Prices not available for the specific product. Looking into it. You can continue configuring the deal.", "ts": "Apr 29 3:13 PM"}, {"author": "williams", "type": "responder", "text": "Hey @jesscusack let me know if you need me to jump on a call to help you with your first attempt. Happy to support", "ts": "Apr 29 7:09 PM"}, {"author": "jesscusack", "type": "reporter", "text": "Thank you @williams I think I was able to do it but next time, I'll give you more notice, and perhaps you can walk me through that one please", "ts": "Apr 29 7:14 PM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "RUN_STRATUS-60", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-60"}, {"author": "sahiln", "type": "resolver", "text": "@jesscusack @williams This is also resolved. Do let us know if you see these again. Thank you!", "ts": "Apr 30 6:50 PM"}]}, "resolved": true, "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-60"}], "adoption_friction": [{"text": "3PI platform rev share not supported in Stratus (aaz \u2014 complete product gap)", "threads": [{"author": "aaz", "quote": "I'm trying to add the platform rev share for a 3PI deal \u2014 is that not available in Stratus?", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777482080411869", "resolved": false, "resolution_note": null}]}, {"text": "Merchant ID field not available at opportunity level (dsantamarina)", "threads": [{"author": "dsantamarina", "quote": "I keep getting below floor on Smart Disputes. It shouldn't be below floor if I am not using it.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777492537235259", "resolved": false, "resolution_note": null}]}, {"text": "IC+ vs blended rate on buy rate not supported (darbysween)", "threads": []}, {"text": "AMEX values and Smart Disputes require manual input each time (alessandramazzocchi)", "threads": []}, {"text": "First-use action error blocking net-new pilot AEs (jesscusack)", "threads": [{"author": "jesscusack", "quote": "I am currently working on pricing for a startup. Could someone support me with this first attempt at Stratus and also this error message please? Action id: production_peoplefe.cmh", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777452967850259", "resolved": false, "resolution_note": null}]}, {"text": "Organic first-time inquiry increasing: andymak proactively asked how to get started for Kraken deal", "threads": [{"author": "andymak", "quote": "I am likely to attempt to use Stratus instead of DC to price out a US-only CNP deal for Kraken. I assume it makes sense to use Stratus instead of DC?", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777648421084319", "resolved": false, "resolution_note": "Healthy adoption signal \u2014 organic first-time inquiry."}]}], "feature_gaps_vs_dc": [{"text": "3PI platform rev share not in Stratus", "threads": [{"author": "aaz", "quote": "I'm trying to add the platform rev share for a 3PI deal \u2014 is that not available in Stratus?", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777482080411869", "resolved": false, "resolution_note": null}]}, {"text": "Invoicing not available for Startup opp type (evanrooney)", "threads": [{"author": "evanrooney", "quote": "Can Invoicing be added to this Startup opp? It's not available as a product option.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777469558993399", "resolved": false, "resolution_note": null}]}, {"text": "MFC not supporting non-USD currencies for non-US entities (jporfilio \u2014 UK deals need GBP MFC)", "threads": []}, {"text": "Terminal S710 missing in Intra-EEA (lorishyu)", "threads": [{"author": "lorishyu", "quote": "Terminal is missing S710 in Intra-EEA.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777567196012429", "resolved": false, "resolution_note": null}]}, {"text": "Sigma, DataPipeline not in Stratus (forces DC fallback)", "threads": []}, {"text": "SaaS Billing not in Stratus (jmglz)", "threads": [{"author": "jmglz", "quote": "Any idea why I don't have SaaS Billing available for my deal composer?", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777416934091219", "resolved": false, "resolution_note": null}]}, {"text": "Merchant ID field missing at opp level", "threads": [{"author": "dsantamarina", "quote": "I keep getting below floor on Smart Disputes. It shouldn't be below floor if I am not using it.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777492537235259", "resolved": false, "resolution_note": null}]}], "feedback": {"w1_count": 3, "w2_count": 2, "avg_rating": 5.0, "rating_dist": {"5": 7, "4": 0, "3": 0, "2": 0, "1": 0}, "top_tags": ["Time saver", "Cool feature", "Helpful"], "verbatim": [{"reviewer": "alanhosey", "rating": 5, "comment": "love it", "date": "2026-05-03"}, {"reviewer": "reedmalone", "rating": 5, "comment": "So much more intuitive and easier than DC", "date": "2026-04-22"}, {"reviewer": "bde", "rating": 5, "comment": "Way easier to use than DC at the moment and less bugs. Was not able to sync my opp on DC and worked on Stratus - Well done", "date": "2026-04-15"}]}, "sentiment": "positive", "what_needs_fixing": "Floor logic audit remains priority \u2014 5 different floor inconsistency patterns active (CP Amex, sticker bundle, Italian AMEX, Smart Disputes, Klarna). BPS margin sync to SFDC is new critical path blocker (AEs cannot close opps won with Stratus pricing). AI trust continues to erode: GR and currency bugs both in week 2 with no resolution communicated. First-use errors need fixing before organic adoption can scale.", "hubble_metrics": {"source": "Hubble queries 638ac56c + 0e1dd57c", "deals_created_w2": 109, "deals_created_w1": 95, "deals_created_note": "109 deals W2 vs 95 W1 (+14.7% WoW). Sustained acceleration since APAC M2 launch.", "deals_saved_to_opp_w2": 64, "median_min_to_save_w2": 7.77, "median_min_to_save_w1": 13.05, "dc_q1_baseline_median_min": 7.81, "p90_days_to_save_w2": 1.83, "dc_q1_baseline_p90_days": 4.99, "time_to_save_note": "Stratus median (7.77 min) now FASTER than DC Q1 baseline (7.81 min) for the first time. P90 at 1.83 days vs 4.99 DC baseline."}, "hero": {"eligibility_rate": 0.198, "eligible_opps": 181, "total_opps": 915, "adoption_rate": 0.221, "adopted_opps": 40, "ae_coverage": 0.382, "stratus_aes": 317, "total_aes": 830, "products_complete": 12, "products_total": 32, "median_min_to_save": 7.77, "support_contacts": 18, "week": "2026-04-27", "note": "Hero card rates from last known values (week of Apr 20). Operational metrics from Hubble queries 638ac56c + 0e1dd57c."}, "stratus_funnel": {"headline": "Stratus time-to-save beats DC baseline \u2014 but 62% of AEs still locked out", "bottom_line": "19.8% of all opps are Stratus-eligible (181/915, last measured Apr 20). Of those, 22.1% adopted \u2014 40 deals vs 141 eligible still going through DC. AE coverage sits at 38.2% (317/830): 513 AEs have no access. Product burndown is 12/32 \u2014 gaps in 3PI rev share, Invoicing for Startup, SaaS Billing, and Terminal S710 (Intra-EEA) forcing DC fallback.", "insights": [{"signal": "Eligibility Rate: 19.8% \u2014 181 of 915 opps eligible (week of Apr 20)", "so_what": "4 in 5 deals ineligible today. AE access gaps and missing products are the ceiling.", "pattern": "Source: dashboard 45057, Stratus hero card (last known)"}, {"signal": "Adoption Rate: 22.1% \u2014 40 of 181 eligible opps used Stratus", "so_what": "When AEs have access and product is supported, conversion is healthy. 141 eligible opps/week still going through DC.", "pattern": "Eligibility is the bottleneck, not willingness"}, {"signal": "AE Coverage: 38.2% \u2014 317 of 830 AEs have Stratus access", "so_what": "513 AEs locked out. Every provisioning expansion directly increases eligible opp pool.", "pattern": "Provisioning pace is the primary eligibility driver"}, {"signal": "Product Burndown: 12 of 32 products shipped (37.5%)", "so_what": "Deals requiring 3PI rev share, Invoicing for Startup, SaaS Billing, or Terminal S710 Intra-EEA cannot use Stratus at all.", "pattern": "20 products remaining; each shipped expands eligible pool"}]}, "writeup": {"headline": "Stratus crosses DC speed baseline \u2014 organic adoption growing, floor logic and AI trust still blocking scale", "summary": "Stratus time-to-save (7.77 min) beat the DC Q1 baseline (7.81 min) for the first time, with 109 deals created (+14.7% WoW). Of ~915 opps priced, 19.8% are Stratus-eligible; of those, 22.1% adopted. AE coverage remains 38.2% (317/830 AEs) \u2014 513 AEs still locked out. Floor logic inconsistencies (5 patterns active) and AI deal-builder bugs (GR not updating, wrong currency) are the two biggest confidence blockers at scale. First-time AEs hitting errors on first use is an onboarding risk as organic demand grows.", "from_support": [{"text": "BPS Margin not syncing from Stratus to SFDC opp (taylormcgavisk) \u2014 AE cannot close opp as won: critical path blocker", "threads": [{"author": "taylormcgavisk", "resolved": false, "status_label": "Open \u2014 no response yet", "jira": null, "jira_url": null, "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777647051446499", "resolution_note": null, "quote": "I used Stratus to complete the pricing for my user but the BPS Margin has not passed over to the Salesforce Opp and I cannot close the opp as won until this is done.", "messages": [{"author": "taylormcgavisk", "type": "reporter", "text": "I used Stratus to complete the pricing for my user but the BPS Margin has not passed over to the Salesforce Opp and I cannot close the opp as won until this is done.", "ts": "May 1 4:30 PM"}]}]}, {"text": "First-use friction: jesscusack first attempt hit blocking action error (Action id: production_peoplefe.cmh) \u2014 onboarding breaks for net-new AEs", "threads": [{"author": "jesscusack", "resolved": true, "status_label": "Resolved", "jira": "RUN_STRATUS-60", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-60", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777452967850259", "resolution_note": "sahiln resolved \u2014 sticker prices not available for product. jesscusack was able to complete deal. RUN_STRATUS-60.", "quote": "I am currently working on pricing for a startup. Could someone support me with this first attempt at Stratus and also this error message please? Action id: production_peoplefe.cmh", "messages": [{"author": "jesscusack", "type": "reporter", "text": "Hi team, I am currently working on pricing for a startup. Could someone support me with this first attempt at Stratus and also this error message please? Action id: production_peoplefe.cmh/DsVEejq3NV11FT6kaHq", "ts": "Apr 29 3:02 PM"}, {"author": "sahiln", "type": "responder", "text": "Hello @jesscusack \u2014 This seems to be related to Sticker Prices not available for the specific product. Looking into it. You can continue configuring the deal.", "ts": "Apr 29 3:13 PM"}, {"author": "williams", "type": "responder", "text": "Hey @jesscusack let me know if you need me to jump on a call to help you with your first attempt. Happy to support", "ts": "Apr 29 7:09 PM"}, {"author": "jesscusack", "type": "reporter", "text": "Thank you @williams I think I was able to do it but next time, I'll give you more notice, and perhaps you can walk me through that one please", "ts": "Apr 29 7:14 PM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "RUN_STRATUS-60", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-60"}, {"author": "sahiln", "type": "resolver", "text": "@jesscusack @williams This is also resolved. Do let us know if you see these again. Thank you!", "ts": "Apr 30 6:50 PM"}]}]}, {"text": "AI deal-builder trust low: dalil (GR not updating, week 2) and chillick (wrong currency JPY on UK GBP entity, week 2) both unresolved", "threads": [{"author": "dalil", "resolved": true, "status_label": "Resolved", "jira": "RUN_STRATUS-55", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-55", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777383901371809", "resolution_note": "stevenz synced offline with dalil \u2014 IC+ GR propagation issue fixed. RUN_STRATUS-55 filed.", "quote": "I have tried to use the AI tool in order to have a GR close to 1. The AI seems to be updating the pricing fee but doesn't update the global GR for the deal.", "messages": [{"author": "dalil", "type": "reporter", "text": "Hi team, I'm currently working on a pricing for a customer who is new to Stripe. I have tried to use the AI tool in order to have a GR close to 1. The AI seems to be updating the pricing fee but doesn't update the global GR for the deal. Do you know what would be the reason?", "ts": "Apr 28 2:18 PM"}, {"author": "stevenz", "type": "responder", "text": "Hey @dalil, thanks for using our AI chat feature, we're still working on improvements. From the screenshot, it looks like the IC+ line item is priced with GR 2.30, which likely increased the global GR for the deal?", "ts": "Apr 28 2:23 PM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "RUN_STRATUS-55", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-55"}, {"author": "dalil", "type": "reporter", "text": "Hey @stevenz, thanks for your answer. When I'm changing the IC+ line item it doesn't change the global GR while it should.", "ts": "Apr 28 2:24 PM"}, {"author": "williams", "type": "responder", "text": "cc @crhird", "ts": "Apr 28 3:17 PM"}, {"author": "stevenz", "type": "resolver", "text": "Oh, my bad, we've synced offline and it's now resolved. @williams", "ts": "Apr 28 3:22 PM"}]}, {"author": "chillick", "resolved": false, "status_label": "Workaround provided \u2014 bug open", "jira": "RUN_STRATUS-53", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-53", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777320565611859", "resolution_note": "Williams provided workaround: update currency from territory page. Underlying AI bug still open (RUN_STRATUS-53).", "quote": "I tried using the AI to build a deal. It's a UK entity, GBP with multi-currency settlement for USD, EUR and JPY. The deal built it with UK entity and had the fixed fee in JPY as currency.", "messages": [{"author": "chillick", "type": "reporter", "text": "Hi Team, I tried using the AI to build a deal. It's a UK entity, GBP with multi currency settlement for USD, EUR and JPY. The deal built it with UK entity and had the fixed fee in JPY as currency. See screenshot.", "ts": "Apr 27 7:56 AM"}, {"author": "williams", "type": "responder", "text": "Thanks for reaching out @chillick - can you share deal link plz?", "ts": "Apr 27 7:59 AM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "RUN_STRATUS-53", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-53"}, {"author": "williams", "type": "responder", "text": "Baby AI still learning cc @crhird \u2014 he put JPY as default currency for the deal. You can update this and add missing currencies from the territory page.", "ts": "Apr 27 8:02 AM"}, {"author": "williams", "type": "responder", "text": "Please keep that feedback coming @chillick", "ts": "Apr 27 8:02 AM"}]}]}, {"text": "Floor logic: 5 active inconsistency patterns \u2014 CP Amex, sticker bundle, Italian AMEX, Smart Disputes, Klarna. AEs pricing real deals hitting unexpected below-floor flags", "threads": []}, {"text": "Organic adoption growing: andymak proactively asked how to use Stratus for Kraken deal (US CNP, first time) \u2014 unprompted AE pull is healthy signal", "threads": [{"author": "andymak", "quote": "I am likely to attempt to use Stratus instead of DC to price out a US-only CNP deal for Kraken. I assume it makes sense to use Stratus instead of DC?", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777648421084319", "resolved": false, "resolution_note": "Healthy adoption signal \u2014 organic first-time inquiry."}]}, {"text": "Product gap in live deal: lorishyu hit Klarna Unblended deselect bug and Terminal S710 missing Intra-EEA \u2014 coverage gaps surfacing in production", "threads": [{"author": "lorishyu", "resolved": false, "status_label": "Fix in progress \u2014 early next week", "jira": "RUN_STRATUS-64", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-64", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777577673135409", "resolution_note": "sahiln committed fix \u2014 deploying early next week (May 5-6). Fix is not straightforward.", "quote": "I am unable to deselect Klarna Unblended \u2014 Central Europe (and other unblended as well).", "messages": [{"author": "lorishyu", "type": "reporter", "text": "@stratus-runner \u2014 I am unable to deselect Klarna Unblended - Central Europe (and other unblended as well).", "ts": "Apr 30 3:33 PM"}, {"author": "lorishyu", "type": "reporter", "text": "cc @williams", "ts": "Apr 30 3:33 PM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "RUN_STRATUS-64", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-64"}, {"author": "sahiln", "type": "responder", "text": "Ack @lorishyu! Let me fix this.", "ts": "Apr 30 4:50 PM"}, {"author": "sahiln", "type": "responder", "text": "@lorishyu How urgent is this one? The fix would require time as it's not straight forward.", "ts": "Apr 30 7:01 PM"}, {"author": "lorishyu", "type": "reporter", "text": "@sahiln I would say semi-urgent, as it may block users from removing products they no longer want to include in their contract.", "ts": "May 1 11:01 AM"}, {"author": "sahiln", "type": "resolver", "text": "On it @lorishyu! Should have this one deployed over the weekend or by early next week.", "ts": "May 1 11:02 AM"}]}, {"author": "lorishyu", "quote": "Terminal is missing S710 in Intra-EEA.", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777567196012429", "resolved": false, "resolution_note": null}]}], "hype_items": []}}, "approvals_deep_dive": {"w1_issues": 8, "w2_issues": 10, "wow_delta": "+25%", "top_blockers": [{"tool": "DocuSign", "issue": "Gibraltar\u2192SPEL mapping missing \u2014 one deal (Liquidity Trading - Pay-ins, jmcgrath) failed signing", "owner": "IT / DocuSign admin", "w1": 0, "w2": 1, "impact": "Single deal blocked \u2014 not systemic. Fixed same day.", "status": "Resolved same day \u2014 DC_SUPPORT-8850 (amulmehta)", "threads": [{"author": "jmcgrath", "resolved": true, "status_label": "Resolved \u2014 DC_SUPPORT-8850", "jira": "DC_SUPPORT-8850", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8850", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777410860807749", "resolution_note": "amulmehta fixed: contract service code was missing Gibraltar\u2192SPEL country mapping. Signing group now visible.", "quote": "I am unable to add 'Stripe Signing Group Europe' as the Stripe signatories \u2014 it only shows US individuals.", "messages": [{"author": "jmcgrath", "type": "reporter", "text": "Hi Team, I am trying to send the contract for eSignature but I am unable to add \"Stripe Signing Group Europe\" as the Stripe signatories, it seems to only be US individuals. Liquidity Trading - Pay-ins.", "ts": "Apr 28"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8850", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8850"}, {"author": "amulmehta", "type": "resolver", "text": "@jmcgrath can you try now please? It shows \"Stripe Europe Signing Group\"", "ts": "Apr 29"}, {"author": "jmcgrath", "type": "reporter", "text": "that sorted it thank you!", "ts": "Apr 29"}, {"author": "amulmehta", "type": "resolver", "text": "The contract was showing Stripe LLC as stripe signing group \u2014 caused SPEL not to show up. Contract service code was missing mapping for `Gibraltar` country to SPEL. Fixing the mapping fixed the issue.", "ts": "Apr 30"}]}], "thread": {"author": "jmcgrath", "resolved": true, "status_label": "Resolved \u2014 DC_SUPPORT-8850", "jira": "DC_SUPPORT-8850", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8850", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777410860807749", "resolution_note": "amulmehta fixed: contract service code was missing Gibraltar\u2192SPEL country mapping. Signing group now visible.", "quote": "I am unable to add 'Stripe Signing Group Europe' as the Stripe signatories \u2014 it only shows US individuals.", "messages": [{"author": "jmcgrath", "type": "reporter", "text": "Hi Team, I am trying to send the contract for eSignature but I am unable to add \"Stripe Signing Group Europe\" as the Stripe signatories, it seems to only be US individuals. Liquidity Trading - Pay-ins.", "ts": "Apr 28"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8850", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8850"}, {"author": "amulmehta", "type": "resolver", "text": "@jmcgrath can you try now please? It shows \"Stripe Europe Signing Group\"", "ts": "Apr 29"}, {"author": "jmcgrath", "type": "reporter", "text": "that sorted it thank you!", "ts": "Apr 29"}, {"author": "amulmehta", "type": "resolver", "text": "The contract was showing Stripe LLC as stripe signing group \u2014 caused SPEL not to show up. Contract service code was missing mapping for `Gibraltar` country to SPEL. Fixing the mapping fixed the issue.", "ts": "Apr 30"}]}}, {"tool": "SFDC Approval Process", "issue": "Approval Level not auto-populating (dannysupernaw)", "owner": "Sales Ops", "w1": 0, "w2": 1, "impact": "AE cannot determine correct approval path", "status": "Open", "threads": []}, {"tool": "SFDC Prod Layout", "issue": "New opp layout GTMS-42435 causing downstream effects (laivers)", "owner": "SFDC Prod", "w1": 0, "w2": 1, "impact": "Layout change affecting downstream workflows", "status": "NEW \u2014 monitor", "threads": [{"author": "laivers", "resolved": true, "status_label": "Resolved \u2014 PR #24841 deployed", "jira": "DC_SUPPORT-8911", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8911", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777571774818419", "resolution_note": "btollefson (Sales Ops) added custom permission to all Sales Vendor profiles \u2014 \"Schedule Meeting\" button restored. PR #24841. Root cause: GTMS-42435 removed Bookit_Handoff from default flexipage for vendors.", "quote": "A new opp layout was pushed to prod today (GTMS-42435) and it is having downstream effects on Vendor. Vendor teams have lost access to \"schedule meeting\" button.", "messages": [{"author": "laivers", "type": "reporter", "text": "Hi! I believe a new opp layout was pushed to prod today (GTMS-42435) and it is having downstream effects on Vendor. Vendor teams have lost access to buttons \u2014 \"schedule meeting\" has been removed and this is a required button for AE handoff.", "ts": "Apr 30"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8911", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8911"}, {"author": "zwhip", "type": "responder", "text": "Found root cause: PR #24646 removed Bookit_Handoff button. Visibility changed from custom permission to profile names \u2014 not added back for vendor profile.", "ts": "Apr 30"}, {"author": "btollefson", "type": "resolver", "text": "@zwhip figured it out \u2014 adding the custom permission to all Sales Vendors so they can see the Schedule Meeting button again. PR #24841.", "ts": "Apr 30"}, {"author": "poojaraju", "type": "responder", "text": "Anyways I think the issue seems sorted now. Thanks Zack and Bruce for helping sort it.", "ts": "Apr 30"}, {"author": "laivers", "type": "reporter", "text": "I believe this is resolved", "ts": "May 4"}]}], "thread": {"author": "laivers", "resolved": true, "status_label": "Resolved \u2014 PR #24841 deployed", "jira": "DC_SUPPORT-8911", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8911", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777571774818419", "resolution_note": "btollefson (Sales Ops) added custom permission to all Sales Vendor profiles \u2014 \"Schedule Meeting\" button restored. PR #24841. Root cause: GTMS-42435 removed Bookit_Handoff from default flexipage for vendors.", "quote": "A new opp layout was pushed to prod today (GTMS-42435) and it is having downstream effects on Vendor. Vendor teams have lost access to \"schedule meeting\" button.", "messages": [{"author": "laivers", "type": "reporter", "text": "Hi! I believe a new opp layout was pushed to prod today (GTMS-42435) and it is having downstream effects on Vendor. Vendor teams have lost access to buttons \u2014 \"schedule meeting\" has been removed and this is a required button for AE handoff.", "ts": "Apr 30"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8911", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8911"}, {"author": "zwhip", "type": "responder", "text": "Found root cause: PR #24646 removed Bookit_Handoff button. Visibility changed from custom permission to profile names \u2014 not added back for vendor profile.", "ts": "Apr 30"}, {"author": "btollefson", "type": "resolver", "text": "@zwhip figured it out \u2014 adding the custom permission to all Sales Vendors so they can see the Schedule Meeting button again. PR #24841.", "ts": "Apr 30"}, {"author": "poojaraju", "type": "responder", "text": "Anyways I think the issue seems sorted now. Thanks Zack and Bruce for helping sort it.", "ts": "Apr 30"}, {"author": "laivers", "type": "reporter", "text": "I believe this is resolved", "ts": "May 4"}]}}, {"tool": "SFDC Approval Process", "issue": "L2 stuck after RGL approver already approved (shreshtg)", "owner": "konthamk", "w1": 1, "w2": 1, "impact": "India region approval double-routing", "status": "Carry", "threads": []}, {"tool": "SFDC Approval Process", "issue": "Rich Counts (departed) routing approvals", "owner": "florawang / IT", "w1": 3, "w2": 0, "impact": "Zero new reports W2 \u2014 likely resolved after 5+ weeks", "status": "Likely resolved \u2014 verify", "threads": []}, {"tool": "DC / SFDC Approval Logic", "issue": "L4 triggered unexpectedly on deal clone after rate change (cvr \u2014 Rakuten)", "owner": "DC Eng", "w1": 0, "w2": 1, "impact": "Approval chain broken after valid rate change", "status": "Open", "threads": [{"author": "cvr", "resolved": false, "status_label": "Open \u2014 Smart Disputes bug confirmed, awaiting catalog-runner", "jira": "DC_SUPPORT-8930", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8930", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777655880817299", "resolution_note": null, "quote": "We had an approved deal, worked with GBS on redlines, then had a rate change. When I cloned the deal and changed the rates it triggered L4 approval and it appears to be broken.", "messages": [{"author": "cvr", "type": "reporter", "text": "Hello team! hoping you can assist with my Rakuten opp \u2014 we had an approved deal, worked with GBS on redlines, then had a rate change. When I cloned the deal and changed the rates it triggered L4 and it appears to be broken.", "ts": "May 1 10:18 AM"}, {"author": "cvr", "type": "reporter", "text": "Committed GR is 1.2, Approval Level 0, and smart disputes is being flagged below floor (even though it is listed at sticker price).", "ts": "May 1 10:19 AM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8930", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8930"}, {"author": "smaddala-c", "type": "responder", "text": "@cvr it is with Deal Pricing team as the deal has 1 below floor item and all below floor items will have to go for Deal Pricing review.", "ts": "May 1 11:41 AM"}, {"author": "cvr", "type": "reporter", "text": "@nickspin has noted that the below floor item is the smart disputes, which is at sticker - and not below floor. I believe this is a bug.", "ts": "May 1 11:43 AM"}, {"author": "smaddala-c", "type": "responder", "text": "@catalog-runner could you please confirm if this is a bug \u2014 Expected ONR = 0 is < ONR at Floor ($167.09). [Awaiting response \u2014 gentle reminder sent May 4]", "ts": "May 4"}]}], "thread": {"author": "cvr", "resolved": false, "status_label": "Open \u2014 Smart Disputes bug confirmed, awaiting catalog-runner", "jira": "DC_SUPPORT-8930", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8930", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777655880817299", "resolution_note": null, "quote": "We had an approved deal, worked with GBS on redlines, then had a rate change. When I cloned the deal and changed the rates it triggered L4 approval and it appears to be broken.", "messages": [{"author": "cvr", "type": "reporter", "text": "Hello team! hoping you can assist with my Rakuten opp \u2014 we had an approved deal, worked with GBS on redlines, then had a rate change. When I cloned the deal and changed the rates it triggered L4 and it appears to be broken.", "ts": "May 1 10:18 AM"}, {"author": "cvr", "type": "reporter", "text": "Committed GR is 1.2, Approval Level 0, and smart disputes is being flagged below floor (even though it is listed at sticker price).", "ts": "May 1 10:19 AM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8930", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8930"}, {"author": "smaddala-c", "type": "responder", "text": "@cvr it is with Deal Pricing team as the deal has 1 below floor item and all below floor items will have to go for Deal Pricing review.", "ts": "May 1 11:41 AM"}, {"author": "cvr", "type": "reporter", "text": "@nickspin has noted that the below floor item is the smart disputes, which is at sticker - and not below floor. I believe this is a bug.", "ts": "May 1 11:43 AM"}, {"author": "smaddala-c", "type": "responder", "text": "@catalog-runner could you please confirm if this is a bug \u2014 Expected ONR = 0 is < ONR at Floor ($167.09). [Awaiting response \u2014 gentle reminder sent May 4]", "ts": "May 4"}]}}, {"tool": "SFDC Approval Process", "issue": "L4 triggered unexpectedly \u2014 AE cannot see why (alexwilliams)", "owner": "Deal Pricing", "w1": 0, "w2": 1, "impact": "AE blocked with no explanation", "status": "Open", "threads": [{"author": "alexwilliams", "resolved": true, "status_label": "Resolved \u2014 expected behavior", "jira": "DC_SUPPORT-8938", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8938", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777668853352479", "resolution_note": "Renewals deal: Standard Matrix (GR=0.89, ONR $1.87M) triggers L4. Explained by smaddala-c. Not a bug.", "quote": "Can you please let me know why this deal requires L4 approval?", "messages": [{"author": "alexwilliams", "type": "reporter", "text": "Hi Team, can you please let me know why this deal requires L4 approval?", "ts": "May 1 1:54 PM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8938", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8938"}, {"author": "smaddala-c", "type": "resolver", "text": "@alexwilliams This is a renewals deal \u2014 it compares both matrices and picks the highest escalation. Standard Matrix: Deal ONR = $1,869,541, Guidance Ratio = 0.89 \u2192 L4. Renewal Matrix: ONR Retention = 252% \u2192 L2/L3. L4 wins.", "ts": "May 1 2:12 PM"}, {"author": "alexwilliams", "type": "reporter", "text": "you can close! Thank you @smaddala-c", "ts": "May 1 2:29 PM"}]}], "thread": {"author": "alexwilliams", "resolved": true, "status_label": "Resolved \u2014 expected behavior", "jira": "DC_SUPPORT-8938", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8938", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777668853352479", "resolution_note": "Renewals deal: Standard Matrix (GR=0.89, ONR $1.87M) triggers L4. Explained by smaddala-c. Not a bug.", "quote": "Can you please let me know why this deal requires L4 approval?", "messages": [{"author": "alexwilliams", "type": "reporter", "text": "Hi Team, can you please let me know why this deal requires L4 approval?", "ts": "May 1 1:54 PM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8938", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8938"}, {"author": "smaddala-c", "type": "resolver", "text": "@alexwilliams This is a renewals deal \u2014 it compares both matrices and picks the highest escalation. Standard Matrix: Deal ONR = $1,869,541, Guidance Ratio = 0.89 \u2192 L4. Renewal Matrix: ONR Retention = 252% \u2192 L2/L3. L4 wins.", "ts": "May 1 2:12 PM"}, {"author": "alexwilliams", "type": "reporter", "text": "you can close! Thank you @smaddala-c", "ts": "May 1 2:29 PM"}]}}, {"tool": "SFDC Onboarding", "issue": "Move-to-close/onboarding blocked across multiple AEs (navyak, maggiehunt, schenay, jeannemalrieu, evanrooney)", "owner": "Sales Ops", "w1": 2, "w2": 5, "impact": "Deals ready to close stuck in system", "status": "Open \u2014 elevated", "threads": [{"author": "navyak", "resolved": false, "status_label": "Still open as of May 4", "jira": "DC_SUPPORT-8934", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8934", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777657965133179", "resolution_note": null, "quote": "I am trying to move this opportunity to close and onboarding but when I do so it gives me the error below. Everything is at sticker and I am not able to see any icon to revert back to sticker.", "messages": [{"author": "navyak", "type": "reporter", "text": "Hi team, I am trying to move this opportunity to close and onboarding but when I do so it gives me the error below. Everything is at sticker and I am not able to see any icon to revert back to sticker.", "ts": "May 1 10:52 AM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8934", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8934"}, {"author": "smaddala-c", "type": "responder", "text": "@navyak SFDC will not allow you to move to Onboarding stage unless DocuSign has been completed or an agreement object has been created by Deal Strategy. Upload an executed contract or submit a case with Deal Strategy.", "ts": "May 1 11:36 AM"}, {"author": "navyak", "type": "reporter", "text": "Okay perfect. I have created the case. Thank you!", "ts": "May 1 1:43 PM"}, {"author": "navyak", "type": "reporter", "text": "Hi Sathya, it's still showing me this error [as of May 4, 8:06 PM]", "ts": "May 4 8:06 PM"}]}], "thread": {"author": "navyak", "resolved": false, "status_label": "Still open as of May 4", "jira": "DC_SUPPORT-8934", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8934", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777657965133179", "resolution_note": null, "quote": "I am trying to move this opportunity to close and onboarding but when I do so it gives me the error below. Everything is at sticker and I am not able to see any icon to revert back to sticker.", "messages": [{"author": "navyak", "type": "reporter", "text": "Hi team, I am trying to move this opportunity to close and onboarding but when I do so it gives me the error below. Everything is at sticker and I am not able to see any icon to revert back to sticker.", "ts": "May 1 10:52 AM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8934", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8934"}, {"author": "smaddala-c", "type": "responder", "text": "@navyak SFDC will not allow you to move to Onboarding stage unless DocuSign has been completed or an agreement object has been created by Deal Strategy. Upload an executed contract or submit a case with Deal Strategy.", "ts": "May 1 11:36 AM"}, {"author": "navyak", "type": "reporter", "text": "Okay perfect. I have created the case. Thank you!", "ts": "May 1 1:43 PM"}, {"author": "navyak", "type": "reporter", "text": "Hi Sathya, it's still showing me this error [as of May 4, 8:06 PM]", "ts": "May 4 8:06 PM"}]}}], "cross_functional_friction": ["DocuSign Gibraltar\u2192SPEL mapping: one deal fix (jmcgrath/amulmehta), DC_SUPPORT-8850 resolved same day \u2014 not systemic", "GTMS-42435 new opp layout in prod: laivers flagged downstream effects \u2014 scope unknown", "Rich Counts routing likely resolved \u2014 zero new reports after 5-week escalation"], "what_slowing_approvals": "Volume up when move-to-onboarding blockers are included (8\u219210). Rich Counts appears resolved. But L4 trigger logic is misfiring (cvr Rakuten clone, alexwilliams) and move-to-close is broken for multiple AEs simultaneously \u2014 5 separate reports this week. DocuSign Gibraltar issue resolved same day (DC_SUPPORT-8850). Remaining urgent items: L4 trigger misfires and move-to-close broken for 5 AEs simultaneously."}, "actions": [{"action": "RESOLVED: Gibraltar\u2192SPEL mapping fix (jmcgrath/amulmehta) \u2014 DC_SUPPORT-8850 closed. No further action needed.", "owner": "IT / DocuSign admin", "priority": "resolved", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777410860807749"}, {"action": "Validate kailarson report: DC defaulting 75% Dispute Loss on all deals \u2014 confirm scope and file bug (cc maddy)", "owner": "DC Eng / maddy", "priority": "same-day", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777842809546719"}, {"action": "Assign owner to Data Integrity: EUD/OneClick discrepancy + APM historical usage mapping incident (#ir-visiting-superior) \u2014 week 2 no owner", "owner": "Deal Pricing Eng / konthamk", "priority": "same-day", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777565049432419"}, {"action": "Fix Stratus BPS Margin not syncing to SFDC after Stratus pricing (taylormcgavisk) \u2014 AE cannot close opp as won", "owner": "stratus-runner", "priority": "same-day", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777647051446499"}, {"action": "DC save error root cause \u2014 8th consecutive week of Too Many SQL Queries: escalate to DC Eng for permanent fix", "owner": "DC Eng", "priority": "urgent", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777641058297959"}, {"action": "Assess GTMS-42435 new opp layout downstream effects (laivers) \u2014 may need rollback or emergency patch", "owner": "SFDC Prod", "priority": "urgent", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777571774818419"}, {"action": "Confirm Rich Counts removed from SFDC approval chain \u2014 zero reports this week but verify permanent removal", "owner": "florawang / IT", "priority": "normal", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1776980961939909"}], "watchlist": [{"severity": "resolved", "issue": "RESOLVED: Gibraltar\u2192SPEL mapping (jmcgrath/amulmehta) \u2014 DC_SUPPORT-8850", "notes": "One deal (Liquidity Trading - Pay-ins). Missing Gibraltar country mapping in contract service. Fixed same day by amulmehta. Not systemic.", "threads": [{"author": "jmcgrath", "resolved": true, "status_label": "Resolved \u2014 DC_SUPPORT-8850", "jira": "DC_SUPPORT-8850", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8850", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777410860807749", "resolution_note": "amulmehta fixed: contract service code was missing Gibraltar\u2192SPEL country mapping. Signing group now visible.", "quote": "I am unable to add 'Stripe Signing Group Europe' as the Stripe signatories \u2014 it only shows US individuals.", "messages": [{"author": "jmcgrath", "type": "reporter", "text": "Hi Team, I am trying to send the contract for eSignature but I am unable to add \"Stripe Signing Group Europe\" as the Stripe signatories, it seems to only be US individuals. Liquidity Trading - Pay-ins.", "ts": "Apr 28"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8850", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8850"}, {"author": "amulmehta", "type": "resolver", "text": "@jmcgrath can you try now please? It shows \"Stripe Europe Signing Group\"", "ts": "Apr 29"}, {"author": "jmcgrath", "type": "reporter", "text": "that sorted it thank you!", "ts": "Apr 29"}, {"author": "amulmehta", "type": "resolver", "text": "The contract was showing Stripe LLC as stripe signing group \u2014 caused SPEL not to show up. Contract service code was missing mapping for `Gibraltar` country to SPEL. Fixing the mapping fixed the issue.", "ts": "Apr 30"}]}]}, {"severity": "crit", "issue": "DC defaulting 75% Dispute Loss on all deals (kailarson)", "notes": "If confirmed, systematically skews ONR on every affected quote. Scope unknown. Needs immediate validation.", "threads": [{"author": "kailarson", "resolved": false, "status_label": "Investigating \u2014 awaiting opp link", "jira": "DC_SUPPORT-8940", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8940", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777842809546719", "resolution_note": null, "quote": "It seems like DC is defaulting to 75% for Dispute Loss. I don't think this is right, as it is skewing the ONR on quotes.", "messages": [{"author": "kailarson", "type": "reporter", "text": "It seems like DC is defaulting to 75% for Dispute Loss. I don't think this is right, as it is skewing the ONR on quotes: @maddy", "ts": "May 3"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8940", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8940"}, {"author": "sashaik-c", "type": "responder", "text": "Hi @kailarson can you share the opp link and also what value do you want in dispute loss", "ts": "May 3"}]}]}, {"severity": "crit", "issue": "Data Integrity: EUD/OneClick discrepancy + APM incident \u2014 week 2, no owner", "notes": "Two separate but potentially related data integrity issues. No owner after 2 weeks.", "threads": [{"author": "mmathew-c", "resolved": true, "status_label": "Incident mitigated", "jira": null, "jira_url": null, "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777565049432419", "resolution_note": "#ir-visiting-superior mitigated. Workaround: fresh retrieval of historicals on cloned deal (uncheck \"Import deal metrics only\" toggle on Retrieve Renewals).", "quote": "We have an on-going incident #ir-visiting-superior to track the issue where there is an issue with historical usage mapping for certain LPMs, including SEPA Direct Debit, where the dispute fee and failed transaction fee line items have inflated ONR.", "messages": [{"author": "mmathew-c", "type": "reporter", "text": "Hi all, we have an on-going incident #ir-visiting-superior to track the issue where there is an issue with historical usage mapping for certain LPMs, including SEPA Direct Debit, where the dispute fee and failed transaction fee line items have inflated ONR and usage %s. Team is working on this.", "ts": "Apr 30 8:17 PM"}, {"author": "mmathew-c", "type": "resolver", "text": "Hi all, #ir-visiting-superior incident is mitigated. Please try a fresh retrieval of historicals on a cloned deal (You may need to uncheck the Import deal metrics only toggle when you do \"Retrieve Renewals\").", "ts": "May 4 10:06 AM"}]}]}, {"severity": "high", "issue": "Stratus BPS Margin sync failure to SFDC (taylormcgavisk)", "notes": "Critical-path blocker: AEs using Stratus cannot close opps as won if BPS does not sync.", "threads": [{"author": "taylormcgavisk", "resolved": false, "status_label": "Open \u2014 no response yet", "jira": null, "jira_url": null, "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777647051446499", "resolution_note": null, "quote": "I used Stratus to complete the pricing for my user but the BPS Margin has not passed over to the Salesforce Opp and I cannot close the opp as won until this is done.", "messages": [{"author": "taylormcgavisk", "type": "reporter", "text": "I used Stratus to complete the pricing for my user but the BPS Margin has not passed over to the Salesforce Opp and I cannot close the opp as won until this is done.", "ts": "May 1 4:30 PM"}]}]}, {"severity": "high", "issue": "SEPA DD Dispute Fee showing $2.6M inflated ONR (ejdunne)", "notes": "If AE prices from this figure, catastrophic pricing error on live deal.", "threads": [{"author": "ejdunne", "resolved": true, "status_label": "Resolved (hard refresh). Broader incident mitigated.", "jira": "DC_SUPPORT-8905", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8905", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777561408129009", "resolution_note": "Hard refresh fixed ejdunne's view. Broader LPM historical usage incident (#ir-visiting-superior) mitigated by mmathew-c \u2014 Austria SEPA DD inflated ONR was stale cache.", "quote": "There seems to be a bug on SEPA Direct Debit Dispute Fee \u2014 providing ONR at a value of 2,605,159.", "messages": [{"author": "ejdunne", "type": "reporter", "text": "Hi Team, can you please review this DC. There seems to be a bug on SEPA Direct Debit Dispute Fee - providing ONR at a value of 2,605,159. Austria deal.", "ts": "Apr 30 8:10 PM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8905", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8905"}, {"author": "araut-c", "type": "responder", "text": "@ejdunne I can see the ONR for SEPA Direct Debit Dispute Fee is 125,373. This is for Austria, right? Can you please hard refresh it once and then try?", "ts": "Apr 30 8:15 PM"}, {"author": "ejdunne", "type": "reporter", "text": "Just did and it looks like it has changed for me now. Thank you for your help", "ts": "Apr 30 8:16 PM"}, {"author": "araut-c", "type": "resolver", "text": "Great \ud83d\udc4d Thread resolved. Note: broader incident #ir-visiting-superior for LPM historical usage mapping was separately mitigated by mmathew-c.", "ts": "Apr 30 8:17 PM"}]}]}, {"severity": "high", "issue": "Stratus AI deal-builder trust: GR and currency bugs week 2", "notes": "APAC M2 pilot expanding while AI shows wrong GR and wrong currency. Undermines the AI selling point.", "threads": [{"author": "dalil", "resolved": true, "status_label": "Resolved", "jira": "RUN_STRATUS-55", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-55", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777383901371809", "resolution_note": "stevenz synced offline with dalil \u2014 IC+ GR propagation issue fixed. RUN_STRATUS-55 filed.", "quote": "I have tried to use the AI tool in order to have a GR close to 1. The AI seems to be updating the pricing fee but doesn't update the global GR for the deal.", "messages": [{"author": "dalil", "type": "reporter", "text": "Hi team, I'm currently working on a pricing for a customer who is new to Stripe. I have tried to use the AI tool in order to have a GR close to 1. The AI seems to be updating the pricing fee but doesn't update the global GR for the deal. Do you know what would be the reason?", "ts": "Apr 28 2:18 PM"}, {"author": "stevenz", "type": "responder", "text": "Hey @dalil, thanks for using our AI chat feature, we're still working on improvements. From the screenshot, it looks like the IC+ line item is priced with GR 2.30, which likely increased the global GR for the deal?", "ts": "Apr 28 2:23 PM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "RUN_STRATUS-55", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-55"}, {"author": "dalil", "type": "reporter", "text": "Hey @stevenz, thanks for your answer. When I'm changing the IC+ line item it doesn't change the global GR while it should.", "ts": "Apr 28 2:24 PM"}, {"author": "williams", "type": "responder", "text": "cc @crhird", "ts": "Apr 28 3:17 PM"}, {"author": "stevenz", "type": "resolver", "text": "Oh, my bad, we've synced offline and it's now resolved. @williams", "ts": "Apr 28 3:22 PM"}]}, {"author": "chillick", "resolved": false, "status_label": "Workaround provided \u2014 bug open", "jira": "RUN_STRATUS-53", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-53", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777320565611859", "resolution_note": "Williams provided workaround: update currency from territory page. Underlying AI bug still open (RUN_STRATUS-53).", "quote": "I tried using the AI to build a deal. It's a UK entity, GBP with multi-currency settlement for USD, EUR and JPY. The deal built it with UK entity and had the fixed fee in JPY as currency.", "messages": [{"author": "chillick", "type": "reporter", "text": "Hi Team, I tried using the AI to build a deal. It's a UK entity, GBP with multi currency settlement for USD, EUR and JPY. The deal built it with UK entity and had the fixed fee in JPY as currency. See screenshot.", "ts": "Apr 27 7:56 AM"}, {"author": "williams", "type": "responder", "text": "Thanks for reaching out @chillick - can you share deal link plz?", "ts": "Apr 27 7:59 AM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "RUN_STRATUS-53", "jira_url": "https://jira.corp.stripe.com/browse/RUN_STRATUS-53"}, {"author": "williams", "type": "responder", "text": "Baby AI still learning cc @crhird \u2014 he put JPY as default currency for the deal. You can update this and add missing currencies from the territory page.", "ts": "Apr 27 8:02 AM"}, {"author": "williams", "type": "responder", "text": "Please keep that feedback coming @chillick", "ts": "Apr 27 8:02 AM"}]}]}, {"severity": "med", "issue": "DC save errors \u2014 8th week Too Many SQL Queries", "notes": "No root cause after 8 weeks. Daily AE blocker. Needs permanent escalation path.", "threads": [{"author": "dfortune", "resolved": true, "status_label": "Resolved for dfortune (feature flag). Root cause unfixed.", "jira": "DC_SUPPORT-8924", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8924", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777641058297959", "resolution_note": "zwhip added dfortune to a feature flag that reduces this error \u2014 not 100% rolled out yet. Underlying SQL query bug still unresolved for others.", "quote": "We're getting errors again saving this DC to opty \u2014 'too many sql queries' is the error message.", "messages": [{"author": "dfortune", "type": "reporter", "text": "Hey team, We're getting errors again saving this DC to opty \u2014 \"too many sql queries\" is the error message. Can you save to opty on our behalf please?", "ts": "May 1 12:17 PM"}, {"author": "dfortune", "type": "reporter", "text": "Hey @zwhip \u2014 Wondering if you can help us here? Similar issue we've had before \u2014 we needed to make changes to the DC and require an Engineer to Save to Opty for us.", "ts": "May 1 12:33 PM"}, {"author": "zwhip", "type": "resolver", "text": "@dfortune please try again, I added you to a feature flag to reduce chance of this error happening. We haven't done 100% testing to roll it out to everyone yet.", "ts": "May 1 12:36 PM"}, {"author": "dfortune", "type": "reporter", "text": "Perfect, it worked, thanks @zwhip!", "ts": "May 1 12:38 PM"}, {"author": "Askbot", "type": "bot", "text": "Jira ticket created", "jira": "DC_SUPPORT-8924", "jira_url": "https://jira.corp.stripe.com/browse/DC_SUPPORT-8924"}]}]}], "quotes": {"kudos": [{"author": "alanhosey", "quote": "love it", "channel": "stratus-support (in-product feedback)", "context": "Stratus in-product feedback, 5-star, May 3 2026", "slack_link": "https://hubble.corp.stripe.com/queries/stripe/74981c16", "date": "2026-05-03"}, {"author": "reedmalone", "quote": "So much more intuitive and easier than DC", "channel": "stratus-support (in-product feedback)", "context": "Stratus in-product feedback, 5-star", "slack_link": "https://hubble.corp.stripe.com/queries/stripe/74981c16", "date": "2026-04-22"}, {"author": "bde", "quote": "Way easier to use than DC at the moment and less bugs\nWas not able to sync my opp on DC and worked on Stratus - Well done", "channel": "stratus-support (in-product feedback)", "context": "Stratus in-product feedback, 5-star", "slack_link": "https://hubble.corp.stripe.com/queries/stripe/74981c16", "date": "2026-04-15"}], "opportunity_areas": [{"author": "kailarson", "quote": "It seems like DC is defaulting to 75% for Dispute Loss. I don't think this is right, as it is skewing the ONR on quotes", "channel": "seller-systems-support", "context": "NEW: DC defaulting 75% Dispute Loss on all deals \u2014 needs immediate validation", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777842809546719", "date": "2026-05-03"}, {"author": "taylormcgavisk", "quote": "I used Stratus to complete the pricing for my user but the BPS Margin has not passed over to the Salesforce Opp and I cannot close the opp as won until this is done.", "channel": "stratus-support", "context": "Stratus BPS Margin not syncing to SFDC \u2014 blocks close", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777647051446499", "date": "2026-05-01"}, {"author": "dalil", "quote": "I have tried to use the AI tool in order to have a GR close to 1. The AI seems to be updating the pricing fee but doesn't update the global GR for the deal.", "channel": "stratus-support", "context": "AI deal-builder GR not updating \u2014 week 2 unresolved", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777383901371809", "date": "2026-04-28"}, {"author": "chillick", "quote": "I tried using the AI to build a deal. It's a UK entity, GBP with multi currency settlement for USD, EUR and JPY. The deal built it with UK entity and had the fixed fee in JPY as currency.", "channel": "stratus-support", "context": "AI deal-builder wrong currency \u2014 week 2 unresolved", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777320565611859", "date": "2026-04-27"}, {"author": "ejdunne", "quote": "There seems to be a big on SEPA Direct Debit Dispute Fee - providing ONR at a value of 2,605,159. Can you please help me investigate?", "channel": "seller-systems-support", "context": "SEPA DD Dispute Fee showing $2.6M inflated ONR", "slack_link": "https://stripe.slack.com/archives/C05FDARJBA4/p1777561408129009", "date": "2026-04-30"}, {"author": "andymak", "quote": "I am likely to attempt to use Stratus instead of DC to price out an US-only CNP deal for Kraken. I assume it makes sense to use Stratus instead of DC?", "channel": "stratus-support", "context": "Organic first-time inquiry \u2014 AE proactively choosing Stratus", "slack_link": "https://stripe.slack.com/archives/C0AEUHR9UC8/p1777648421084319", "date": "2026-05-01"}]}, "sfdc": {"w1_total": 1617, "w2_total": 1329, "note": "Hubble query 690c3101. Period: Apr 20\u2013May 4.", "queues": [{"name": "Data Operations", "w1": 723, "w2": 588, "severity": "high", "top_type": "Account Management", "status": "-18.7%"}, {"name": "Monetization Ops", "w1": 336, "w2": 265, "severity": "high", "top_type": "Post-Signature General Question", "status": "-21.1%"}, {"name": "Deal Strategy", "w1": 252, "w2": 238, "severity": "high", "top_type": "Pricing Agreement Exception", "status": "-5.6%"}, {"name": "Deal Pricing", "w1": 163, "w2": 133, "severity": "med", "top_type": "Tooling Support", "status": "-18.4%"}, {"name": "Sales Ops", "w1": 102, "w2": 68, "severity": "med", "top_type": "Pipeline Management", "status": "-33.3%"}, {"name": "Renewals Team", "w1": 32, "w2": 20, "severity": "low", "top_type": "Scaled Renewals", "status": "-37.5%"}, {"name": "MACS", "w1": 7, "w2": 12, "severity": "low", "top_type": "Pre-Signature General Question", "status": "+71% \u2014 new spike"}, {"name": "System/Tooling Enhancement", "w1": 2, "w2": 5, "severity": "low", "top_type": "Enhancement", "status": "+150% \u2014 small volume"}]}, "people": {"top_submitters": [{"ldap": "dtsiganovski", "w1": 1, "w2": 5, "delta": "+4", "top_category": "Pricing Questions"}, {"ldap": "ames", "w1": 1, "w2": 4, "delta": "+3", "top_category": "Access / Tooling"}, {"ldap": "sneh", "w1": 1, "w2": 3, "delta": "+2", "top_category": "DC Bugs"}, {"ldap": "cbrady", "w1": 1, "w2": 3, "delta": "+2", "top_category": "DC Bugs / Save Errors"}, {"ldap": "alexwilliams", "w1": 1, "w2": 2, "delta": "+1", "top_category": "DC Approvals / Questions"}], "top_solvers": [{"ldap": "stratus-runner", "w2": 5, "solver_type": "guidance", "top_category": "Stratus Bugs"}, {"ldap": "williams", "w2": 4, "solver_type": "guidance", "top_category": "Stratus Adoption"}, {"ldap": "konthamk", "w2": 3, "solver_type": "guidance", "top_category": "DC Bugs / ONR"}, {"ldap": "florawang", "w2": 2, "solver_type": "fix", "top_category": "Approvals / Workflow"}, {"ldap": "zwhip", "w2": 2, "solver_type": "fix", "top_category": "ONR / Ops overrides"}]}};
 
-// ─── LOAD ─────────────────────────────────────────────────────────────────────
-// Data is baked into INLINE_DATA above. Each /seller-support run updates
-// INLINE_DATA directly, commits to index.html, and opens a PR to pages.stripe.me.
-
-function copyQuote(btn, text) {
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = '✓ copied';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = '⎘ copy'; btn.classList.remove('copied'); }, 2000);
-  }).catch(() => { btn.textContent = '✗ failed'; setTimeout(() => { btn.textContent = '⎘ copy'; }, 1500); });
-}
-
-function initNavScroll() {
-  const sections = ['overview','issues','sfdc','stratus','approvals','quotes','actions'];
-  const tabs = document.querySelectorAll('.nav-tab');
-  function update() {
-    let active = 'overview';
-    for (const id of sections) {
-      const el = document.getElementById(id);
-      if (el && el.getBoundingClientRect().top <= 72) active = id;
-    }
-    tabs.forEach(t => t.classList.toggle('active', t.getAttribute('href') === '#' + active));
-  }
-  window.addEventListener('scroll', update, { passive: true });
-  update();
-}
-
-async function init() {
-  const loading = document.getElementById('loading');
-  try {
-    const data = INLINE_DATA;
-
-    loading.style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    render(data);
-    buildCharts(data);
-    initNavScroll();
-    document.title = `Seller Systems Support Intelligence — ${(data.meta||{}).run_date||''}`;
-  } catch (err) {
-    loading.innerHTML = `<p style="color:var(--red);font-size:13px">Failed to render dashboard: ${h(err.message)}</p>`;
-  }
-}
-
-init();
-</script>
+init();/script>
 </body>
 </html>
