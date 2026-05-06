@@ -191,6 +191,10 @@
     .spinner { width: 24px; height: 24px; border: 2px solid var(--border); border-top-color: var(--purple); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     #app { display: none; }
+
+  /* Freshness banner */
+  .freshness-bar { background:#FFFBF0; border-bottom:1px solid #F6E05E; padding:7px 28px; font-size:11px; color:#744210; display:flex; align-items:center; gap:8px; }
+  .freshness-bar strong { font-weight:700; }
   </style>
 </head>
 <body>
@@ -414,6 +418,12 @@ function render(d) {
     <a class="nav-tab" href="#quotes">Critical Quotes</a>
     <a class="nav-tab" href="#actions">Actions &amp; Watchlist</a>
   </div>
+</div>
+
+<!-- FRESHNESS BANNER -->
+<div class="freshness-bar">
+  <span style="font-size:14px;">🕐</span>
+  <span><strong>Data updated ${h(m.run_date||'recently')}</strong> · This report runs ~2x/week (ad-hoc). Data reflects the last run — not real-time. · Stale cards (🚩 in Quick Look) are reviewed every few days, not daily.</span>
 </div>
 
 <!-- BLUF -->
