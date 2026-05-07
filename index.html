@@ -686,9 +686,8 @@ function renderStratusFunnel(d) {
     { label: 'Adopted', count: adoptOpps, pct: (adoptRate*100).toFixed(1)+'%', color: '#0D9488',
       drop: `${dropped2.toLocaleString()} eligible opps (${drop2Pct}%) stayed on DC`,
       reasons: [
-        '🧠 AE familiarity — DC is the known path for most AEs',
-        '🛠️ Deal-specific complexity: approvals, co-term, multi-product',
-        '📋 Specific product gaps blocking full Stratus pricing',
+        '📋 Product not in Stratus catalog forces DC fallback (Sigma, DataPipeline, SaaS Billing, Issuing — named by AEs this week)',
+        '❓ 185 eligible opps went to DC — root cause for remaining opps unknown from available data',
       ]
     },
   ];
